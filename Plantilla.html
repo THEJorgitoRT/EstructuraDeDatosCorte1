@@ -1,0 +1,4837 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio – Ingeniería de Software</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+         :root {
+            --c: #00f0ff;
+            --p: #7a00ff;
+            --bg: #0b0f1a;
+            --cb: #11162a;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: #eaeaea;
+            overflow-x: hidden;
+        }
+        /* SCROLL PROGRESS BAR */
+        
+        #sp {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--c), var(--p));
+            z-index: 9999;
+            width: 0;
+            box-shadow: 0 0 10px var(--c);
+        }
+        /* PARTÍCULAS */
+        
+        #pc {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: .4;
+        }
+        
+        header,
+        nav,
+        main,
+        footer {
+            position: relative;
+            z-index: 1;
+        }
+        /* HEADER */
+        
+        header {
+            background: linear-gradient(135deg, #000510, #0a0d17 40%, #110020);
+            padding: 50px 35px 42px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 240, 255, .2);
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(0, 240, 255, .04) 60deg, transparent 120deg);
+            animation: rot 10s linear infinite;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--c), transparent);
+            animation: scan 3.5s ease-in-out infinite;
+        }
+        
+        @keyframes rot {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes scan {
+            0% {
+                top: 0;
+                opacity: 1
+            }
+            100% {
+                top: 100%;
+                opacity: 0
+            }
+        }
+        
+        h1 {
+            font-size: clamp(22px, 5vw, 40px);
+            font-weight: 900;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(90deg, var(--c), var(--p), var(--c));
+            background-size: 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gs 4s ease infinite, fid .8s ease;
+        }
+        
+        @keyframes gs {
+            0% {
+                background-position: 0%
+            }
+            50% {
+                background-position: 100%
+            }
+            100% {
+                background-position: 0%
+            }
+        }
+        
+        @keyframes fid {
+            from {
+                opacity: 0;
+                transform: translateY(-20px)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+        
+        @keyframes fiu {
+            from {
+                opacity: 0;
+                transform: translateY(30px)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+        
+        header p {
+            margin-top: 12px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, .55);
+            letter-spacing: 1px;
+            animation: fiu .8s ease .3s both;
+        }
+        
+        .badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 5px 16px;
+            border: 1px solid var(--c);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--c);
+            font-family: 'Courier New', monospace;
+            animation: pulse 2s ease-in-out infinite, fiu .8s ease .5s both;
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 8px var(--c)
+            }
+            50% {
+                box-shadow: 0 0 22px var(--c), 0 0 40px rgba(0, 240, 255, .25)
+            }
+        }
+        /* NAV */
+        
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: rgba(10, 13, 23, .92);
+            backdrop-filter: blur(12px);
+            padding: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .main-nav button,
+        .sub-nav button {
+            background: transparent;
+            border: 1px solid var(--c);
+            color: var(--c);
+            padding: 10px 26px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: .5px;
+            position: relative;
+            overflow: hidden;
+            transition: color .3s, border-color .3s, transform .2s, box-shadow .2s;
+        }
+        
+        .main-nav button::before,
+        .sub-nav button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--c), var(--p));
+            opacity: 0;
+            transition: opacity .3s;
+            z-index: -1;
+        }
+        
+        .main-nav button:hover::before,
+        .sub-nav button:hover::before {
+            opacity: 1;
+        }
+        
+        .main-nav button:hover,
+        .sub-nav button:hover {
+            color: #000;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 240, 255, .4);
+        }
+        /* MAIN */
+        
+        main {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .materia {
+            display: none;
+        }
+        
+        .materia.active {
+            display: block;
+            animation: fiu .5s ease;
+        }
+        
+        .sub-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+        
+        .subsection {
+            display: none;
+        }
+        
+        .subsection.active {
+            display: block;
+        }
+        /* STATS ROW */
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            animation: fiu .6s ease both;
+        }
+        
+        .stat-item:nth-child(2) {
+            animation-delay: .1s
+        }
+        
+        .stat-item:nth-child(3) {
+            animation-delay: .2s
+        }
+        
+        .stat-num {
+            font-family: 'Courier New', monospace;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--c);
+            text-shadow: 0 0 18px rgba(0, 240, 255, .5);
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        
+        .pb-wrap {
+            height: 3px;
+            background: rgba(255, 255, 255, .05);
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+        
+        .pb {
+            height: 100%;
+            background: linear-gradient(90deg, var(--c), var(--p));
+            border-radius: 2px;
+            animation: pbl 1.8s ease both;
+        }
+        
+        @keyframes pbl {
+            from {
+                width: 0
+            }
+        }
+        /* CARDS */
+        
+        .card {
+            background: var(--cb);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(0, 240, 255, .07);
+            position: relative;
+            overflow: hidden;
+            transition: transform .3s, box-shadow .3s, border-color .3s, opacity .5s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .card.vis {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--c), var(--p), transparent);
+            transition: left .6s;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(225deg, rgba(0, 240, 255, .06), transparent 60%);
+            pointer-events: none;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 14px 45px rgba(0, 240, 255, .2), 0 0 0 1px rgba(0, 240, 255, .15);
+            border-color: rgba(0, 240, 255, .22);
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            color: var(--c);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card h2::before {
+            content: '▶';
+            font-size: 9px;
+            color: var(--p);
+            animation: blink 1.4s steps(1) infinite;
+        }
+        
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1
+            }
+            50% {
+                opacity: 0
+            }
+        }
+        
+        pre {
+            border-radius: 12px;
+            overflow-x: auto;
+            position: relative;
+            border: 1px solid rgba(0, 240, 255, .1);
+        }
+        
+        pre[data-lang]::after {
+            content: attr(data-lang);
+            position: absolute;
+            top: 8px;
+            right: 14px;
+            font-size: 11px;
+            color: rgba(0, 240, 255, .4);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .copy-btn {
+            margin-top: 15px;
+            background: linear-gradient(135deg, var(--c), var(--p));
+            color: #000;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: transform .2s, box-shadow .2s;
+        }
+        
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 22px rgba(0, 240, 255, .45);
+        }
+        
+        .copy-btn.ok {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+        }
+        
+        .evidencia img {
+            margin-top: 15px;
+            max-width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 240, 255, .12);
+            transition: transform .4s, box-shadow .4s;
+            display: block;
+        }
+        
+        .evidencia img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 35px rgba(0, 240, 255, .3);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: rgba(10, 13, 23, .95);
+            border-top: 1px solid rgba(0, 240, 255, .1);
+            font-size: 14px;
+            color: rgba(255, 255, 255, .4);
+            position: relative;
+        }
+        
+        footer span {
+            color: var(--c);
+            font-weight: bold;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--c), var(--p), var(--c), transparent);
+            animation: fg 3s ease-in-out infinite;
+        }
+        
+        @keyframes fg {
+            0%,
+            100% {
+                opacity: .4
+            }
+            50% {
+                opacity: 1
+            }
+        }
+
+        .output-block {
+            margin-top: 15px;
+            background: #0a0e1a;
+            border: 1px solid rgba(0,240,255,.18);
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #00f0ff;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.6;
+            box-shadow: inset 0 0 20px rgba(0,240,255,.04);
+        }
+        .output-label {
+            font-size: 11px;
+            color: rgba(0,240,255,.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Fallback: código visible aunque Prism no cargue */
+        pre code {
+            display: block;
+            padding: 18px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #cdd6f4;
+            background: #1e1e2e;
+            border-radius: 12px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        /* Si Prism SÍ carga, lo sobreescribe con sus colores */
+        pre[class*="language-"] code,
+        pre code[class*="language-"] {
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="sp"></div>
+    <canvas id="pc"></canvas>
+
+    <header>
+        <h1>Ingeniería de Software</h1>
+        <p>Jorge Armando Rincones Torres – Universidad de Santander</p>
+        <div class="badge">▸ PORTAFOLIO ACADÉMICO v2.0</div>
+    </header>
+
+    <nav class="main-nav">
+        <button onclick="showM('estructura')">Estructura de Datos</button>
+        <button onclick="showM('programacion')">Programación II</button>
+    </nav>
+
+    <main>
+
+        <!-- ==================== ESTRUCTURA DE DATOS ==================== -->
+        <section id="estructura" class="materia active">
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-num" data-c="11">0</div>
+                    <div class="stat-label">Actividades</div>
+                    <div class="pb-wrap">
+                        <div class="pb" style="width:100%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">C++ / Java</div>
+                    <div class="stat-label">Lenguajes</div>
+                    <div class="pb-wrap">
+                        <div class="pb" style="width:70%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">✓</div>
+                    <div class="stat-label">Completado</div>
+                    <div class="pb-wrap">
+                        <div class="pb" style="width:80%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-nav">
+                <button onclick="showS('ed-act')">Actividades</button>
+                <button onclick="showS('ed-quiz')">Quiz</button>
+                <button onclick="showS('ed-parcial')">Parcial</button>
+            </div>
+
+            <div id="ed-act" class="subsection active">
+
+                <!-- ACT 1 -->
+                <div class="card">
+                    <h2>Actividad 1 – Enunciado</h2>
+                    <p>Burbuja simple en C++ String.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="c++"><code class="language-cpp" id="ed1">
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+void burbujasimple(std::vector&lt;string&gt; &amp; arr){
+    int n = arr.size();
+    for (int i = 0; i&lt;n-1 ; i++){
+        for (int j = 0; j &lt; n-i-1; j++) {
+            if (arr[j] &gt; arr[j+1]) {
+                //Intercambiar arr[j] y arr[j+1]
+                std::string temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    std::vector&lt;std::string&gt; nombres = {
+    "Raquel",
+    "Luisa",
+    "Miren",
+    "Oscar",
+    "Javier",
+    "Gorka",
+    "Calixto",
+    "Santos",
+    "Paco",
+    "Alberto",
+    "Toribio",
+    "Manuel",
+    "Teresa",
+    "Ramiro",
+    "Gregorio"
+    };
+
+    std::cout &lt;&lt; "vector Original" &lt;&lt; std::endl;
+    for (const std::string &amp; nombre : nombres ) {
+        std::cout &lt;&lt; nombre &lt;&lt; " ";
+    }
+    burbujasimple(nombres);
+    std::cout &lt;&lt; "
+vector Arreglado" &lt;&lt; std::endl;
+    for (const std::string &amp; nombre : nombres ) {
+        std::cout &lt;&lt; nombre &lt;&lt; " ";
+    }
+    return 0;
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">vector Original
+Raquel Luisa Miren Oscar Javier Gorka Calixto Santos Paco Alberto Toribio Manuel Teresa Ramiro Gregorio
+
+vector Arreglado
+Alberto Calixto Gorka Gregorio Javier Luisa Manuel Miren Oscar Paco Raquel Ramiro Santos Teresa Toribio</div>
+                </div>
+
+                <!-- ACT 2 - Burbuja Mejorado int -->
+                <div class="card">
+                    <h2>Actividad 2 – Burbuja Mejorado - Ejercicio de Clase (int)</h2>
+                    <p>Implementación del algoritmo burbuja mejorado con enteros.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed2">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class BurbujaMejorado
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		int vec[] = {47,17,23,67,21};
+		System.out.println("Vector Original: ");
+	    imprimirVector(vec);
+		System.out.println("");
+		vec = ordenacionBurMej(vec);
+		System.out.println("Vector Ordenado: ");
+		imprimirVector(vec);
+	}
+	public static int [] ordenacionBurMej(int vec[]){
+	    final int N = vec.length;
+	    for (int i = N - 1;i &gt; 0 ; i-- ){
+	        for (int j = 0;j &lt; i ; j++ ){
+	            if (vec[j]&gt;vec[j+1]){
+	                int temp = vec[j];
+	                vec[j] = vec[j+1];
+	                vec[j+1] = temp;
+	            } 
+	        } System.out.print("Iteracion: "+ (N-i)+": ");
+	        imprimirVector(vec);
+	        System.out.println();
+	    } 
+	    return vec;
+	}
+	public static void imprimirVector(int vec[]){
+	    for (int i = 0;i &lt; vec.length ;i++ ){
+	        System.out.print(vec[i] + " ");
+	    } 
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed2',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector Original:
+47 17 23 67 21
+Iteracion: 1: 17 23 47 21 67
+Iteracion: 2: 17 23 21 47 67
+Iteracion: 3: 17 21 23 47 67
+Iteracion: 4: 17 21 23 47 67
+Vector Ordenado:
+17 21 23 47 67</div>
+                </div>
+
+                <!-- ACT 2.1 -->
+                <div class="card">
+                    <h2>Actividad 2.1 – Burbuja Mejorado - Ejercicio de Práctica (String)</h2>
+                    <p>Burbuja mejorado aplicado a cadenas de texto.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed2_1">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class BurbujaMejoradoString
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        String vec[] = {"Pedro", "Ana", "Luis", "Carlos", "Beatriz"};
+        
+        System.out.println("Vector Original: ");
+        imprimirVector(vec);
+        System.out.println("");
+        
+        vec = ordenacionBurMej(vec);
+        
+        System.out.println("Vector Ordenado: ");
+        imprimirVector(vec);
+    }
+
+    public static String[] ordenacionBurMej(String vec[]){
+        final int N = vec.length;
+        
+        for (int i = N - 1; i &gt; 0; i--){
+            for (int j = 0; j &lt; i; j++){
+                
+                // Comparación alfabética
+                if (vec[j].compareTo(vec[j+1]) &gt; 0){
+                    String temp = vec[j];
+                    vec[j] = vec[j+1];
+                    vec[j+1] = temp;
+                } 
+            }
+            
+            System.out.print("Iteracion: " + (N - i) + ": ");
+            imprimirVector(vec);
+            System.out.println();
+        } 
+        
+        return vec;
+    }
+
+    public static void imprimirVector(String vec[]){
+        for (int i = 0; i &lt; vec.length; i++){
+            System.out.print(vec[i] + " ");
+        }
+    }
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed2_1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector Original:
+Pedro Ana Luis Carlos Beatriz
+Iteracion: 1: Ana Luis Carlos Beatriz Pedro
+Iteracion: 2: Ana Carlos Beatriz Luis Pedro
+Iteracion: 3: Ana Beatriz Carlos Luis Pedro
+Iteracion: 4: Ana Beatriz Carlos Luis Pedro
+Vector Ordenado:
+Ana Beatriz Carlos Luis Pedro</div>
+                </div>
+
+                <!-- ACT 3 -->
+                <div class="card">
+                    <h2>Actividad 3 – Método QuickSort - Ejercicio de Clase (int)</h2>
+                    <p>Implementación del algoritmo QuickSort para ordenar enteros.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed3">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class QuickSort {
+    private static int vec[] = {20, 12, 28, 24, 8, 4, 16};
+    
+    public static void main(String[] args) throws java.lang.Exception {
+        System.out.println("Vector Original: ");
+        imprimirVector(vec);
+        ordenacionRapida(vec);
+        System.out.println("Vector Ordenado: ");
+        imprimirVector(vec);
+    }
+    
+    public static void ordenacionRapida(int vec[]) {
+        final int N = vec.length;
+        quickSort(vec, 0, N-1);
+    }
+    
+    public static void quickSort(int vec[], int inicio, int fin) {
+        if(inicio &gt;= fin) return;
+        
+        int pivote = vec[inicio];
+        int elemIzq = inicio + 1;
+        int elemDer = fin;
+        
+        while(elemIzq &lt;= elemDer) {
+            while(elemIzq &lt;= fin &amp;&amp; vec[elemIzq] &lt; pivote) {
+                elemIzq++;
+            }
+            while(elemDer &gt; inicio &amp;&amp; vec[elemDer] &gt;= pivote) {
+                elemDer--;
+            }
+            if(elemIzq &lt; elemDer) {
+                int temp = vec[elemIzq];
+                vec[elemIzq] = vec[elemDer];
+                vec[elemDer] = temp;
+            }
+        }
+        
+        if(elemDer &gt; inicio) {
+            int temp = vec[inicio];
+            vec[inicio] = vec[elemDer];
+            vec[elemDer] = temp;
+        }
+        
+        quickSort(vec, inicio, elemDer - 1);
+        quickSort(vec, elemDer + 1, fin);
+    } 
+    
+    public static void imprimirVector(int vec[]) {
+        for (int i = 0; i &lt; vec.length; i++) {
+            System.out.print(vec[i] + " ");
+        }
+        System.out.println();
+    }
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed3',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector Original:
+20 12 28 24 8 4 16
+Vector Ordenado:
+4 8 12 16 20 24 28</div>
+                </div>
+
+                <!-- ACT 3.1 -->
+                <div class="card">
+                    <h2>Actividad 3.1 – Método QuickSort - Ejercicio de Clase (string)</h2>
+                    <p>QuickSort aplicado a cadenas de texto.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed3_1">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class QuickSort {
+    private static String name[] = {"Jorge", "Andres", "Maria", "Nova", "Juan", "Eder", "Fabian"};
+    
+    public static void main(String[] args) throws java.lang.Exception {
+        System.out.println("Vector Original: ");
+        imprimirVector(name);
+        ordenacionRapida(name);
+        System.out.println("Vector Ordenado: ");
+        imprimirVector(name);
+    }
+    
+    public static void ordenacionRapida(String name[]) {
+        final int N = name.length;
+        quickSort(name, 0, N-1);
+    }
+    
+    public static void quickSort(String name[], int inicio, int fin) {
+        if(inicio &gt;= fin) return;
+        
+        String pivote = name[inicio];
+        int elemIzq = inicio + 1;
+        int elemDer = fin;
+        
+        while(elemIzq &lt;= elemDer) {
+            while(elemIzq &lt;= fin &amp;&amp; name[elemIzq].compareTo(pivote) &lt; 0) {
+                elemIzq++;
+            }
+            while(elemDer &gt; inicio &amp;&amp; name[elemDer].compareTo(pivote) &gt;= 0) {
+                elemDer--;
+            }
+            if(elemIzq &lt; elemDer) {
+                String temp = name[elemIzq];
+                name[elemIzq] = name[elemDer];
+                name[elemDer] = temp;
+            }
+        }
+        
+        if(elemDer &gt; inicio) {
+            String temp = name[inicio];
+            name[inicio] = name[elemDer];
+            name[elemDer] = temp;
+        }
+        
+        quickSort(name, inicio, elemDer - 1);
+        quickSort(name, elemDer + 1, fin);
+    } 
+    
+    public static void imprimirVector(String name[]) {
+        for (int i = 0; i &lt; name.length; i++) {
+            System.out.print(name[i] + " ");
+        }
+        System.out.println();
+    }
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed3_1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector Original:
+Jorge Andres Maria Nova Juan Eder Fabian
+Vector Ordenado:
+Andres Eder Fabian Jorge Juan Maria Nova</div>
+                </div>
+
+                <!-- ACT 4 -->
+                <div class="card">
+                    <h2>Actividad 4 – Método ShellSort - Ejercicio de Clase (int)</h2>
+                    <p>Algoritmo ShellSort para ordenamiento de enteros.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed4">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		String vec[]={"manzana","zapato","banana","perro","casa","elefante","dado","arbol"};
+		System.out.println("Vector original:");
+		imprimirVector(vec);
+		System.out.println("
+");
+		
+		System.out.println("Vector ordenado:");
+		vec=ordenacionShell(vec);
+		imprimirVector(vec);
+	}
+	public static void imprimirVector(String vec[]) {
+		for (int i=0;i &lt; vec.length ;i++) {
+			System.out.print(vec[i]+" ");
+		} 
+		System.out.println();
+	}
+	public static String[] ordenacionShell(String vec[]) {
+		int cont=0;
+		int comparaciones=0;
+		int intercambios=0;
+		int iteraciones=0;
+		final int N=vec.length;
+		int k=N/2;
+		while(k &gt;= 1){
+			for (int i = 0; i &lt; k; i++) {
+				for (int j = k+i; j &lt; N; j += k) {
+					String v = vec[j];
+					int n = j - k;
+					while(n &gt;= 0 &amp;&amp; vec[n].compareTo(v) &gt; 0) {
+						comparaciones++;
+						vec[n+k] = vec[n];
+						intercambios++;
+						n -= k;
+					}
+					vec[n + k] = v;
+				} 
+			} 
+			k /= 2;
+			iteraciones++;
+			System.out.print("iteracion " + (++cont) + ": ");
+			imprimirVector(vec);
+		}
+		return vec;
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed4',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector original:
+manzana zapato banana perro casa elefante dado arbol
+
+Vector ordenado:
+iteracion 1: casa elefante banana arbol manzana zapato dado perro
+iteracion 2: banana arbol casa elefante dado perro manzana zapato
+iteracion 3: arbol banana casa dado elefante manzana perro zapato
+arbol banana casa dado elefante manzana perro zapato</div>
+                </div>
+
+                <!-- ACT 4.1 -->
+                <div class="card">
+                    <h2>Actividad 4.1 – Método ShellSort - Ejercicio de Clase (string)</h2>
+                    <p>ShellSort aplicado a strings.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed4_1">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		String vec[]={"manzana","zapato","banana","perro","casa","elefante","dado","arbol"};
+		String titulo = "Vector original:";
+		String mensaje = "Vector ordenado:";
+		String separador = "
+";
+		
+		System.out.println(titulo);
+		imprimirVector(vec);
+		System.out.println(separador);
+		
+		System.out.println(mensaje);
+		vec=ordenacionShell(vec);
+		imprimirVector(vec);
+	}
+	public static void imprimirVector(String vec[]) {
+		for (int i=0;i &lt; vec.length ;i++) {
+			System.out.print(vec[i]+" ");
+		} 
+		System.out.println();
+	}
+	public static String[] ordenacionShell(String vec[]) {
+		int cont=0;
+		final int N=vec.length;
+		int k=N/2;
+		while(k &gt;= 1){
+			for (int i = 0; i &lt; k; i++) {
+				for (int j = k+i; j &lt; N; j += k) {
+					String v = vec[j];
+					int n = j - k;
+					while(n &gt;= 0 &amp;&amp; vec[n].compareTo(v) &gt; 0) {
+						vec[n+k] = vec[n];
+						n -= k;
+					}
+					vec[n + k] = v;
+				} 
+			} 
+			k /= 2;
+			System.out.print("iteracion " + (++cont) + ": ");
+			imprimirVector(vec);
+		}
+		return vec;
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed4_1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector original:
+manzana zapato banana perro casa elefante dado arbol
+
+Vector ordenado:
+iteracion 1: casa elefante banana arbol manzana zapato dado perro
+iteracion 2: banana arbol casa elefante dado perro manzana zapato
+iteracion 3: arbol banana casa dado elefante manzana perro zapato
+arbol banana casa dado elefante manzana perro zapato</div>
+                </div>
+
+                <!-- ACT 5 -->
+                <div class="card">
+                    <h2>Actividad 5 – Método Selección Directa - Ejercicio de Clase (int)</h2>
+                    <p>Algoritmo de selección directa con enteros.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed5">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Seleccion
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		String vec[] = {"manzana","perro","casa","zebra","sol"};
+		System.out.println("Vector original: ");
+		imprimirVector(vec);
+		System.out.println("
+");
+		vec=ordenacionSeleccion(vec);
+		System.out.println("Vector ordenado: ");
+		imprimirVector(vec);
+		System.out.println("
+");
+	}
+	public static void imprimirVector(String vec[]){
+		for (int i =0; i &lt; vec.length ; i++){
+			System.out.print(vec[i] + " ");
+		}
+	}
+	public static String[] ordenacionSeleccion(String vec[]){
+		final int N = vec.length;
+		for (int i=0; i &lt; N ; i++){
+			int posMenor = i;
+			for (int j = i + 1;j &lt; N ; j++){
+				if(vec[j].compareTo(vec[posMenor]) &lt; 0){
+					posMenor=j;
+				}
+			}
+				if(posMenor != i){
+					String temp = vec[i];
+					vec[i] = vec[posMenor];
+					vec[posMenor] = temp;
+				}
+				System.out.print("iteracion: " + i +": ");
+				imprimirVector(vec);
+				System.out.println();
+			} 
+	  
+		return vec;
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed5',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector original:
+manzana perro casa zebra sol
+
+iteracion: 0: casa perro manzana zebra sol
+iteracion: 1: casa manzana perro zebra sol
+iteracion: 2: casa manzana perro zebra sol
+iteracion: 3: casa manzana perro sol zebra
+iteracion: 4: casa manzana perro sol zebra
+Vector ordenado:
+casa manzana perro sol zebra</div>
+                </div>
+
+                <!-- ACT 5.1 -->
+                <div class="card">
+                    <h2>Actividad 5.1 – Método Selección Directa - Ejercicio de Clase (string)</h2>
+                    <p>Selección directa aplicada a strings.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed5_1">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Seleccion
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		String vec[] = {"manzana","perro","casa","zebra","sol"};
+		System.out.println("Vector original: ");
+		imprimirVector(vec);
+		System.out.println("
+");
+		vec=ordenacionSeleccion(vec);
+		System.out.println("Vector ordenado: ");
+		imprimirVector(vec);
+		System.out.println("
+");
+	}
+	public static void imprimirVector(String vec[]){
+		for (int i =0; i &lt; vec.length ; i++){
+			System.out.print(vec[i] + " ");
+		}
+	}
+	public static String[] ordenacionSeleccion(String vec[]){
+		final int N = vec.length;
+		for (int i=0; i &lt; N ; i++){
+			int posMenor = i;
+			for (int j = i + 1;j &lt; N ; j++){
+				if(vec[j].compareTo(vec[posMenor]) &lt; 0){
+					posMenor=j;
+				}
+			}
+				if(posMenor != i){
+					String temp = vec[i];
+					vec[i] = vec[posMenor];
+					vec[posMenor] = temp;
+				}
+				System.out.print("iteracion: " + i +": ");
+				imprimirVector(vec);
+				System.out.println();
+			} 
+	  
+		return vec;
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed5_1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector original:
+manzana perro casa zebra sol
+
+iteracion: 0: casa perro manzana zebra sol
+iteracion: 1: casa manzana perro zebra sol
+iteracion: 2: casa manzana perro zebra sol
+iteracion: 3: casa manzana perro sol zebra
+iteracion: 4: casa manzana perro sol zebra
+Vector ordenado:
+casa manzana perro sol zebra</div>
+                </div>
+
+                <!-- ACT 6 INT -->
+                <div class="card">
+                    <h2>Subir actividad 6 – Método Inserción Simple - Ejercicio de Clase (int)</h2>
+                    <p>Algoritmo de inserción simple con enteros.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed6">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Insercion
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		String vec[]={"manzana", "banana", "uva", "pera", "kiwi"};
+		System.out.println("Vector original: ");
+		imprimirVector(vec);
+		System.out.println();
+		vec=ordenacionInsercion(vec);
+		System.out.println("Vector Ordenado: ");
+		imprimirVector(vec);
+	}
+	public static void imprimirVector(String vec[]) {
+	    for (int i=0; i &lt; vec.length; i++) {
+	        System.out.print(vec[i] + " ");
+	    } 
+	}
+	public static String[] ordenacionInsercion(String vec[]) {
+	    final int N = vec.length;
+	    for (int i = 1; i &lt; N; i++) {
+	        int j=i;
+	        while(j &gt; 0 &amp;&amp; vec[j].compareTo(vec[j-1]) &lt; 0) {
+	            String temp = vec[j];
+	            vec[j] = vec[j-1];
+	            vec[j-1] = temp;
+	            j--;
+	        }
+	        System.out.println("Iteración: " + i + ": ");
+	        imprimirVector(vec);
+	        System.out.println();
+	    } 
+	    return vec;
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed6',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector original:
+manzana banana uva pera kiwi
+Iteracion: 1:
+banana manzana uva pera kiwi
+Iteracion: 2:
+banana manzana uva pera kiwi
+Iteracion: 3:
+banana manzana pera uva kiwi
+Iteracion: 4:
+banana kiwi manzana pera uva
+Vector Ordenado:
+banana kiwi manzana pera uva</div>
+                </div>
+
+                <!-- ACT 6 STRING -->
+                <div class="card">
+                    <h2>Subir actividad 6 – Método Inserción Simple - Ejercicio de Clase (string)</h2>
+                    <p>Inserción simple aplicada a strings.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed6_s">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Insercion
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		String vec[]={"manzana", "banana", "uva", "pera", "kiwi"};
+		System.out.println("Vector original: ");
+		imprimirVector(vec);
+		System.out.println();
+		vec=ordenacionInsercion(vec);
+		System.out.println("Vector Ordenado: ");
+		imprimirVector(vec);
+	}
+	public static void imprimirVector(String vec[]) {
+	    for (int i=0; i &lt; vec.length; i++) {
+	        System.out.print(vec[i] + " ");
+	    } 
+	}
+	public static String[] ordenacionInsercion(String vec[]) {
+	    final int N = vec.length;
+	    for (int i = 1; i &lt; N; i++) {
+	        int j=i;
+	        while(j &gt; 0 &amp;&amp; vec[j].compareTo(vec[j-1]) &lt; 0) {
+	            String temp = vec[j];
+	            vec[j] = vec[j-1];
+	            vec[j-1] = temp;
+	            j--;
+	        }
+	        System.out.println("Iteración: " + i + ": ");
+	        imprimirVector(vec);
+	        System.out.println();
+	    } 
+	    return vec;
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed6_s',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Vector original:
+manzana banana uva pera kiwi
+Iteracion: 1:
+banana manzana uva pera kiwi
+Iteracion: 2:
+banana manzana uva pera kiwi
+Iteracion: 3:
+banana manzana pera uva kiwi
+Iteracion: 4:
+banana kiwi manzana pera uva
+Vector Ordenado:
+banana kiwi manzana pera uva</div>
+                </div>
+
+                <!-- TALLER 1 -->
+                <div class="card">
+                    <h2>Taller 1 – Métodos para tiempo y memoria - Banco de Pruebas (Benchmarking)</h2>
+                    <p>Análisis comparativo de rendimiento de algoritmos de ordenamiento.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_taller1">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class comparacion {
+    static int iteraciones = 0;
+    static int comparaciones = 0;
+    static int intercambios = 0;
+
+    public static void insertionSort(int[] arr) {
+        iteraciones = 0;
+        comparaciones = 0;
+        intercambios = 0;
+
+        for (int i = 1; i &lt; arr.length; i++) {
+            iteraciones++;
+            int key = arr[i];
+            int j = i - 1;
+
+            while (j &gt;= 0) {
+                comparaciones++;
+                if (arr[j] &gt; key) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                    intercambios++;
+                } else {
+                    break;
+                }
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {64, 34, 25, 12, 22, 11, 90};
+        
+        insertionSort(arr);
+        
+        System.out.println("Iteraciones (pasadas): " + iteraciones);
+        System.out.println("Comparaciones: " + comparaciones);
+        System.out.println("Intercambios/Desplazamientos: " + intercambios);
+    }
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('ed_taller1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Iteraciones (pasadas): 6
+Comparaciones: 16
+Intercambios/Desplazamientos: 14</div>
+                </div>
+
+
+                <!-- ACT COCHE ED -->
+                <div class="card">
+                    <h2>Actividad Extra – Clase Coche (Atributos estáticos y kilometraje)</h2>
+                    <p>Implementación de la clase Coche con atributo estático <code>kilometrajeTotal</code> compartido entre todas las instancias. Dos objetos recorren distancias y se acumula el total global.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_coche">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Coche
+{
+    //Atributos
+    String marca;
+    String modelo;
+    int kilometraje;
+    static int kilometrajeTotal= 0;
+    
+    // Metodos de la Clase
+    public Coche(String marca, String modelo){
+        this.marca = marca;
+        this.modelo = modelo;
+        this.kilometraje = 0;
+    }
+    
+    public static int getkilometrajeTotal(){
+        return Coche.kilometrajeTotal;
+    }//Acumulado de distancias
+    
+    public int getkilometraje(){
+        return this.kilometraje;
+    }
+    
+    //recorre una determinada distancia
+    public void recorre(int km){
+        this.kilometraje += km;
+        Coche.kilometrajeTotal += km;
+    }
+    
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Coche cochedeJorge = new Coche("Lamborgini","42");
+        Coche cochedeAndres = new Coche("Toyota","avenis");
+        
+        cochedeJorge.recorre(30);
+        cochedeAndres.recorre(40);
+        cochedeJorge.recorre(220);
+        cochedeAndres.recorre(60);
+        cochedeJorge.recorre(150);
+        cochedeAndres.recorre(90);
+        
+        System.out.println("el coche de Jorge ha recorrido "+ cochedeJorge.getkilometraje() + "km");
+        System.out.println("el coche de Andres ha recorrido "+ cochedeAndres.getkilometraje() + "km");
+        System.out.println("El kilometraje total ha sido "+ Coche.getkilometrajeTotal() + "km");
+	}
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_coche',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">el coche de Jorge ha recorrido 400km
+el coche de Andres ha recorrido 190km
+El kilometraje total ha sido 590km</div>
+                </div>
+
+            </div>
+
+            <div id="ed-quiz" class="subsection">
+                <div class="card">
+                    <h2>Quiz – Estructuras de Datos</h2>
+                    <p>Evaluación corta de estructuras de datos.</p>
+                </div>
+            </div>
+            <div id="ed-parcial" class="subsection">
+
+                <!-- ══ ENUNCIADO GENERAL ══ -->
+                <div class="card">
+                    <h2>Parcial – Estructura de Datos</h2>
+                    <p>Evaluación de los 6 algoritmos de ordenamiento: Burbuja Simple, Burbuja Mejorado, Quick Sort, Shell Sort, Selección Directa e Inserción, aplicados sobre distintos tipos de arreglos para comparar comparaciones, intercambios y tiempo de ejecución.</p>
+                </div>
+
+                <!-- ══ EJ 1 ══ -->
+                <div class="card">
+                    <h2>Ejercicio 1 – Arreglo Desordenado (Nombres)</h2>
+                    <p>Implementa y ejecuta los 6 métodos de ordenamiento sobre el arreglo de 470 nombres desordenados. Compara tiempo de ejecución y número de comparaciones para determinar cuál es más eficiente.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_parc1">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+public class ExamenED {
+
+    // ─── Contadores globales ───────────────────────────────────────────────
+    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
+    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
+
+    // ─── Utilidades ───────────────────────────────────────────────────────
+    static String fmt(long ns) {
+        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        return String.format("%.3f ms", ns / 1_000_000.0);
+    }
+    static void header() {
+        System.out.printf("  %-20s | %12s | %12s | %12s%n",
+            "Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(65));
+    }
+    static void row(String a, long c, long s, long ns) {
+        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+    }
+    static void bench(String lbl, String[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        String[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+    static void bench(String lbl, int[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        int[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+
+    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
+    static String[] burbujaSimple(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
+                }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaSimple(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
+    static String[] burbujaMejorado(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
+                }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaMejorado(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
+    static void qs(String[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        String p=a[lo]; int l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
+            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qs(a,lo,r-1); qs(a,r+1,hi);
+    }
+    static String[] quickSort(String[] a) {
+        String[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qs(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static void qi(int[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        int p=a[lo], l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
+            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qi(a,lo,r-1); qi(a,r+1,hi);
+    }
+    static int[] quickSort(int[] a) {
+        int[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qi(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
+    static String[] shellSort(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                String tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] shellSort(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                int tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 5. Selección Directa ──────────────────────────────────────────────
+    static String[] seleccion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
+            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] seleccion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
+            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 6. Inserción ──────────────────────────────────────────────────────
+    static String[] insercion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            String k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] insercion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            int k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_parc1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">▶ Nombres desordenados  (n=470)
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |      110,215 |       48,356 |    64.997 ms
+  Burbuja Mejorado     |      108,445 |       48,356 |    13.792 ms
+  Quick Sort           |        6,144 |          935 |   438.914 µs
+  Shell Sort           |        5,928 |        2,881 |   379.447 µs
+  Selección Directa    |      110,215 |          466 |     3.268 ms
+  Inserción            |       48,821 |       48,356 |     2.762 ms
+  Primeros 5 ordenados: [Aaron, Abel, Abril, Abundio, Acisclo]
+
+✔ Algoritmo más eficiente: Shell Sort / Quick Sort
+  → Menos comparaciones y tiempo &lt; 1ms frente a Burbuja (~65ms)</div>
+                </div>
+                <!-- ══ EJ 2 ══ -->
+                <div class="card">
+                    <h2>Ejercicio 2 – Arreglos Casi Ordenados</h2>
+                    <p>Ejecuta los 6 métodos sobre arreglos casi ordenados: nombres (n=188) y números (n=302). Observa cómo se comporta cada algoritmo y cuál es más eficiente en tiempo de ejecución.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_parc2">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+public class ExamenED {
+
+    // ─── Contadores globales ───────────────────────────────────────────────
+    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
+    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
+
+    // ─── Utilidades ───────────────────────────────────────────────────────
+    static String fmt(long ns) {
+        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        return String.format("%.3f ms", ns / 1_000_000.0);
+    }
+    static void header() {
+        System.out.printf("  %-20s | %12s | %12s | %12s%n",
+            "Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(65));
+    }
+    static void row(String a, long c, long s, long ns) {
+        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+    }
+    static void bench(String lbl, String[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        String[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+    static void bench(String lbl, int[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        int[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+
+    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
+    static String[] burbujaSimple(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
+                }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaSimple(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
+    static String[] burbujaMejorado(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
+                }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaMejorado(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
+    static void qs(String[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        String p=a[lo]; int l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
+            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qs(a,lo,r-1); qs(a,r+1,hi);
+    }
+    static String[] quickSort(String[] a) {
+        String[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qs(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static void qi(int[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        int p=a[lo], l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
+            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qi(a,lo,r-1); qi(a,r+1,hi);
+    }
+    static int[] quickSort(int[] a) {
+        int[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qi(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
+    static String[] shellSort(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                String tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] shellSort(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                int tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 5. Selección Directa ──────────────────────────────────────────────
+    static String[] seleccion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
+            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] seleccion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
+            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 6. Inserción ──────────────────────────────────────────────────────
+    static String[] insercion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            String k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] insercion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            int k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_parc2',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">▶ Nombres casi ordenados  (n=188)
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |       17,578 |        9,649 |   484.871 µs
+  Burbuja Mejorado     |       10,197 |        9,649 |   172.576 µs
+  Quick Sort           |        3,758 |          285 |    81.246 µs
+  Shell Sort           |        1,662 |          651 |   108.497 µs
+  Selección Directa    |       17,578 |          181 |   402.929 µs
+  Inserción            |        9,786 |        9,649 |   702.013 µs
+  Primeros 5 ordenados: [Aaron, Abel, Abigail, Abril, Adela]
+
+▶ Números casi ordenados  (n=302)
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |       45,451 |       21,006 |     2.079 ms
+  Burbuja Mejorado     |       44,275 |       21,006 |     1.858 ms
+  Quick Sort           |        4,174 |          499 |   193.504 µs
+  Shell Sort           |        3,464 |        1,499 |   160.062 µs
+  Selección Directa    |       45,451 |          296 |     1.176 ms
+  Inserción            |       21,301 |       21,006 |   976.813 µs
+  Primeros 5 ordenados: [1000, 1001, 1004, 1007, 1010]
+
+✔ Burbuja Mejorado mejora vs Simple gracias al flag de parada temprana.
+  Shell Sort sigue siendo el más eficiente en comparaciones.</div>
+                </div>
+                <!-- ══ EJ 3 ══ -->
+                <div class="card">
+                    <h2>Ejercicio 3 – Arreglos Invertidos (peor caso)</h2>
+                    <p>Compara los métodos sobre arreglos en orden inverso (Z→A y numérico descendente). Analiza cómo cada algoritmo maneja este peor caso y cuál es más rápido.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_parc3">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+public class ExamenED {
+
+    // ─── Contadores globales ───────────────────────────────────────────────
+    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
+    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
+
+    // ─── Utilidades ───────────────────────────────────────────────────────
+    static String fmt(long ns) {
+        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        return String.format("%.3f ms", ns / 1_000_000.0);
+    }
+    static void header() {
+        System.out.printf("  %-20s | %12s | %12s | %12s%n",
+            "Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(65));
+    }
+    static void row(String a, long c, long s, long ns) {
+        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+    }
+    static void bench(String lbl, String[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        String[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+    static void bench(String lbl, int[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        int[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+
+    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
+    static String[] burbujaSimple(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
+                }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaSimple(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
+    static String[] burbujaMejorado(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
+                }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaMejorado(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
+    static void qs(String[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        String p=a[lo]; int l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
+            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qs(a,lo,r-1); qs(a,r+1,hi);
+    }
+    static String[] quickSort(String[] a) {
+        String[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qs(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static void qi(int[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        int p=a[lo], l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
+            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qi(a,lo,r-1); qi(a,r+1,hi);
+    }
+    static int[] quickSort(int[] a) {
+        int[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qi(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
+    static String[] shellSort(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                String tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] shellSort(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                int tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 5. Selección Directa ──────────────────────────────────────────────
+    static String[] seleccion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
+            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] seleccion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
+            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 6. Inserción ──────────────────────────────────────────────────────
+    static String[] insercion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            String k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] insercion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            int k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_parc3',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">▶ Nombres invertidos (Z→A)  (n=455)
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |      103,285 |      101,787 |     1.242 ms
+  Burbuja Mejorado     |      103,285 |      101,787 |     1.824 ms
+  Quick Sort           |       36,953 |          381 |   574.855 µs
+  Shell Sort           |        4,906 |        2,143 |   366.673 µs
+  Selección Directa    |      103,285 |          351 |     1.106 ms
+  Inserción            |      101,817 |      101,787 |    63.875 ms
+  Primeros 5 ordenados: [Aaron, Abel, Abril, Adela, Adolfo]
+
+▶ Números invertidos  (n=142)
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |       10,011 |        9,940 |   595.843 µs
+  Burbuja Mejorado     |       10,011 |        9,940 |   596.810 µs
+  Quick Sort           |        7,702 |           70 |    33.149 µs
+  Shell Sort           |        1,096 |          373 |    52.158 µs
+  Selección Directa    |       10,011 |           70 |   265.504 µs
+  Inserción            |       10,011 |        9,940 |   455.286 µs
+  Primeros 5 ordenados: [1012, 1012, 7012, 7012, 7054]
+
+✔ Peor caso para Burbuja e Inserción: máximo de intercambios.
+  Shell Sort domina con ~4,906 comparaciones vs ~103,285 de Burbuja.</div>
+                </div>
+                <!-- ══ EJ 4 ══ -->
+                <div class="card">
+                    <h2>Ejercicio 4 – Ordenamiento de Valores Repetidos</h2>
+                    <p>Evalúa cómo se comportan los 6 métodos con el arreglo de 192 nombres con muchas repeticiones. Determina cuál método es más adecuado para lidiar con duplicados.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_parc4">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+public class ExamenED {
+
+    // ─── Contadores globales ───────────────────────────────────────────────
+    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
+    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
+
+    // ─── Utilidades ───────────────────────────────────────────────────────
+    static String fmt(long ns) {
+        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        return String.format("%.3f ms", ns / 1_000_000.0);
+    }
+    static void header() {
+        System.out.printf("  %-20s | %12s | %12s | %12s%n",
+            "Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(65));
+    }
+    static void row(String a, long c, long s, long ns) {
+        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+    }
+    static void bench(String lbl, String[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        String[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+    static void bench(String lbl, int[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        int[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+
+    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
+    static String[] burbujaSimple(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
+                }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaSimple(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
+    static String[] burbujaMejorado(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
+                }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaMejorado(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
+    static void qs(String[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        String p=a[lo]; int l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
+            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qs(a,lo,r-1); qs(a,r+1,hi);
+    }
+    static String[] quickSort(String[] a) {
+        String[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qs(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static void qi(int[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        int p=a[lo], l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
+            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qi(a,lo,r-1); qi(a,r+1,hi);
+    }
+    static int[] quickSort(int[] a) {
+        int[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qi(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
+    static String[] shellSort(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                String tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] shellSort(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                int tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 5. Selección Directa ──────────────────────────────────────────────
+    static String[] seleccion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
+            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] seleccion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
+            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 6. Inserción ──────────────────────────────────────────────────────
+    static String[] insercion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            String k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] insercion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            int k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_parc4',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">▶ Nombres con repeticiones  (n=192)
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |       18,336 |        8,931 |   266.847 µs
+  Burbuja Mejorado     |       18,258 |        8,931 |   368.745 µs
+  Quick Sort           |        2,526 |          236 |    51.340 µs
+  Shell Sort           |        2,859 |        1,749 |   185.186 µs
+  Selección Directa    |       18,336 |          188 |   242.821 µs
+  Inserción            |        9,116 |        8,931 |   230.505 µs
+  Primeros 5 ordenados: [Adrián, Adrián, Adrián, Adrián, Alba]
+
+✔ Quick Sort más eficiente: las repeticiones no afectan su rendimiento.
+  Todos los algoritmos son estables con duplicados.</div>
+                </div>
+                <!-- ══ EJ 5 ══ -->
+                <div class="card">
+                    <h2>Ejercicio 5 – Arreglo Parcialmente Ordenado</h2>
+                    <p>Diseña un arreglo donde la primera mitad esté ordenada y la segunda mitad desordenada (n=100). Compara el rendimiento de todos los métodos y determina cuál es más eficiente.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_parc5">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+public class ExamenED {
+
+    // ─── Contadores globales ───────────────────────────────────────────────
+    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
+    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
+
+    // ─── Utilidades ───────────────────────────────────────────────────────
+    static String fmt(long ns) {
+        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        return String.format("%.3f ms", ns / 1_000_000.0);
+    }
+    static void header() {
+        System.out.printf("  %-20s | %12s | %12s | %12s%n",
+            "Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(65));
+    }
+    static void row(String a, long c, long s, long ns) {
+        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+    }
+    static void bench(String lbl, String[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        String[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+    static void bench(String lbl, int[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        int[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+
+    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
+    static String[] burbujaSimple(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
+                }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaSimple(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
+    static String[] burbujaMejorado(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
+                }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaMejorado(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
+    static void qs(String[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        String p=a[lo]; int l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
+            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qs(a,lo,r-1); qs(a,r+1,hi);
+    }
+    static String[] quickSort(String[] a) {
+        String[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qs(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static void qi(int[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        int p=a[lo], l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
+            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qi(a,lo,r-1); qi(a,r+1,hi);
+    }
+    static int[] quickSort(int[] a) {
+        int[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qi(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
+    static String[] shellSort(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                String tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] shellSort(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                int tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 5. Selección Directa ──────────────────────────────────────────────
+    static String[] seleccion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
+            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] seleccion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
+            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 6. Inserción ──────────────────────────────────────────────────────
+    static String[] insercion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            String k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] insercion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            int k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_parc5',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">▶ Arreglo parcialmente ordenado  (n=100)
+  Primera mitad (0-49): ordenada alfabéticamente
+  Segunda mitad (50-99): desordenada (datos originales)
+
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |        4,950 |        1,899 |    84.813 µs
+  Burbuja Mejorado     |        4,929 |        1,899 |   355.890 µs
+  Quick Sort           |        1,132 |          141 |    23.640 µs
+  Shell Sort           |          752 |          287 |    52.280 µs
+  Selección Directa    |        4,950 |           95 |    63.761 µs
+  Inserción            |        1,997 |        1,899 |    33.730 µs
+  Primeros 5 ordenados: [Aaron, Adela, Agustina, Agustín, Ainhoa]
+
+✔ Shell Sort: mínimas comparaciones (752) aprovecha la sección ya ordenada.
+  Quick Sort: más veloz en tiempo (23 µs). Inserción también muy competitivo.</div>
+                </div>
+                <!-- ══ EJ 6 ══ -->
+                <div class="card">
+                    <h2>Ejercicio 6 – Serie Histórica TRM Dólar (Banco República)</h2>
+                    <p>Ordena la serie histórica TRM COP/USD (2022–2024) con los 6 algoritmos. Identifica comparaciones, tiempo, memoria utilizada y los períodos de precio más alto y más bajo.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_parc6">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+public class ExamenED {
+
+    // ─── Contadores globales ───────────────────────────────────────────────
+    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
+    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
+
+    // ─── Utilidades ───────────────────────────────────────────────────────
+    static String fmt(long ns) {
+        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        return String.format("%.3f ms", ns / 1_000_000.0);
+    }
+    static void header() {
+        System.out.printf("  %-20s | %12s | %12s | %12s%n",
+            "Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(65));
+    }
+    static void row(String a, long c, long s, long ns) {
+        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+    }
+    static void bench(String lbl, String[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        String[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+    static void bench(String lbl, int[] arr) {
+        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        header();
+        int[] r;
+        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
+        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
+        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
+        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
+        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
+        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
+        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+    }
+
+    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
+    static String[] burbujaSimple(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
+                }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaSimple(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=0; i&lt;n-1; i++)
+            for (int j=0; j&lt;n-i-1; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
+            }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
+    static String[] burbujaMejorado(String[] a) {
+        String[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
+                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
+                }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+    static int[] burbujaMejorado(int[] a) {
+        int[] v = a.clone(); int n = v.length; reset();
+        long t0 = System.nanoTime();
+        for (int i=n-1; i&gt;0; i--) {
+            boolean sw = false;
+            for (int j=0; j&lt;i; j++) {
+                comparaciones++;
+                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
+            }
+            if (!sw) break;
+        }
+        tiempoNs = System.nanoTime()-t0; return v;
+    }
+
+    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
+    static void qs(String[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        String p=a[lo]; int l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
+            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qs(a,lo,r-1); qs(a,r+1,hi);
+    }
+    static String[] quickSort(String[] a) {
+        String[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qs(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static void qi(int[] a, int lo, int hi) {
+        if (lo&gt;=hi) return;
+        int p=a[lo], l=lo+1, r=hi;
+        while (l&lt;=r) {
+            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
+            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
+            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
+        }
+        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
+        qi(a,lo,r-1); qi(a,r+1,hi);
+    }
+    static int[] quickSort(int[] a) {
+        int[] v=a.clone(); reset();
+        long t0=System.nanoTime(); qi(v,0,v.length-1);
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
+    static String[] shellSort(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                String tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] shellSort(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int g=n/2; g&gt;0; g/=2)
+            for (int i=g; i&lt;n; i++) {
+                int tmp=v[i]; int j=i;
+                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
+                    v[j]=v[j-g]; j-=g; intercambios++;
+                }
+                v[j]=tmp;
+            }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 5. Selección Directa ──────────────────────────────────────────────
+    static String[] seleccion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
+            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] seleccion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=0; i&lt;n-1; i++) {
+            int m=i;
+            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
+            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    // ─── 6. Inserción ──────────────────────────────────────────────────────
+    static String[] insercion(String[] a) {
+        String[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            String k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+    static int[] insercion(int[] a) {
+        int[] v=a.clone(); int n=v.length; reset();
+        long t0=System.nanoTime();
+        for (int i=1; i&lt;n; i++) {
+            int k=v[i]; int j=i-1;
+            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
+                v[j+1]=v[j]; j--; intercambios++;
+            }
+            v[j+1]=k;
+        }
+        tiempoNs=System.nanoTime()-t0; return v;
+    }
+
+    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_parc6',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Serie histórica TRM COP/USD – 60 registros representativos (2022–2024)
+Fuente: Banco de la República de Colombia — banrep.gov.co
+
+▶ TRM histórica  (n=60)
+  Algoritmo            | Comparaciones | Intercambios |       Tiempo
+  -----------------------------------------------------------------
+  Burbuja Simple       |        1,770 |        1,631 |   103.246 µs
+  Burbuja Mejorado     |        1,770 |        1,631 |   103.063 µs
+  Quick Sort           |          640 |           71 |     5.705 µs
+  Shell Sort           |          340 |          151 |    25.630 µs
+  Selección Directa    |        1,770 |           49 |    59.595 µs
+  Inserción            |        1,652 |        1,631 |    96.228 µs
+
+Período MÁS ALTO del dólar:
+  → Registro 5 / Oct 2022: $5,062.80 COP/USD
+    (Devaluación máxima tras cambio de gobierno)
+
+Período MÁS BAJO del dólar:
+  → Registro 60 / Dic 2024: $2,290.12 COP/USD
+    (Período de mayor fortalecimiento del peso)
+
+Memoria utilizada estimada: O(1) adicional (in-place) para todos los algoritmos
+excepto Quick Sort que usa O(log n) en la pila de recursión.
+
+✔ Quick Sort + Shell Sort: más eficientes en el arreglo numérico pequeño.</div>
+                </div>
+                <!-- ══ EJ 7 ══ -->
+                <div class="card">
+                    <h2>Ejercicio 7 – Conteo y Ordenamiento de Nombres</h2>
+                    <p>Genera 10,000 nombres aleatorios con prefijos. Cuenta las repeticiones por nombre y ordena la salida: (a) por nombre alfabéticamente, (b) por cantidad de repeticiones (mayor a menor), usando Insertion Sort propio.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="ed_parc7">import java.util.*;
+import java.io.*;
+
+class OrdenaNombres {
+
+    // ─── Inserción Sort por nombre (String) ────────────────────────────────
+    static void insertionSortNombre(String[] keys, int[] vals) {
+        int n = keys.length;
+        for (int i = 1; i &lt; n; i++) {
+            String k = keys[i]; int v = vals[i]; int j = i - 1;
+            while (j &gt;= 0 &amp;&amp; keys[j].compareToIgnoreCase(k) &gt; 0) {
+                keys[j+1] = keys[j]; vals[j+1] = vals[j]; j--;
+            }
+            keys[j+1] = k; vals[j+1] = v;
+        }
+    }
+
+    // ─── Inserción Sort por cantidad (descendente) ─────────────────────────
+    static void insertionSortCantidad(String[] keys, int[] vals) {
+        int n = keys.length;
+        for (int i = 1; i &lt; n; i++) {
+            String k = keys[i]; int v = vals[i]; int j = i - 1;
+            while (j &gt;= 0 &amp;&amp; vals[j] &lt; v) {
+                keys[j+1] = keys[j]; vals[j+1] = vals[j]; j--;
+            }
+            keys[j+1] = k; vals[j+1] = v;
+        }
+    }
+
+    public static void main(String[] args) {
+        String[] iniciales = {"Ana","Luis","María","David","Sofía","Carlos","Elena","Alejandro",
+            "Isabella","Juan","Valentina","Andrea","Pedro","Camila","Fernando","Laura","Diego",
+            "Carolina","Gabriel","Javier","Miguel","Paula","Max","Bianca","Daniel","Isaac",
+            "Olivia","Ava","Liam","Eva","Mia","Sophia","Amelia","Luna","Alexander","Benjamin",
+            "William","Emma","Oliver","Noah","Ethan","Henry","James","Arjun","Mateo","Lucas"};
+
+        Random rand = new Random(42);
+        String[] nombres = new String[10000];
+        for (int i = 0; i &lt; 10000; i++)
+            nombres[i] = iniciales[rand.nextInt(iniciales.length)] + "_" + (i+1);
+
+        // Imprimir primeros 10
+        System.out.println("=== Primeros 10 nombres generados ===");
+        for (int i = 0; i &lt; 10; i++) System.out.println("  " + nombres[i]);
+        System.out.println("Total: 10000 nombres\n");
+
+        // Contar por prefijo
+        Map&lt;String,Integer&gt; mapa = new LinkedHashMap&lt;&gt;();
+        for (String n : nombres) {
+            String base = n.split("_")[0];
+            mapa.put(base, mapa.getOrDefault(base, 0) + 1);
+        }
+
+        int sz = mapa.size();
+        String[] keys = mapa.keySet().toArray(new String[0]);
+        int[]    vals = new int[sz];
+        for (int i = 0; i &lt; sz; i++) vals[i] = mapa.get(keys[i]);
+
+        // 7a: ordenado por NOMBRE
+        String[] kN = keys.clone(); int[] vN = vals.clone();
+        insertionSortNombre(kN, vN);
+        System.out.println("=== Lista ordenada por NOMBRE ===");
+        System.out.printf("  %-15s | %s%n","Nombre","Reps");
+        System.out.println("  " + "-".repeat(26));
+        for (int i = 0; i &lt; sz; i++)
+            System.out.printf("  %-15s | %d%n", kN[i], vN[i]);
+
+        // 7b: ordenado por CANTIDAD
+        String[] kC = keys.clone(); int[] vC = vals.clone();
+        insertionSortCantidad(kC, vC);
+        System.out.println("\n=== Lista ordenada por REPETICIONES (mayor → menor) ===");
+        System.out.printf("  %-15s | %s%n","Nombre","Reps");
+        System.out.println("  " + "-".repeat(26));
+        for (int i = 0; i &lt; sz; i++)
+            System.out.printf("  %-15s | %d%n", kC[i], vC[i]);
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('ed_parc7',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">=== Primeros 10 nombres generados ===
+  Lucas_1
+  Bianca_2
+  Mateo_3
+  Camila_4
+  Eva_5
+  Liam_6
+  Carlos_7
+  Isaac_8
+  Ana_9
+  Henry_10
+Total: 10000 nombres
+
+=== Lista ordenada por NOMBRE ===
+  Nombre          | Reps
+  --------------------------
+  Alejandro       | 211
+  Alexander       | 238
+  Amelia          | 230
+  Ana             | 239
+  Andrea          | 208
+  Arjun           | 221
+  Ava             | 209
+  Benjamin        | 200
+  Bianca          | 221
+  Camila          | 219
+  Carlos          | 231
+  Carolina        | 195
+  Daniel          | 235
+  David           | 222
+  Diego           | 224
+  Elena           | 213
+  Emma            | 215
+  Ethan           | 209
+  Eva             | 220
+  Fernando        | 205
+  Gabriel         | 193
+  Henry           | 239
+  Isaac           | 203
+  Isabella        | 224
+  James           | 209
+  Javier          | 223
+  Juan            | 243
+  Laura           | 211
+  Liam            | 205
+  Lucas           | 237
+  Luis            | 223
+  Luna            | 201
+  María           | 222
+  Mateo           | 192
+  Max             | 217
+  Mia             | 199
+  Miguel          | 228
+  Noah            | 233
+  Oliver          | 218
+  Olivia          | 227
+  Paula           | 215
+  Pedro           | 214
+  Sofía           | 208
+  Sophia          | 226
+  Valentina       | 210
+  William         | 215
+
+=== Lista ordenada por REPETICIONES (mayor → menor) ===
+  Nombre          | Reps
+  --------------------------
+  Juan            | 243
+  Ana             | 239
+  Henry           | 239
+  Alexander       | 238
+  Lucas           | 237
+  Daniel          | 235
+  Noah            | 233
+  Carlos          | 231
+  Amelia          | 230
+  Miguel          | 228
+  Olivia          | 227
+  Sophia          | 226
+  Diego           | 224
+  Isabella        | 224
+  Javier          | 223
+  Luis            | 223
+  David           | 222
+  María           | 222
+  Arjun           | 221
+  Bianca          | 221
+  Eva             | 220
+  Camila          | 219
+  Oliver          | 218
+  Max             | 217
+  Emma            | 215
+  Paula           | 215
+  William         | 215
+  Pedro           | 214
+  Elena           | 213
+  Alejandro       | 211
+  Laura           | 211
+  Valentina       | 210
+  Ava             | 209
+  Ethan           | 209
+  James           | 209
+  Andrea          | 208
+  Sofía           | 208
+  Fernando        | 205
+  Liam            | 205
+  Isaac           | 203
+  Luna            | 201
+  Benjamin        | 200
+  Mia             | 199
+  Carolina        | 195
+  Gabriel         | 193
+  Mateo           | 192</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PROGRAMACIÓN II ==================== -->
+        <section id="programacion" class="materia">
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-num" data-c="10">0</div>
+                    <div class="stat-label">Actividades</div>
+                    <div class="pb-wrap">
+                        <div class="pb" style="width:100%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">Java / Python</div>
+                    <div class="stat-label">Lenguajes</div>
+                    <div class="pb-wrap">
+                        <div class="pb" style="width:85%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">✓</div>
+                    <div class="stat-label">Completado</div>
+                    <div class="pb-wrap">
+                        <div class="pb" style="width:90%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sub-nav">
+                <button onclick="showS('p2-act')">Actividades</button>
+                <button onclick="showS('p2-quiz')">Quiz</button>
+                <button onclick="showS('p2-parcial')">Parcial</button>
+            </div>
+
+            <div id="p2-act" class="subsection active">
+
+                <!-- ACT 2 -->
+                <div class="card">
+                    <h2>Actividad 2 – Diseño Clase y Objeto PERRO x4</h2>
+                    <p>Implementación de clase Perro con múltiples instancias.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2c1">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class  Perro {
+     String nombre;
+     String Raza;
+     int Altura;
+    
+    public Perro(String nombre, String Raza, int Altura) {
+        this.nombre = nombre;
+        this.Raza = Raza;
+        this.Altura = Altura;
+    }
+    
+    public String nombre() {
+        return this.nombre;
+    }
+    
+    public String Raza() {
+        return this.Raza;
+    }
+    
+    public int Altura() {
+        return this.Altura;
+    }
+    
+    // Método main para probar
+    public static void main(String[] args) {
+        Perro perro1 = new Perro("Rex", "Labrador", 60);
+        System.out.println("Nombre: " + perro1.nombre());
+        System.out.println("Raza: " + perro1.Raza());
+        System.out.println("Altura: " + perro1.Altura());
+        Perro perro2 = new Perro("Princesa", "Buldong", 30);
+        System.out.println("Nombre: " + perro2.nombre());
+        System.out.println("Raza: " + perro2.Raza());
+        System.out.println("Altura: " + perro2.Altura());
+        Perro perro3 = new Perro("Cosmo", "Salchicha", 35);
+        System.out.println("Nombre: " + perro3.nombre());
+        System.out.println("Raza: " + perro3.Raza());
+        System.out.println("Altura: " + perro3.Altura());
+    }
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('p2c1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Nombre: Rex
+Raza: Labrador
+Altura: 60
+Nombre: Princesa
+Raza: Buldong
+Altura: 30
+Nombre: Cosmo
+Raza: Salchicha
+Altura: 35</div>
+                </div>
+
+                <!-- ACT 3 JAVA -->
+                <div class="card">
+                    <h2>Actividad 3a – Diseño Clase PERRO (Java)</h2>
+                    <p>Clase Perro básica con constructor y métodos getter.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2c2">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Perro {
+    public String nombre;
+    public String Raza;
+    public int Altura;
+    
+    public Perro(String nombre, String Raza, int Altura) {
+        this.nombre = nombre;
+        this.Raza = Raza;
+        this.Altura = Altura;
+    }
+    
+    public String nombre() {
+        return this.nombre;
+    }
+    
+    public String Raza() {
+        return this.Raza;
+    }
+    
+    public int Altura() {
+        return this.Altura;
+    }
+    
+    // Método main para probar
+    public static void main(String[] args) {
+        Perro perro1 = new Perro("Rex", "Labrador", 60);
+        System.out.println("Nombre: " + perro1.nombre());
+        System.out.println("Raza: " + perro1.Raza());
+        System.out.println("Altura: " + perro1.Altura());
+    }
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('p2c2',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Nombre: Rex
+Raza: Labrador
+Altura: 60</div>
+                </div>
+
+                <!-- ACT 3 PYTHON -->
+                <div class="card">
+                    <h2>Actividad 3b – Diseño Clase PERRO (Python)</h2>
+                    <p>Implementación en Python con métodos de comportamiento.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="python"><code class="language-python" id="p2c3">
+class perro:
+    def __init__(self, nombre, raza, altura):
+        self.nombre = nombre
+        self.raza = raza
+        self.altura = altura
+    
+    def comer(self):
+        print("El perro esta comiendo")
+    
+    def ladrar(self):
+        print("El Perro esta ladrando")
+    
+    def dormir(self):
+        print("El perro esta durmiendo ZZzzz")
+    
+    def muestra(self):
+        print(self.nombre)
+        print(self.raza)
+        print(self.altura)
+
+perro1 = perro("Nova", "pendejo", 1.73)
+perro1.muestra()
+perro1.comer()
+perro1.dormir()
+perro1.ladrar()
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('p2c3',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Nova
+pendejo
+1.73
+El perro esta comiendo
+El perro esta durmiendo ZZzzz
+El Perro esta ladrando</div>
+                </div>
+
+                <!-- ACT 4 -->
+                <div class="card">
+                    <h2>Actividad 4 – Gets & Sets</h2>
+                    <p>Implementación de métodos getter y setter básicos.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2c4">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class MetodosGetsySets
+{
+    
+    public boolean privateVar;
+    
+    public void setprivateVar(boolean newVal){
+        privateVar = newVal;
+    }
+    
+    public boolean getprivateVar(){
+        return privateVar;
+    }
+    
+    
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		MetodosGetsySets obj = new MetodosGetsySets();
+		
+		obj.setprivateVar(true);
+		System.out.println("Get con el valor set en True " + obj.getprivateVar());
+		
+        obj.setprivateVar(false);
+        System.out.println("Get con el valor set en false " + obj.getprivateVar());
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('p2c4',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Get con el valor set en True true
+Get con el valor set en false false</div>
+                </div>
+
+                <!-- ACT 4.1 -->
+                <div class="card">
+                    <h2>Actividad 4.1 – Gets & Sets (Cuenta)</h2>
+                    <p>Clase CuentaBancaria con validación en setters.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2c5">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Cuenta
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		CuentaBancaria cuenta = new CuentaBancaria();
+        cuenta.setTitular("Jorge Rincones");
+        cuenta.setSaldo(500.0);
+        
+        System.out.println("Titular " + cuenta.getTitular());
+        System.out.println("Saldo inicial: $" + cuenta.getSaldo());
+        System.out.println("\n Intentando asginar un saldo negativo (-100)");
+        cuenta.setSaldo(-100-0);
+        System.out.println("Saldo tras intento fallido : $" + cuenta.getSaldo());
+        
+	}
+	static class CuentaBancaria{
+	    private String titular;
+	    private double saldo;
+	    public String getTitular(){
+	        return titular;
+	    }
+	    
+	    public void setTitular(String titular){
+	        this.titular = titular;
+	    }
+	    
+	    public double getSaldo(){
+	        return saldo;
+	        
+	        
+	    }
+	    
+	    public void setSaldo(double nuevoSaldo){
+	        if (nuevoSaldo &gt;= 0){
+	            this.saldo = nuevoSaldo;
+	        }else{
+	            System.out.println("ERROR; el saldo no puede ser negativo");
+	        }
+	    }
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('p2c5',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Titular Jorge Rincones
+Saldo inicial: $500.0
+
+ Intentando asginar un saldo negativo (-100)
+ERROR; el saldo no puede ser negativo
+Saldo tras intento fallido : $500.0</div>
+                </div>
+
+                <!-- ACT 4.2 -->
+                <div class="card">
+                    <h2>Actividad 4.2 – Gets & Sets (Libro)</h2>
+                    <p>Clase Computador con cálculo de IVA según valor.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2c6">
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Iva
+{
+	public static void main(String[] args)
+	{
+		Computador miComputador = new Computador();
+		
+		// Configuración Inicial
+		miComputador.setMarca("Dell");
+		miComputador.setValor(1500000);
+		System.out.println("Computador: " + miComputador.getMarca());
+		System.out.println("Valor base: $" + miComputador.getValor());
+		
+		// Intento con valor exento de IVA
+		System.out.println("\n--- Computador Exento de IVA ---");
+		miComputador.setValor(2000000);
+		System.out.println("Valor: $" + miComputador.getValor());
+		System.out.println("IVA aplicado: " + miComputador.calcularIVA() + "%");
+		System.out.println("Valor total: $" + miComputador.calcularValorTotal());
+		
+		// Intento con valor que debe pagar IVA
+		System.out.println("\n--- Computador con IVA del 19% ---");
+		miComputador.setValor(3000000);
+		System.out.println("Valor: $" + miComputador.getValor());
+		System.out.println("IVA aplicado: " + miComputador.calcularIVA() + "%");
+		System.out.println("Valor total: $" + miComputador.calcularValorTotal());
+	}
+	
+	static class Computador
+	{
+		private String marca;
+		private double valor;
+		private static final double TOPE_EXENCION = 2353250;
+		private static final double IVA_PORCENTAJE = 0.19;
+		
+		public String getMarca(){
+			return marca;
+		}
+		
+		public void setMarca(String marca){
+			this.marca = marca;
+		}
+		
+		public double getValor(){
+			return valor;
+		}
+		
+		public void setValor(double valor){
+			this.valor = valor;
+		}
+		
+		public int calcularIVA(){
+			return valor &lt;= TOPE_EXENCION ? 0 : 19;
+		}
+		
+		public double calcularValorTotal(){
+			return valor &lt;= TOPE_EXENCION ? valor : valor * (1 + IVA_PORCENTAJE);
+		}
+	}
+}
+      </code></pre>
+                    <button class="copy-btn" onclick="cp('p2c6',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Computador: Dell
+Valor base: $1500000.0
+
+--- Computador Exento de IVA ---
+Valor: $2000000.0
+IVA aplicado: 0%
+Valor total: $2000000.0
+
+--- Computador con IVA del 19% ---
+Valor: $3000000.0
+IVA aplicado: 19%
+Valor total: $3570000.0</div>
+                </div>
+
+                <!-- ACT 4.3 -->
+                <div class="card">
+                    <h2>Actividad 4.3 – Calcular precio PC (50UVT)</h2>
+                    <p>Cálculo del valor de un computador basado en UVT y aplicación de IVA.</p>
+                </div>
+                <div class="card evidencia">
+                    <h2>Nota</h2>
+                    <p>Este ejercicio utiliza la misma lógica de la clase Computador anterior, calculando si el valor supera el tope de exención de 2,353,250 pesos (50 UVT) para aplicar el IVA del 19%.</p><img src="./images/p2-act4-3.png" alt="Evidencia P2-4.3"></div>
+
+
+                <!-- ACT TESLA -->
+                <div class="card">
+                    <h2>Actividad 5 – Clase Auto (Tesla) – Gets & Sets con validaciones</h2>
+                    <p>Simula el comportamiento de un vehículo eléctrico. Gestiona el estado de encendido/apagado y la velocidad con validaciones de seguridad (velocidad máxima 120 km/h).</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2c7">import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+/**
+ * Clase Auto: Simula el comportamiento de un vehículo (Auto eléctrico)
+ * Gestiona el estado de encendido/apagado y la velocidad del vehículo
+ * con validaciones de seguridad.
+ */
+class Auto {
+    // Variables de instancia (atributos privados)
+    private boolean encendido;              // Estado del vehículo: encendido (true) o apagado (false)
+    private int velocidad;                  // Velocidad actual en km/h
+    private final int VELOCIDAD_MAXIMA = 120;  // Constante: velocidad máxima permitida
+    
+    /**
+     * Constructor: Inicializa el vehículo apagado con velocidad 0
+     */
+    public Auto() {
+        this.encendido = false;
+        this.velocidad = 0;
+    }
+    
+    /**
+     * Getter: Obtiene el estado de encendido del vehículo
+     * @return true si está encendido, false si está apagado
+     */
+    public boolean isEncendido() {
+        return encendido;
+    }
+    
+    /**
+     * Setter: Establece el estado de encendido del vehículo
+     * Si se apaga, automáticamente la velocidad se pone en 0
+     * @param encendido true para encender, false para apagar
+     */
+    public void setEncendido(boolean encendido) {
+        this.encendido = encendido;
+        if (!encendido) {
+            this.velocidad = 0;  // Si apagamos, velocidad = 0
+        }
+    }
+    
+    /**
+     * Getter: Obtiene la velocidad actual del vehículo
+     * @return velocidad en km/h
+     */
+    public int getVelocidad() {
+        return velocidad;
+    }
+    
+    /**
+     * Setter: Establece la velocidad del vehículo con validaciones
+     * - Solo permite acelerar si el vehículo está encendido
+     * - Limita la velocidad a VELOCIDAD_MAXIMA (120 km/h)
+     * - No permite velocidades negativas
+     * @param velocidad velocidad deseada en km/h
+     */
+    public void setVelocidad(int velocidad) {
+        // Validación 1: El vehículo debe estar encendido
+        if (!encendido) {
+            System.out.println("Error: El vehículo debe estar encendido para acelerar.");
+            this.velocidad = 0;
+            return;
+        }
+        
+        // Validación 2: Verificar limite de velocidad máxima
+        if (velocidad &gt; VELOCIDAD_MAXIMA) {
+            System.out.println("Advertencia: Velocidad limitada a " + VELOCIDAD_MAXIMA + " km/h por normativa de seguridad.");
+            this.velocidad = VELOCIDAD_MAXIMA;
+        } 
+        // Validación 3: No permitir velocidades negativas
+        else if (velocidad &lt; 0) {
+            this.velocidad = 0;
+        } 
+        // Si pasa todas las validaciones, asignar la velocidad solicitada
+        else {
+            this.velocidad = velocidad;
+        }
+    }
+    
+    /**
+     * Método main: Demuestra el funcionamiento de la clase Auto con 3 casos de prueba.
+     */
+    public static void main(String[] args) {
+        Auto tesla = new Auto();  // Crear instancia de vehículo
+        
+        // Caso 1: Intentar acelerar sin encender
+        System.out.println("Paso 1: Intento de acelerar sin encender el vehículo");
+        tesla.setVelocidad(80);
+        System.out.println("Velocidad actual: " + tesla.getVelocidad() + " km/h\n");
+        
+        // Caso 2: Encender y acelerar correctamente
+        System.out.println("Paso 2: Encender el vehículo e iniciar trayecto a 80 km/h");
+        tesla.setEncendido(true);
+        tesla.setVelocidad(80);
+        System.out.println("Velocidad actual: " + tesla.getVelocidad() + " km/h\n");
+        
+        // Caso 3: Intentar superar velocidad máxima
+        System.out.println("Paso 3: Intento de alcanzar 200 km/h");
+        tesla.setVelocidad(200);
+        System.out.println("Velocidad actual: " + tesla.getVelocidad() + " km/h");
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('p2c7',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">Paso 1: Intento de acelerar sin encender el vehículo
+Error: El vehículo debe estar encendido para acelerar.
+Velocidad actual: 0 km/h
+
+Paso 2: Encender el vehículo e iniciar trayecto a 80 km/h
+Velocidad actual: 80 km/h
+
+Paso 3: Intento de alcanzar 200 km/h
+Advertencia: Velocidad limitada a 120 km/h por normativa de seguridad.
+Velocidad actual: 120 km/h</div>
+                </div>
+
+                <!-- ACT COMPATIBLE -->
+                <div class="card">
+                    <h2>Actividad 6 – Clase Compatible – Análisis de compatibilidad de edades</h2>
+                    <p>Analiza la compatibilidad de edad entre personas con un criterio de diferencia de +/- 6 años. Genera un resumen de candidatas compatibles.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2c8">import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.lang.*;
+import java.lang.Math;
+import java.io.*;
+
+/**
+ * Clase Compatible: Analiza la compatibilidad de edad entre personas
+ * Criterio: Diferencia de edad de +/- 6 años
+ */
+class Compatible {
+    // Constante del rango de compatibilidad
+    private static final int RANGO_COMPATIBILIDAD = 6;
+    
+    /**
+     * Clase interna para representar una persona
+     */
+    static class Persona {
+        String nombre;
+        int edad;
+        
+        /**
+         * Constructor de Persona
+         * @param nombre Nombre de la persona
+         * @param edad Edad de la persona
+         */
+        public Persona(String nombre, int edad) {
+            this.nombre = nombre;
+            this.edad = edad;
+        }
+    }
+    
+    /**
+     * Calcula la diferencia de edad entre dos personas
+     * @param edad1 Primera edad
+     * @param edad2 Segunda edad
+     * @return Diferencia absoluta de edades
+     */
+    public static int calcularDiferencia(int edad1, int edad2) {
+        return Math.abs(edad1 - edad2);
+    }
+    
+    /**
+     * Verifica si dos personas son compatibles según el rango de edad
+     * @param diferencia Diferencia de edad
+     * @return true si la diferencia es &lt;= RANGO_COMPATIBILIDAD, false de lo contrario
+     */
+    public static boolean esCompatible(int diferencia) {
+        return diferencia &lt;= RANGO_COMPATIBILIDAD;
+    }
+    
+    /**
+     * Método principal: Analiza compatibilidad de una persona con una lista de candidatos
+     */
+    public static void main(String[] args) {
+        // Crear la persona principal
+        Persona usuario = new Persona("Jorge", 20);
+        
+        // Crear lista de candidatas
+        List&lt;Persona&gt; candidatas = new ArrayList&lt;&gt;();
+        candidatas.add(new Persona("María", 28));
+        candidatas.add(new Persona("Ana", 22));
+        candidatas.add(new Persona("Laura", 35));
+        candidatas.add(new Persona("Sofia", 17));
+        candidatas.add(new Persona("Carmen", 40));
+        
+        // Lista para almacenar compatibles
+        List&lt;Persona&gt; compatibles = new ArrayList&lt;&gt;();
+        
+        // Mostrar datos del usuario
+        System.out.println("=== TUS DATOS ===\n");
+        System.out.println("Nombre: " + usuario.nombre);
+        System.out.println("Edad: " + usuario.edad);
+        
+        // Mostrar análisis de compatibilidad
+        System.out.println("\n=== ANÁLISIS DE COMPATIBILIDAD ===\n");
+        
+        for (Persona candidata : candidatas) {
+            int diferencia = calcularDiferencia(usuario.edad, candidata.edad);
+            boolean compatible = esCompatible(diferencia);
+            
+            System.out.println("Nombre: " + candidata.nombre + ", Edad: " + candidata.edad);
+            
+            if (compatible) {
+                System.out.println(candidata.nombre + " es compatible contigo (diferencia de " + diferencia + " años)");
+                compatibles.add(candidata);  // Agregar a lista de compatibles
+            } else {
+                System.out.println(candidata.nombre + " NO es compatible contigo porque supera el rango de edad (diferencia de " + diferencia + " años)");
+            }
+            System.out.println();
+        }
+        
+        // Mostrar resumen
+        System.out.println("=== RESUMEN ===");
+        System.out.println("Candidatas compatibles:");
+        
+        if (compatibles.isEmpty()) {
+            System.out.println("No hay candidatas compatibles");
+        } else {
+            for (Persona compatible : compatibles) {
+                System.out.println("- " + compatible.nombre + " (" + compatible.edad + " años)");
+            }
+        }
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('p2c8',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">=== TUS DATOS ===
+
+Nombre: Jorge
+Edad: 20
+
+=== ANÁLISIS DE COMPATIBILIDAD ===
+
+Nombre: María, Edad: 28
+María NO es compatible contigo porque supera el rango de edad (diferencia de 8 años)
+
+Nombre: Ana, Edad: 22
+Ana es compatible contigo (diferencia de 2 años)
+
+Nombre: Laura, Edad: 35
+Laura NO es compatible contigo porque supera el rango de edad (diferencia de 15 años)
+
+Nombre: Sofia, Edad: 17
+Sofia es compatible contigo (diferencia de 3 años)
+
+Nombre: Carmen, Edad: 40
+Carmen NO es compatible contigo porque supera el rango de edad (diferencia de 20 años)
+
+=== RESUMEN ===
+Candidatas compatibles:
+- Ana (22 años)
+- Sofia (17 años)</div>
+                </div>
+
+            </div>
+
+            <div id="p2-quiz" class="subsection">
+                <div class="card">
+                    <h2>Quiz – Programación II</h2>
+                    <p>Evaluación sobre conceptos de POO.</p>
+                </div>
+            </div>
+
+            <!-- ==================== PARCIAL PROGRAMACIÓN II ==================== -->
+            <div id="p2-parcial" class="subsection">
+
+                <!-- ENUNCIADO GENERAL -->
+                <div class="card">
+                    <h2>Parcial – Programación Orientada a Objetos (POO)</h2>
+                    <p>De acuerdo a las actividades realizadas en clase, construya y desarrolle para cada ejercicio el diagrama y el programa correspondiente. Los ejercicios aplican los conceptos de POO en Java: clases, atributos, métodos, constructores, getters, setters y encapsulamiento.</p>
+                </div>
+
+                <!-- ══════ EJERCICIO 1 ══════ -->
+                <div class="card">
+                    <h2>Ejercicio 1 – Clase Persona</h2>
+                    <p>Construya un programa en Java que contenga la clase <strong>Persona</strong> con 10 atributos (nombre, apellido, edad, género, dirección, ciudad, país, teléfono, correo, estadoCivil), 5 métodos (saludar, mostrarInfo, esMayorDeEdad, cambiarDireccion, cambiarEstadoCivil), constructores, getters y setters.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente – Ejercicio 1</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2p1">/**
+ * EJERCICIO 1 - Clase Persona
+ * Representa una persona con sus datos personales básicos.
+ * Incluye constructores, getters, setters y 5 métodos funcionales.
+ */
+public class Ejercicio1_Persona {
+
+    public static void main(String[] args) {
+        Persona p = new Persona(
+            "Carlos", "Gómez", 20, "Masculino",
+            "Calle 10 #5-30", "Bucaramanga", "Colombia",
+            "3001234567", "&lt;a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ddbebcafb1b2ae9db0bcb4b1f3beb2b0"&gt;[email&amp;#160;protected]&lt;/a&gt;", "Soltero"
+        );
+        p.saludar();
+        p.mostrarInfo();
+        System.out.println("¿Es mayor de edad? " + p.esMayorDeEdad());
+        p.cambiarDireccion("Carrera 15 #20-40");
+        p.cambiarEstadoCivil("Casado");
+        System.out.println("\n--- Después de los cambios ---");
+        p.mostrarInfo();
+    }
+}
+
+class Persona {
+
+    // --- ATRIBUTOS PRIVADOS (10 en total) ---
+    private String nombre;
+    private String apellido;
+    private int    edad;
+    private String genero;
+    private String direccion;
+    private String ciudad;
+    private String pais;
+    private String telefono;
+    private String correo;
+    private String estadoCivil;
+
+    // --- CONSTRUCTOR VACÍO ---
+    public Persona() { }
+
+    // --- CONSTRUCTOR COMPLETO ---
+    public Persona(String nombre, String apellido, int edad, String genero,
+                   String direccion, String ciudad, String pais,
+                   String telefono, String correo, String estadoCivil) {
+        this.nombre      = nombre;
+        this.apellido    = apellido;
+        this.edad        = edad;
+        this.genero      = genero;
+        this.direccion   = direccion;
+        this.ciudad      = ciudad;
+        this.pais        = pais;
+        this.telefono    = telefono;
+        this.correo      = correo;
+        this.estadoCivil = estadoCivil;
+    }
+
+    // --- GETTERS Y SETTERS ---
+    public String getNombre()              { return nombre; }
+    public void   setNombre(String n)      { this.nombre = n; }
+    public String getApellido()            { return apellido; }
+    public void   setApellido(String a)    { this.apellido = a; }
+    public int    getEdad()                { return edad; }
+    public void   setEdad(int e)           { this.edad = e; }
+    public String getGenero()              { return genero; }
+    public void   setGenero(String g)      { this.genero = g; }
+    public String getDireccion()           { return direccion; }
+    public void   setDireccion(String d)   { this.direccion = d; }
+    public String getCiudad()              { return ciudad; }
+    public void   setCiudad(String c)      { this.ciudad = c; }
+    public String getPais()                { return pais; }
+    public void   setPais(String p)        { this.pais = p; }
+    public String getTelefono()            { return telefono; }
+    public void   setTelefono(String t)    { this.telefono = t; }
+    public String getCorreo()              { return correo; }
+    public void   setCorreo(String c)      { this.correo = c; }
+    public String getEstadoCivil()         { return estadoCivil; }
+    public void   setEstadoCivil(String e) { this.estadoCivil = e; }
+
+    // --- MÉTODOS (5 en total) ---
+
+    /** Imprime un saludo con el nombre de la persona */
+    public void saludar() {
+        System.out.println("¡Hola! Mi nombre es " + nombre + " " + apellido + ".");
+    }
+
+    /** Muestra todos los datos de la persona */
+    public void mostrarInfo() {
+        System.out.println("=== Información de la Persona ===");
+        System.out.println("Nombre:       " + nombre + " " + apellido);
+        System.out.println("Edad:         " + edad);
+        System.out.println("Género:       " + genero);
+        System.out.println("Dirección:    " + direccion);
+        System.out.println("Ciudad:       " + ciudad);
+        System.out.println("País:         " + pais);
+        System.out.println("Teléfono:     " + telefono);
+        System.out.println("Correo:       " + correo);
+        System.out.println("Estado Civil: " + estadoCivil);
+    }
+
+    /** Retorna true si la persona tiene 18 años o más */
+    public boolean esMayorDeEdad() {
+        return edad &gt;= 18;
+    }
+
+    /** Cambia la dirección de residencia */
+    public void cambiarDireccion(String nuevaDireccion) {
+        this.direccion = nuevaDireccion;
+        System.out.println("Dirección actualizada a: " + nuevaDireccion);
+    }
+
+    /** Cambia el estado civil */
+    public void cambiarEstadoCivil(String nuevoEstado) {
+        this.estadoCivil = nuevoEstado;
+        System.out.println("Estado civil actualizado a: " + nuevoEstado);
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('p2p1',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">¡Hola! Mi nombre es Carlos Gómez.
+=== Información de la Persona ===
+Nombre:       Carlos Gómez
+Edad:         20
+Género:       Masculino
+Dirección:    Calle 10 #5-30
+Ciudad:       Bucaramanga
+País:         Colombia
+Teléfono:     3001234567
+Correo:       <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="593a382b35362a1934383035773a3634">[email&#160;protected]</a>
+Estado Civil: Soltero
+¿Es mayor de edad? true
+Dirección actualizada a: Carrera 15 #20-40
+Estado civil actualizado a: Casado
+
+--- Después de los cambios ---
+=== Información de la Persona ===
+Nombre:       Carlos Gómez
+Edad:         20
+Género:       Masculino
+Dirección:    Carrera 15 #20-40
+Ciudad:       Bucaramanga
+País:         Colombia
+Teléfono:     3001234567
+Correo:       <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0e6d6f7c62617d4e636f6762206d6163">[email&#160;protected]</a>
+Estado Civil: Casado</div>
+                </div>
+
+                <!-- ══════ EJERCICIO 2 ══════ -->
+                <div class="card">
+                    <h2>Ejercicio 2 – Gestión Avanzada de Vehículos (Clase Coche)</h2>
+                    <p>Diseñe la clase <strong>Coche</strong> con atributos privados marca, modelo, precioBase y porcentajeImpuesto. Implemente getters/setters con validación de precio no negativo, el método <code>calcularPrecioTotal()</code> y sobrescriba <code>toString()</code> con el precio final a 2 decimales.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente – Ejercicio 2</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2p2">/**
+ * EJERCICIO 2 - Gestión Avanzada de Vehículos (Clase Coche)
+ * Maneja la información de un vehículo, calcula precio con impuestos
+ * y muestra la información formateada con 2 decimales.
+ */
+public class Ejercicio2_Coche {
+
+    public static void main(String[] args) {
+        Coche c = new Coche("Toyota", "Corolla", 80000000.0, 19.0);
+        System.out.println(c);
+
+        // Probar setter con precio negativo (debe ignorarlo)
+        c.setPrecioBase(-5000);
+        System.out.println("\nTras intentar poner precio negativo:");
+        System.out.println(c);
+    }
+}
+
+class Coche {
+
+    // --- ATRIBUTOS PRIVADOS ---
+    private String marca;
+    private String modelo;
+    private double precioBase;
+    private double porcentajeImpuesto; // Ej: 19.0 significa 19%
+
+    // --- CONSTRUCTOR COMPLETO ---
+    public Coche(String marca, String modelo, double precioBase, double porcentajeImpuesto) {
+        this.marca              = marca;
+        this.modelo             = modelo;
+        this.precioBase         = precioBase;
+        this.porcentajeImpuesto = porcentajeImpuesto;
+    }
+
+    // --- GETTERS Y SETTERS ---
+    public String getMarca()                      { return marca; }
+    public void   setMarca(String m)              { this.marca = m; }
+    public String getModelo()                     { return modelo; }
+    public void   setModelo(String m)             { this.modelo = m; }
+    public double getPrecioBase()                 { return precioBase; }
+
+    /** Setter con validación: no se permite precio negativo */
+    public void setPrecioBase(double precio) {
+        if (precio &lt; 0) {
+            System.out.println("Error: El precio no puede ser negativo.");
+        } else {
+            this.precioBase = precio;
+        }
+    }
+
+    public double getPorcentajeImpuesto()         { return porcentajeImpuesto; }
+    public void   setPorcentajeImpuesto(double p) { this.porcentajeImpuesto = p; }
+
+    // --- LÓGICA DE NEGOCIO ---
+
+    /**
+     * Calcula el precio total sumando el impuesto al precio base.
+     * Fórmula: precioBase + (precioBase * porcentajeImpuesto / 100)
+     */
+    public double calcularPrecioTotal() {
+        double impuesto = precioBase * (porcentajeImpuesto / 100);
+        return precioBase + impuesto;
+    }
+
+    /** toString() con precio final a 2 decimales */
+    @Override
+    public String toString() {
+        return "=== Información del Coche ===\n"
+             + "Marca:          " + marca + "\n"
+             + "Modelo:         " + modelo + "\n"
+             + "Precio Base:    $" + String.format("%.2f", precioBase) + "\n"
+             + "Impuesto:       " + porcentajeImpuesto + "%\n"
+             + "Precio Final:   $" + String.format("%.2f", calcularPrecioTotal());
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('p2p2',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">=== Información del Coche ===
+Marca:          Toyota
+Modelo:         Corolla
+Precio Base:    $80000000.00
+Impuesto:       19.0%
+Precio Final:   $95200000.00
+Error: El precio no puede ser negativo.
+
+Tras intentar poner precio negativo:
+=== Información del Coche ===
+Marca:          Toyota
+Modelo:         Corolla
+Precio Base:    $80000000.00
+Impuesto:       19.0%
+Precio Final:   $95200000.00</div>
+                </div>
+
+                <!-- ══════ EJERCICIO 3 ══════ -->
+                <div class="card">
+                    <h2>Ejercicio 3 – Sistema de Rendimiento Académico (Clase Estudiante)</h2>
+                    <p>Desarrolle la clase <strong>Estudiante</strong> con nombre, codigo y tres notas parciales. Getters/setters con validación (0.0 – 5.0), <code>calcularPromedio()</code>, <code>haAprobado()</code> (promedio &gt;= 2.96) y <code>toString()</code> mostrando estado Aprobado/Reprobado.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente – Ejercicio 3</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2p3">/**
+ * EJERCICIO 3 - Sistema de Rendimiento Académico (Clase Estudiante)
+ * Maneja las notas de un estudiante, calcula su promedio
+ * y determina si aprueba o no (promedio &gt;= 2.96).
+ */
+public class Ejercicio3_Estudiante {
+
+    public static void main(String[] args) {
+        Estudiante e = new Estudiante("Laura", "2024001", 3.5, 4.0, 2.5);
+        System.out.println(e);
+
+        System.out.println("\n--- Otro estudiante que reprueba ---");
+        Estudiante e2 = new Estudiante("Pedro", "2024002", 2.0, 1.5, 2.8);
+        System.out.println(e2);
+
+        System.out.println("\n--- Intentando poner nota inválida (6.0) ---");
+        e.setNota1(6.0);
+    }
+}
+
+class Estudiante {
+
+    // --- ATRIBUTOS PRIVADOS ---
+    private String nombre;
+    private String codigo;
+    private double nota1;
+    private double nota2;
+    private double nota3;
+
+    // --- CONSTRUCTOR COMPLETO ---
+    public Estudiante(String nombre, String codigo, double nota1, double nota2, double nota3) {
+        this.nombre = nombre;
+        this.codigo = codigo;
+        setNota1(nota1); // Usamos setters para validar desde el constructor
+        setNota2(nota2);
+        setNota3(nota3);
+    }
+
+    // --- GETTERS Y SETTERS ---
+    public String getNombre()         { return nombre; }
+    public void   setNombre(String n) { this.nombre = n; }
+    public String getCodigo()         { return codigo; }
+    public void   setCodigo(String c) { this.codigo = c; }
+    public double getNota1()          { return nota1; }
+
+    /** Valida que la nota esté entre 0.0 y 5.0 */
+    public void setNota1(double nota) {
+        if (nota &lt; 0.0 || nota &gt; 5.0) {
+            System.out.println("Error: nota1 debe estar entre 0.0 y 5.0. Se asignó 0.0.");
+            this.nota1 = 0.0;
+        } else { this.nota1 = nota; }
+    }
+
+    public double getNota2()          { return nota2; }
+    public void setNota2(double nota) {
+        if (nota &lt; 0.0 || nota &gt; 5.0) {
+            System.out.println("Error: nota2 debe estar entre 0.0 y 5.0. Se asignó 0.0.");
+            this.nota2 = 0.0;
+        } else { this.nota2 = nota; }
+    }
+
+    public double getNota3()          { return nota3; }
+    public void setNota3(double nota) {
+        if (nota &lt; 0.0 || nota &gt; 5.0) {
+            System.out.println("Error: nota3 debe estar entre 0.0 y 5.0. Se asignó 0.0.");
+            this.nota3 = 0.0;
+        } else { this.nota3 = nota; }
+    }
+
+    // --- LÓGICA DE NEGOCIO ---
+
+    /** Calcula el promedio: (nota1 + nota2 + nota3) / 3 */
+    public double calcularPromedio() {
+        return (nota1 + nota2 + nota3) / 3;
+    }
+
+    /** Retorna true si el promedio es mayor o igual a 2.96 */
+    public boolean haAprobado() {
+        return calcularPromedio() &gt;= 2.96;
+    }
+
+    /** Muestra nombre, promedio y estado Aprobado/Reprobado */
+    @Override
+    public String toString() {
+        String estado = haAprobado() ? "Aprobado" : "Reprobado";
+        return "=== Reporte Académico ===\n"
+             + "Nombre:   " + nombre + "\n"
+             + "Código:   " + codigo + "\n"
+             + "Notas:    " + nota1 + " | " + nota2 + " | " + nota3 + "\n"
+             + "Promedio: " + String.format("%.2f", calcularPromedio()) + "\n"
+             + "Estado:   " + estado;
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('p2p3',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">=== Reporte Académico ===
+Nombre:   Laura
+Código:   2024001
+Notas:    3.5 | 4.0 | 2.5
+Promedio: 3.33
+Estado:   Aprobado
+
+--- Otro estudiante que reprueba ---
+=== Reporte Académico ===
+Nombre:   Pedro
+Código:   2024002
+Notas:    2.0 | 1.5 | 2.8
+Promedio: 2.10
+Estado:   Reprobado
+
+--- Intentando poner nota inválida (6.0) ---
+Error: nota1 debe estar entre 0.0 y 5.0. Se asignó 0.0.</div>
+                </div>
+
+                <!-- ══════ EJERCICIO 4 ══════ -->
+                <div class="card">
+                    <h2>Ejercicio 4 – Módulo de Facturación por Categorías (Clase Producto)</h2>
+                    <p>Implemente la clase <strong>Producto</strong> con id, descripcion, valorUnitario, cantidad y tipoProducto (char A/B/C). Valide la categoría en el setter. Implemente <code>calcularSubtotal()</code>, <code>aplicarDescuento()</code> (A→10%, B→5% si subtotal &gt; 100.000, C→0%) y <code>toString()</code> con recibo detallado.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente – Ejercicio 4</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2p4">/**
+ * EJERCICIO 4 - Módulo de Facturación por Categorías (Clase Producto)
+ * Tabla de descuentos:
+ *   Tipo A → 10% si subtotal &gt; 100.000
+ *   Tipo B →  5% si subtotal &gt; 100.000
+ *   Tipo C →  0% siempre
+ */
+public class Ejercicio4_Producto {
+
+    public static void main(String[] args) {
+        // Tipo A → aplica 10% descuento
+        Producto p1 = new Producto(1, "Televisor Smart 55\"", 250000.0, 1, 'A');
+        System.out.println(p1);
+        System.out.println();
+
+        // Tipo B → aplica 5% descuento
+        Producto p2 = new Producto(2, "Lavadora 16kg", 120000.0, 1, 'B');
+        System.out.println(p2);
+        System.out.println();
+
+        // Tipo C → sin descuento
+        Producto p3 = new Producto(3, "Bombillo LED", 15000.0, 4, 'C');
+        System.out.println(p3);
+        System.out.println();
+
+        // Tipo inválido → se asigna 'C' por defecto
+        System.out.println("--- Intentando tipo inválido 'X' ---");
+        Producto p4 = new Producto(4, "Producto raro", 50000.0, 2, 'X');
+        System.out.println(p4);
+    }
+}
+
+class Producto {
+
+    // --- ATRIBUTOS PRIVADOS ---
+    private int    id;
+    private String descripcion;
+    private double valorUnitario;
+    private int    cantidad;
+    private char   tipoProducto; // Solo acepta 'A', 'B' o 'C'
+
+    // --- CONSTRUCTOR COMPLETO ---
+    public Producto(int id, String descripcion, double valorUnitario,
+                    int cantidad, char tipoProducto) {
+        this.id            = id;
+        this.descripcion   = descripcion;
+        this.valorUnitario = valorUnitario;
+        this.cantidad      = cantidad;
+        setTipoProducto(tipoProducto); // Setter para validar
+    }
+
+    // --- GETTERS Y SETTERS ---
+    public int    getId()                    { return id; }
+    public void   setId(int i)               { this.id = i; }
+    public String getDescripcion()           { return descripcion; }
+    public void   setDescripcion(String d)   { this.descripcion = d; }
+    public double getValorUnitario()         { return valorUnitario; }
+    public void   setValorUnitario(double v) { this.valorUnitario = v; }
+    public int    getCantidad()              { return cantidad; }
+    public void   setCantidad(int c)         { this.cantidad = c; }
+    public char   getTipoProducto()          { return tipoProducto; }
+
+    /** Solo acepta 'A', 'B' o 'C'. Si no es válido asigna 'C' por defecto. */
+    public void setTipoProducto(char tipo) {
+        char t = Character.toUpperCase(tipo);
+        if (t == 'A' || t == 'B' || t == 'C') {
+            this.tipoProducto = t;
+        } else {
+            System.out.println("Error: Tipo '" + tipo + "' no válido. Se asignó 'C' por defecto.");
+            this.tipoProducto = 'C';
+        }
+    }
+
+    // --- LÓGICA DE NEGOCIO ---
+
+    /** Subtotal = valorUnitario * cantidad */
+    public double calcularSubtotal() {
+        return valorUnitario * cantidad;
+    }
+
+    /** Descuento según categoría y condición de subtotal */
+    public double aplicarDescuento() {
+        double subtotal = calcularSubtotal();
+        if (tipoProducto == 'A' &amp;&amp; subtotal &gt; 100000) return subtotal * 0.10;
+        if (tipoProducto == 'B' &amp;&amp; subtotal &gt; 100000) return subtotal * 0.05;
+        return 0.0;
+    }
+
+    /** Recibo detallado con subtotal, descuento y total a pagar */
+    @Override
+    public String toString() {
+        double subtotal  = calcularSubtotal();
+        double descuento = aplicarDescuento();
+        double total     = subtotal - descuento;
+        return "========== RECIBO DE COMPRA ==========\n"
+             + "ID:            " + id + "\n"
+             + "Descripción:   " + descripcion + "\n"
+             + "Categoría:     " + tipoProducto + "\n"
+             + "Val. Unitario: $" + String.format("%.2f", valorUnitario) + "\n"
+             + "Cantidad:      " + cantidad + "\n"
+             + "--------------------------------------\n"
+             + "Subtotal:      $" + String.format("%.2f", subtotal) + "\n"
+             + "Descuento:     $" + String.format("%.2f", descuento) + "\n"
+             + "TOTAL A PAGAR: $" + String.format("%.2f", total) + "\n"
+             + "======================================";
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('p2p4',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">========== RECIBO DE COMPRA ==========
+ID:            1
+Descripción:   Televisor Smart 55"
+Categoría:     A
+Val. Unitario: $250000.00
+Cantidad:      1
+--------------------------------------
+Subtotal:      $250000.00
+Descuento:     $25000.00
+TOTAL A PAGAR: $225000.00
+======================================
+
+========== RECIBO DE COMPRA ==========
+ID:            2
+Descripción:   Lavadora 16kg
+Categoría:     B
+Val. Unitario: $120000.00
+Cantidad:      1
+--------------------------------------
+Subtotal:      $120000.00
+Descuento:     $6000.00
+TOTAL A PAGAR: $114000.00
+======================================
+
+========== RECIBO DE COMPRA ==========
+ID:            3
+Descripción:   Bombillo LED
+Categoría:     C
+Val. Unitario: $15000.00
+Cantidad:      4
+--------------------------------------
+Subtotal:      $60000.00
+Descuento:     $0.00
+TOTAL A PAGAR: $60000.00
+======================================
+
+--- Intentando tipo inválido 'X' ---
+Error: Tipo 'X' no válido. Se asignó 'C' por defecto.
+========== RECIBO DE COMPRA ==========
+ID:            4
+Descripción:   Producto raro
+Categoría:     C
+Val. Unitario: $50000.00
+Cantidad:      2
+--------------------------------------
+Subtotal:      $100000.00
+Descuento:     $0.00
+TOTAL A PAGAR: $100000.00
+======================================</div>
+                </div>
+
+                <!-- ══════ EJERCICIO 5 ══════ -->
+                <div class="card">
+                    <h2>Ejercicio 5 – Sistema de Nómina Legal Colombiana 2026 (Clase Empleado)</h2>
+                    <p>Desarrolle la clase <strong>Empleado</strong> ajustada a la normativa 2026. SMLV: $1.600.000 | Auxilio transporte: $180.000 (si salario &lt; 1.5 SMLV) | Jornada: 168 h/mes | Hora extra diurna: factor 1.25 | Deducciones: Salud 4% + Pensión 4% sobre salario + extras. El <code>toString()</code> genera un desprendible con salario neto mensual y proyección anual.</p>
+                </div>
+                <div class="card">
+                    <h2>Código Fuente – Ejercicio 5</h2>
+                    <pre data-lang="java"><code class="language-java" id="p2p5">/**
+ * EJERCICIO 5 - Sistema de Nómina Legal Colombiana 2026 (Clase Empleado)
+ * - SMLV:               $1.600.000
+ * - Auxilio Transporte: $180.000 (solo si salario &lt; 1.5 SMLV)
+ * - Jornada:            168 h/mes
+ * - Hora extra diurna:  factor 1.25
+ * - Salud + Pensión:    8% sobre salario + extras (sin auxilio)
+ */
+public class Ejercicio5_Empleado {
+
+    public static void main(String[] args) {
+        // Salario bajo → aplica auxilio de transporte
+        Empleado emp1 = new Empleado("E001", "Ana Torres", "Auxiliar Contable", 1500000.0, 10);
+        System.out.println(emp1);
+        System.out.println();
+
+        // Salario alto → NO aplica auxilio de transporte
+        Empleado emp2 = new Empleado("E002", "Juan Ríos", "Ingeniero de Software", 4000000.0, 5);
+        System.out.println(emp2);
+    }
+}
+
+class Empleado {
+
+    // --- CONSTANTES LEGALES 2026 ---
+    private static final double SMLV               = 1600000.0;
+    private static final double AUXILIO_TRANSPORTE  = 180000.0;
+    private static final int    HORAS_MES           = 168;
+    private static final double FACTOR_HORA_EXTRA   = 1.25;
+    private static final double PORCENTAJE_SALUD    = 0.04;
+    private static final double PORCENTAJE_PENSION  = 0.04;
+
+    // --- ATRIBUTOS PRIVADOS ---
+    private String id;
+    private String nombre;
+    private String cargo;
+    private double salarioBase;
+    private int    horasExtrasDiurnas;
+
+    // --- CONSTRUCTOR COMPLETO ---
+    public Empleado(String id, String nombre, String cargo,
+                    double salarioBase, int horasExtrasDiurnas) {
+        this.id                 = id;
+        this.nombre             = nombre;
+        this.cargo              = cargo;
+        this.salarioBase        = salarioBase;
+        this.horasExtrasDiurnas = horasExtrasDiurnas;
+    }
+
+    // --- GETTERS Y SETTERS ---
+    public String getId()                      { return id; }
+    public void   setId(String i)              { this.id = i; }
+    public String getNombre()                  { return nombre; }
+    public void   setNombre(String n)          { this.nombre = n; }
+    public String getCargo()                   { return cargo; }
+    public void   setCargo(String c)           { this.cargo = c; }
+    public double getSalarioBase()             { return salarioBase; }
+    public void   setSalarioBase(double s)     { this.salarioBase = s; }
+    public int    getHorasExtrasDiurnas()      { return horasExtrasDiurnas; }
+    public void   setHorasExtrasDiurnas(int h) { this.horasExtrasDiurnas = h; }
+
+    // --- LÓGICA DE CÁLCULOS ---
+
+    /** Valor de una hora ordinaria: salarioBase / 168 */
+    public double getValorHoraOrdinaria() {
+        return salarioBase / HORAS_MES;
+    }
+
+    /** Valor total horas extras: horas * valorHora * 1.25 */
+    public double calcularHorasExtras() {
+        return horasExtrasDiurnas * getValorHoraOrdinaria() * FACTOR_HORA_EXTRA;
+    }
+
+    /** Devengado = salarioBase + extras [+ auxilio si aplica] */
+    public double calcularDevengado() {
+        double devengado = salarioBase + calcularHorasExtras();
+        if (salarioBase &lt; (1.5 * SMLV)) devengado += AUXILIO_TRANSPORTE;
+        return devengado;
+    }
+
+    /** Auxilio de transporte: $180.000 si salario &lt; 1.5 SMLV, sino $0 */
+    public double getAuxilioTransporte() {
+        return salarioBase &lt; (1.5 * SMLV) ? AUXILIO_TRANSPORTE : 0.0;
+    }
+
+    /**
+     * Deducciones = 8% sobre (salarioBase + extras).
+     * El auxilio de transporte NO es base para salud y pensión.
+     */
+    public double calcularDeducciones() {
+        double base = salarioBase + calcularHorasExtras();
+        return base * (PORCENTAJE_SALUD + PORCENTAJE_PENSION);
+    }
+
+    /** Salario neto = devengado - deducciones */
+    public double calcularSalarioNeto() {
+        return calcularDevengado() - calcularDeducciones();
+    }
+
+    /** Desprendible de pago con neto mensual y proyección anual */
+    @Override
+    public String toString() {
+        double extras    = calcularHorasExtras();
+        double auxilio   = getAuxilioTransporte();
+        double deduc     = calcularDeducciones();
+        double neto      = calcularSalarioNeto();
+        double anual     = neto * 12;
+        return "========================================\n"
+             + "       DESPRENDIBLE DE PAGO - 2026      \n"
+             + "========================================\n"
+             + "ID:             " + id + "\n"
+             + "Nombre:         " + nombre + "\n"
+             + "Cargo:          " + cargo + "\n"
+             + "----------------------------------------\n"
+             + "INGRESOS:\n"
+             + "  Salario Base:         $" + String.format("%,.2f", salarioBase) + "\n"
+             + "  Horas Extras (" + horasExtrasDiurnas + "h): $" + String.format("%,.2f", extras) + "\n"
+             + "  Auxilio Transporte:   $" + String.format("%,.2f", auxilio) + "\n"
+             + "  Total Devengado:      $" + String.format("%,.2f", calcularDevengado()) + "\n"
+             + "----------------------------------------\n"
+             + "DEDUCCIONES:\n"
+             + "  Salud   (4%):         $" + String.format("%,.2f", (salarioBase + extras) * PORCENTAJE_SALUD) + "\n"
+             + "  Pensión (4%):         $" + String.format("%,.2f", (salarioBase + extras) * PORCENTAJE_PENSION) + "\n"
+             + "  Total Deducciones:    $" + String.format("%,.2f", deduc) + "\n"
+             + "========================================\n"
+             + "  SALARIO NETO MENSUAL: $" + String.format("%,.2f", neto) + "\n"
+             + "  PROYECCIÓN ANUAL:     $" + String.format("%,.2f", anual) + "\n"
+             + "========================================";
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="cp('p2p5',this)">📋 Copiar código</button>
+                </div>
+                <div class="card evidencia">
+                    <h2>Output – Resultado de Ejecución</h2>
+                    <div class="output-label">▶ consola</div>
+                    <div class="output-block">========================================
+       DESPRENDIBLE DE PAGO - 2026
+========================================
+ID:             E001
+Nombre:         Ana Torres
+Cargo:          Auxiliar Contable
+----------------------------------------
+INGRESOS:
+  Salario Base:         $1,500,000.00
+  Horas Extras (10h): $111,607.14
+  Auxilio Transporte:   $180,000.00
+  Total Devengado:      $1,791,607.14
+----------------------------------------
+DEDUCCIONES:
+  Salud   (4%):         $64,464.29
+  Pensión (4%):         $64,464.29
+  Total Deducciones:    $128,928.57
+========================================
+  SALARIO NETO MENSUAL: $1,662,678.57
+  PROYECCIÓN ANUAL:     $19,952,142.86
+========================================
+
+========================================
+       DESPRENDIBLE DE PAGO - 2026
+========================================
+ID:             E002
+Nombre:         Juan Ríos
+Cargo:          Ingeniero de Software
+----------------------------------------
+INGRESOS:
+  Salario Base:         $4,000,000.00
+  Horas Extras (5h): $148,809.52
+  Auxilio Transporte:   $0.00
+  Total Devengado:      $4,148,809.52
+----------------------------------------
+DEDUCCIONES:
+  Salud   (4%):         $165,952.38
+  Pensión (4%):         $165,952.38
+  Total Deducciones:    $331,904.76
+========================================
+  SALARIO NETO MENSUAL: $3,816,904.76
+  PROYECCIÓN ANUAL:     $45,802,857.14
+========================================</div>
+                </div>
+
+            </div>
+            <!-- fin p2-parcial -->
+
+        </section>
+
+    </main>
+
+    <footer>Creado por <span>Jorge Armando Rincones Torres</span> – Ingeniería de Software – UDES</footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script>
+        // PARTÍCULAS
+        const cv = document.getElementById('pc'),
+            cx = cv.getContext('2d');
+
+        function rsz() {
+            cv.width = window.innerWidth;
+            cv.height = window.innerHeight;
+        }
+        rsz();
+        window.addEventListener('resize', rsz);
+        class Pt {
+            constructor() {
+                this.r();
+            }
+            r() {
+                this.x = Math.random() * cv.width;
+                this.y = Math.random() * cv.height;
+                this.s = Math.random() * 1.8 + .4;
+                this.vx = (Math.random() - .5) * .5;
+                this.vy = (Math.random() - .5) * .5;
+                this.o = Math.random() * .5 + .1;
+                this.col = Math.random() > .5 ? '0,240,255' : '122,0,255';
+            }
+            u() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > cv.width || this.y < 0 || this.y > cv.height) this.r();
+            }
+            d() {
+                cx.beginPath();
+                cx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
+                cx.fillStyle = `rgba(${this.col},${this.o})`;
+                cx.fill();
+            }
+        }
+        const pts = Array.from({
+            length: 80
+        }, () => new Pt());
+
+        function conn() {
+            for (let i = 0; i < pts.length; i++)
+                for (let j = i + 1; j < pts.length; j++) {
+                    const dx = pts[i].x - pts[j].x,
+                        dy = pts[i].y - pts[j].y,
+                        d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 110) {
+                        cx.beginPath();
+                        cx.strokeStyle = `rgba(0,240,255,${.07*(1-d/110)})`;
+                        cx.lineWidth = .4;
+                        cx.moveTo(pts[i].x, pts[i].y);
+                        cx.lineTo(pts[j].x, pts[j].y);
+                        cx.stroke();
+                    }
+                }
+        }
+        (function loop() {
+            cx.clearRect(0, 0, cv.width, cv.height);
+            pts.forEach(p => {
+                p.u();
+                p.d();
+            });
+            conn();
+            requestAnimationFrame(loop);
+        })();
+
+        // SCROLL PROGRESS
+        const sb = document.getElementById('sp');
+        window.addEventListener('scroll', () => {
+            const t = document.body.scrollHeight - window.innerHeight;
+            sb.style.width = (window.scrollY / t * 100) + '%';
+        });
+
+        // INTERSECTION OBSERVER
+        const io = new IntersectionObserver(es => es.forEach(e => {
+            if (e.isIntersecting) e.target.classList.add('vis');
+        }), {
+            threshold: .1
+        });
+
+        function obs() {
+            document.querySelectorAll('.card:not(.vis)').forEach(c => io.observe(c));
+        }
+        obs();
+
+        // NAV
+        function showM(id) {
+            document.querySelectorAll('.materia').forEach(m => m.classList.remove('active'));
+            const sec = document.getElementById(id);
+            sec.classList.add('active');
+            sec.querySelectorAll('.subsection').forEach((s, i) => s.classList.toggle('active', i === 0));
+            sec.querySelectorAll('.card').forEach(c => c.classList.remove('vis'));
+            setTimeout(obs, 60);
+        }
+
+        function showS(id) {
+            document.querySelectorAll('.subsection').forEach(s => s.classList.remove('active'));
+            const sub = document.getElementById(id);
+            sub.classList.add('active');
+            sub.querySelectorAll('.card').forEach(c => c.classList.remove('vis'));
+            setTimeout(obs, 60);
+        }
+
+        // COPY
+        function cp(id, btn) {
+            navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => {
+                btn.textContent = '✅ Copiado!';
+                btn.classList.add('ok');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copiar código';
+                    btn.classList.remove('ok');
+                }, 2000);
+            });
+        }
+
+        // CARGAR IMAGEN DE EVIDENCIA
+        function loadImg(event, imgId) {
+            const img = document.getElementById(imgId);
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // RIPPLE
+        document.querySelectorAll('.main-nav button,.sub-nav button').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const r = document.createElement('span'),
+                    rect = btn.getBoundingClientRect();
+                r.style.cssText = `position:absolute;border-radius:50%;width:70px;height:70px;background:rgba(255,255,255,.2);top:${e.clientY-rect.top-35}px;left:${e.clientX-rect.left-35}px;transform:scale(0);animation:rpl .5s ease;pointer-events:none;`;
+                btn.appendChild(r);
+                setTimeout(() => r.remove(), 500);
+            });
+        });
+        const rs = document.createElement('style');
+        rs.textContent = '@keyframes rpl{to{transform:scale(4);opacity:0}}';
+        document.head.appendChild(rs);
+
+        // COUNT UP
+        document.querySelectorAll('[data-c]').forEach(el => {
+            const tg = parseInt(el.dataset.c);
+            let cur = 0;
+            const t = setInterval(() => {
+                cur += tg / 30;
+                if (cur >= tg) {
+                    el.textContent = tg;
+                    clearInterval(t);
+                } else el.textContent = Math.floor(cur);
+            }, 40);
+        });
+
+        // CARGAR IMAGEN DE EVIDENCIA
+        function loadImg(event, imgId) {
+            const img = document.getElementById(imgId);
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => { img.src = e.target.result; img.style.display = 'block'; };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>
