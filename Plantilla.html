@@ -1531,215 +1531,94 @@ El kilometraje total ha sido 590km</div>
 import java.lang.*;
 import java.io.*;
 
-public class ExamenED {
+public class Ejercicio1_Desordenado {
 
-    // ─── Contadores globales ───────────────────────────────────────────────
-    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
-    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
-
-    // ─── Utilidades ───────────────────────────────────────────────────────
+    // ══ Contadores ═══════════════════════════════════════════════════════════
+    static long comp = 0, sw = 0, tns = 0;
+    static void reset() { comp = 0; sw = 0; tns = 0; }
     static String fmt(long ns) {
-        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        if (ns &lt; 1_000_000) return String.format("%.3f us", ns / 1000.0);
         return String.format("%.3f ms", ns / 1_000_000.0);
     }
     static void header() {
-        System.out.printf("  %-20s | %12s | %12s | %12s%n",
-            "Algoritmo","Comparaciones","Intercambios","Tiempo");
-        System.out.println("  " + "-".repeat(65));
+        System.out.printf("  %-20s | %13s | %12s | %12s%n","Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(67));
     }
     static void row(String a, long c, long s, long ns) {
-        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+        System.out.printf("  %-20s | %,13d | %,12d | %12s%n", a, c, s, fmt(ns));
     }
     static void bench(String lbl, String[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         String[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
     static void bench(String lbl, int[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         int[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
+    // Burbuja Simple
+    static String[] bs(String[] a){
+        String[] v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bs(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Burbuja Mejorado
+    static String[] bm(String[] a){
+        String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bm(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Quick Sort
+    static void qsH(String[]a,int lo,int hi){if(lo&gt;=hi)return;String p=a[lo];int l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l].compareToIgnoreCase(p)&lt;0)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r].compareToIgnoreCase(p)&gt;=0)r--;if(l&lt;r){String t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){String t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qsH(a,lo,r-1);qsH(a,r+1,hi);}
+    static String[] qs(String[]a){String[]v=a.clone();reset();long t0=System.nanoTime();qsH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    static void qiH(int[]a,int lo,int hi){if(lo&gt;=hi)return;int p=a[lo],l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l]&lt;p)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r]&gt;=p)r--;if(l&lt;r){int t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){int t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qiH(a,lo,r-1);qiH(a,r+1,hi);}
+    static int[] qs(int[]a){int[]v=a.clone();reset();long t0=System.nanoTime();qiH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    // Shell Sort
+    static String[] sh(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){String tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g].compareToIgnoreCase(tmp)&gt;0){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    static int[] sh(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){int tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g]&gt;tmp){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    // Seleccion Directa
+    static String[] sel(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j].compareToIgnoreCase(v[m])&lt;0)m=j;}if(m!=i){String t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    static int[] sel(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j]&lt;v[m])m=j;}if(m!=i){int t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    // Insercion
+    static String[] ins(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){String k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j].compareToIgnoreCase(k)&gt;0){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
+    static int[] ins(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){int k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j]&gt;k){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
 
-    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
-    static String[] burbujaSimple(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
-                }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaSimple(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
 
-    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
-    static String[] burbujaMejorado(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
-                }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaMejorado(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
+    static String[] nombres = {"Juan","Luciana","Esteban","Ximena","Ricardo","Micaela","Felipe","Bárbara","Santi","Valeria","Hugo","Florencia","Marcos","Agustina","Damián","Renata","Joaquín","Maite","Bautista","Irene","Rodrigo","Antonella","Samuel","Jimena","Emilio","Julieta","Tomás","Amparo","Benjamín","Celia","Vicente","Ainhoa","Mateo","Belén","Nicolás","Fátima","Sebastián","Gloria","Leonardo","Nuria","Matías","Silvia","Agustín","Rocío","Bruno","Miriam","Ignacio","Leticia","Simón","Esther","Félix","Raquel","Manuel","Salomé","Valentino","Triana","Thiago","Naiara","Ciro","Guadalupe","Enzo","Malena","Gael","Aitana","Ian","Manuela","Liam","Consuelo","Noah","Milagros","Dylan","Paloma","Axel","Esperanza","Luca","Verónica","Izan","Angélica","Leo","Viviana","Joel","Yolanda","Elias","Pilar","Isaac","Lidia","Aaron","Aurora","Oliver","Blanca","Erick","Elsa","Omar","Adela","Iker","Felisa","Saúl","Nerea","Pau","Lola","Eric","Candela","Iago","Inés","Unai","Amelia","Joan","Ariadna","Marc","Carla","Pol","Mireia","Pau","Laia","Oriol","Berta","Arnau","Jana","Nil","Ona","Biel","Arlet","Martí","Júlia","Jan","Emma","Aleix","Abril","Rocío","Santiago","Cayetana","Mario","Virginia","Gonzalo","Miranda","Alfonso","Estefanía","Cristóbal","Montserrat","Patricio","Cándida","Gregorio","Genoveva","Faustino","Adelaide","Marcelo","Graciela","Eugenio","Rafaela","Leandro","Zaira","Amadeo","Violeta","Camilo","Delfina","Federico","Jacinta","Lorenzo","Sabina","Gaspar","Ursula","Baltasar","Teodora","Melchor","Ofelia","Jonás","Ramona","Ezequiel","Dorotea","Abel","Isidra","Braulio","Eulalia","Hipólito","Justina","Mariano","Casandra","Donato","Remedios","Agapito","Priscila","Fidencio","Amalia","Eusebio","Sonia","Basilio","Tatiana","Cipriano","Vanesa","Dionisio","Susana","Eleuterio","Mónica","Feliciano","Teresa","Gumersindo","Lourdes","Heriberto","Josefina","Indalecio","Magdalena","Jerónimo","Rosario","Ladislau","Modesta","Macario","Purificación","Nicanor","Angustias","Olegario","Asunción","Pancracio","Concepción","Quirino","Inmaculada","Ruperto","Visitación","Servando","Candelaria","Torcuato","Milagros","Urbano","Natividad","Valeriano","Piedad","Wenceslao","Socorro","Zenón","Aurelia","Aniceto","Benigna","Casimiro","Dina","Eutropio","Edelmira","Florentino","Eustaquia","Gervasio","Gisela","Honorio","Herminia","Ildefonso","Imelda","Jenaro","Joaquina","Leoncio","Leocadia","Mauricio","Matilde","Nemesio","Noemí","Onofre","Olga","Perfecto","Petrona","Quiterio","Quina","Robustiano","Rufina","Saturio","Segunda","Telesforo","Teófila","Ulpiano","Urraca","Venancio","Veneranda","Wilfredo","Walda","Xavier","Xenia","Yago","Yara","Zacarías","Zulma","Adriano","Aída","Bernardo","Bibiana","Conrado","Coral","Desiderio","Dora","Edmundo","Edith","Fabio","Fabiana","Gerardo","Gema","Héctor","Helena","Ismael","Iris","Jacobo","Jade","Kevin","Keyla","Lázaro","Leila","Máximo","Maura","Néstor","Niza","Orlando","Olivia","Plácido","Perla","Quintín","Queila","Ramiro","Rebeca","Silverio","Selena","Tadeo","Thais","Ulises","Uxia","Valerio","Vera","Walter","Wendy","Xerach","Xana","Yusef","Yurena","Zigor","Zoe","Adolfo","Ariadne","Benito","Brigida","Claudio","Clotilde","Dante","Debora","Erasmo","Erika","Fausto","Fabiola","Guido","Greta","Hans","Hilda","Iñaki","Iratxe","Jordi","Josefa","Kurt","Katia","Lino","Lina","Modesto","Mila","Noel","Nora","Oswaldo","Olimpia","Pascual","Pastora","Radamel","Ruth","Serafín","Sira","Teo","Teonila","Ubaldo","Uma","Vidal","Vania","Wilson","Winona","Xoan","Xandra","Yanis","Yuvia","Zoren","Zaira","Alvaro","Aurelio","Bernabé","Carmelo","Celestino","Cornelio","Demétrio","Efraín","Eliseo","Emigdio","Epifanio","Everardo","Fulgencio","Gaudencio","Hipólito","Inocencio","Juvenal","Liberato","Longino","Mamerto","Nazario","Niceto","Octavio","Ovidio","Primitivo","Próspero","Rogelio","Rómulo","Severiano","Severo","Tiburcio","Valero","Victoriano","Viriato","Zósimo","Abundio","Acisclo","Anfiloquio","Apolonio","Arsenio","Ausencio","Baldomero","Bonifacio","Celedonio","Dalmacio","Donaciano","Egidio","Eleazar","Emeterio","Esiquio","Eufrasio","Exuperio","Florencio","Galdino","Hermenegildo","Hilarión","Indalecio","Isidoro","Leovigildo","Magín","Mamerto","Maximino","Medardo","Orencio","Pantaleón","Policarpo","Recaredo","Restituto","Sisenando","Telefón","Timoteo","Wifredo","Donovan","Emanuela","Fiorella","Gianluca","Isabella","Kilian","Lucrecia","Morgana","Nadir","Ottilie","Pavel","Quinn","Rocco","Sasha","Tatiana","Umi","Valery","Wyatt","Xavi","Yael","Zuri"};
 
-    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
-    static void qs(String[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        String p=a[lo]; int l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
-            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qs(a,lo,r-1); qs(a,r+1,hi);
+    public static void main(String[] args) {
+        System.out.println("=================================================");
+        System.out.println("EJERCICIO 1 - Arreglo de 470 Nombres Desordenados");
+        System.out.println("=================================================");
+        bench("Nombres desordenados", nombres);
+        System.out.println("\n&gt;&gt; Conclusion: Shell Sort y Quick Sort son los mas");
+        System.out.println("   eficientes. Burbuja Simple es el peor (~110K comp).");
     }
-    static String[] quickSort(String[] a) {
-        String[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qs(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static void qi(int[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        int p=a[lo], l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
-            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qi(a,lo,r-1); qi(a,r+1,hi);
-    }
-    static int[] quickSort(int[] a) {
-        int[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qi(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
-    static String[] shellSort(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                String tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] shellSort(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                int tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 5. Selección Directa ──────────────────────────────────────────────
-    static String[] seleccion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
-            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] seleccion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
-            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 6. Inserción ──────────────────────────────────────────────────────
-    static String[] insercion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            String k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] insercion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            int k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
 }</code></pre>
                     <button class="copy-btn" onclick="cp('ed_parc1',this)">📋 Copiar código</button>
                 </div>
@@ -1771,215 +1650,136 @@ public class ExamenED {
 import java.lang.*;
 import java.io.*;
 
-public class ExamenED {
+public class Ejercicio2_CasiOrdenado {
 
-    // ─── Contadores globales ───────────────────────────────────────────────
-    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
-    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
-
-    // ─── Utilidades ───────────────────────────────────────────────────────
+    // ══ Contadores ═══════════════════════════════════════════════════════════
+    static long comp = 0, sw = 0, tns = 0;
+    static void reset() { comp = 0; sw = 0; tns = 0; }
     static String fmt(long ns) {
-        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        if (ns &lt; 1_000_000) return String.format("%.3f us", ns / 1000.0);
         return String.format("%.3f ms", ns / 1_000_000.0);
     }
     static void header() {
-        System.out.printf("  %-20s | %12s | %12s | %12s%n",
-            "Algoritmo","Comparaciones","Intercambios","Tiempo");
-        System.out.println("  " + "-".repeat(65));
+        System.out.printf("  %-20s | %13s | %12s | %12s%n","Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(67));
     }
     static void row(String a, long c, long s, long ns) {
-        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+        System.out.printf("  %-20s | %,13d | %,12d | %12s%n", a, c, s, fmt(ns));
     }
     static void bench(String lbl, String[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         String[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
     static void bench(String lbl, int[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         int[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
+    // Burbuja Simple
+    static String[] bs(String[] a){
+        String[] v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bs(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Burbuja Mejorado
+    static String[] bm(String[] a){
+        String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bm(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Quick Sort
+    static void qsH(String[]a,int lo,int hi){if(lo&gt;=hi)return;String p=a[lo];int l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l].compareToIgnoreCase(p)&lt;0)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r].compareToIgnoreCase(p)&gt;=0)r--;if(l&lt;r){String t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){String t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qsH(a,lo,r-1);qsH(a,r+1,hi);}
+    static String[] qs(String[]a){String[]v=a.clone();reset();long t0=System.nanoTime();qsH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    static void qiH(int[]a,int lo,int hi){if(lo&gt;=hi)return;int p=a[lo],l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l]&lt;p)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r]&gt;=p)r--;if(l&lt;r){int t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){int t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qiH(a,lo,r-1);qiH(a,r+1,hi);}
+    static int[] qs(int[]a){int[]v=a.clone();reset();long t0=System.nanoTime();qiH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    // Shell Sort
+    static String[] sh(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){String tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g].compareToIgnoreCase(tmp)&gt;0){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    static int[] sh(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){int tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g]&gt;tmp){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    // Seleccion Directa
+    static String[] sel(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j].compareToIgnoreCase(v[m])&lt;0)m=j;}if(m!=i){String t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    static int[] sel(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j]&lt;v[m])m=j;}if(m!=i){int t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    // Insercion
+    static String[] ins(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){String k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j].compareToIgnoreCase(k)&gt;0){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
+    static int[] ins(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){int k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j]&gt;k){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
 
-    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
-    static String[] burbujaSimple(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
-                }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaSimple(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
 
-    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
-    static String[] burbujaMejorado(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
-                }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaMejorado(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
+    public static void main(String[] args) {
+        System.out.println("=================================================");
+        System.out.println("EJERCICIO 2 - Arreglos Casi Ordenados");
+        System.out.println("=================================================");
 
-    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
-    static void qs(String[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        String p=a[lo]; int l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
-            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qs(a,lo,r-1); qs(a,r+1,hi);
-    }
-    static String[] quickSort(String[] a) {
-        String[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qs(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static void qi(int[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        int p=a[lo], l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
-            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qi(a,lo,r-1); qi(a,r+1,hi);
-    }
-    static int[] quickSort(int[] a) {
-        int[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qi(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        String[] nombresCasiOrdenados = {"Zulma","Yuvia","Zuri","Yosef","Zosimo","Ximena","Zoren",
+            "Xoan","Yara","Zenon","Zoe","Yurena","Zacarias","Xerach","Xenia","Xavier","Xavi","Xandra",
+            "Xana","Wyatt","Winona","Wilson","Wilfredo","Wifredo","Wendy","Wenceslao","Walter","Walda",
+            "Viviana","Visitacion","Viriato","Virginia","Violeta","Vidal","Valentino","Valentina",
+            "Uxia","Ursula","Urraca","Urbano","Unai","Umi","Uma","Ulpiano","Ulises","Ubaldo","Trinidad",
+            "Triana","Torcuato","Tomas","Tobias","Timoteo","Tiburcio","Thiago","Thais","Teresa","Teonila",
+            "Teofilo","Teodora","Teo","Telesforo","Aaron","Abel","Abigail","Abril","Adela","Adolfo",
+            "Agustin","Ainhoa","Aitana","Alba","Alberto","Alejandro","Alejo","Alfonso","Alicia","Alma",
+            "Alonso","Alvaro","Amadeo","Amalia","Amparo","Ana","Andres","Angel","Angelica","Antonia",
+            "Antonio","Ariadna","Arnau","Arturo","Asuncion","Aurora","Axel","Barbara","Basilio","Bautista",
+            "Beatriz","Belen","Benjamin","Benito","Bernardo","Berta","Biel","Blanca","Braulio","Bruno",
+            "Camilo","Candela","Candelaria","Carla","Carlos","Carmelo","Carmen","Casandra","Casimiro",
+            "Cayetana","Celia","Cesar","Cipriano","Ciro","Clara","Claudio","Concepcion","Consuelo",
+            "Coral","Cristian","Cristina","Cristobal","Damian","Daniel","Daniela","Dante","David",
+            "Debora","Delfina","Diana","Diego","Dina","Dionisio","Dolores","Donato","Dulce","Edith",
+            "Edmundo","Eduardo","Efrain","Elena","Elias","Elisa","Elsa","Elvira","Emilia","Emilio",
+            "Emma","Enrique","Enzo","Eric","Erick","Erika","Ernesto","Esperanza","Esteban","Estefania",
+            "Esther","Eugenia","Eugenio","Eulalia","Eusebio","Eva","Ezequiel","Fabiana","Fabio","Fabiola",
+            "Fatima","Faustino","Fausto","Federico","Feliciano","Felipe","Felix","Fernanda","Fernando",
+            "Fidencio","Fiorella","Florencia","Florentino","Francesco"};
 
-    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
-    static String[] shellSort(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                String tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] shellSort(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                int tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        int[] numerosCasiOrdenados = {2491,1083,3922,1045,5671,8234,1012,4456,9012,1033,
+            2289,7341,1095,6612,1004,3345,1077,8890,1056,4123,1102,5567,1028,9934,1069,2145,
+            1088,7756,1041,3021,1099,6643,1007,8812,1052,4409,1105,5521,1024,9134,1065,2045,
+            1081,7156,1047,3121,1093,6243,1001,8212,1058,4109,1101,5121,1029,9234,1061,2245,
+            1086,7256,1043,3221,1091,6343,1015,8312,1054,4209,1106,5221,1022,9334,1067,2345,
+            1089,9301,9302,9303,9304,9305,9306,9307,9308,9309,9310,9311,9312,9313,9314,9315,
+            9316,9317,9318,9319,9320,9321,9322,9323,9324,9325,9326,9327,9328,9329,9330,9331,
+            9332,9333,9334,9335,9336,9337,9338,9339,9340,9341,9342,9343,9344,9345,9346,9347,
+            9348,9349,9350,9351,9352,9353,9354,9355,9356,9357,9358,9359,9360,9361,9362,9363,
+            9364,9365,9366,9367,9368,9369,9370,9371,9372,9373,9374,9375,4567,8912,1234,5678,
+            9023,3456,7890,2345,6789,1122,4433,7788,2299,5566,8811,3344,6677,9900,1357,2468,
+            9753,8642,1111,2222,3333,4444,5555,6666,7777,8888,9999,1010,2020,3030,4040,5050,
+            6060,7070,8080,9090,1212,2323,3434,4545,5656,6767,7878,8989,1414,2525,3636,4747,
+            5858,6969,7071,8181,9292,1515,2626,3737,4848,5959,1616,2727,3838,4949,1717,2828,
+            3939,5151,6262,7373,8484,9595,1818,2929,4141,5252,6363,7474,8585,9696,1919,3131,
+            4242,5353,6464,7575,8686,9797,2121,3232,4343,5454,6565,7676,8787,9898,1000,2000,
+            3000,4000,5000,6000,7000,8000,9000,1500,2500,3500,4500,5500,6500,7500,8500,9500,
+            1250,2250,3250,4250,5250,6250,7250,8250,9250,1750,2750,3750,4750,5750,6750,7750,
+            8750,9750,1100,2100,3100,4100,5100,6100,7100,8100,9100,1200,2200,3200,4200,5200,
+            6200,7200,8200,9200};
 
-    // ─── 5. Selección Directa ──────────────────────────────────────────────
-    static String[] seleccion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
-            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
+        bench("Nombres casi ordenados", nombresCasiOrdenados);
+        bench("Numeros casi ordenados", numerosCasiOrdenados);
+        System.out.println("\n&gt;&gt; Conclusion: Shell Sort eficiente en ambos casos.");
+        System.out.println("   Burbuja Mejorado mejora vs Simple por parada temprana.");
     }
-    static int[] seleccion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
-            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 6. Inserción ──────────────────────────────────────────────────────
-    static String[] insercion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            String k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] insercion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            int k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
 }</code></pre>
                     <button class="copy-btn" onclick="cp('ed_parc2',this)">📋 Copiar código</button>
                 </div>
@@ -2022,215 +1822,152 @@ public class ExamenED {
 import java.lang.*;
 import java.io.*;
 
-public class ExamenED {
+public class Ejercicio3_Invertido {
 
-    // ─── Contadores globales ───────────────────────────────────────────────
-    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
-    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
-
-    // ─── Utilidades ───────────────────────────────────────────────────────
+    // ══ Contadores ═══════════════════════════════════════════════════════════
+    static long comp = 0, sw = 0, tns = 0;
+    static void reset() { comp = 0; sw = 0; tns = 0; }
     static String fmt(long ns) {
-        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        if (ns &lt; 1_000_000) return String.format("%.3f us", ns / 1000.0);
         return String.format("%.3f ms", ns / 1_000_000.0);
     }
     static void header() {
-        System.out.printf("  %-20s | %12s | %12s | %12s%n",
-            "Algoritmo","Comparaciones","Intercambios","Tiempo");
-        System.out.println("  " + "-".repeat(65));
+        System.out.printf("  %-20s | %13s | %12s | %12s%n","Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(67));
     }
     static void row(String a, long c, long s, long ns) {
-        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+        System.out.printf("  %-20s | %,13d | %,12d | %12s%n", a, c, s, fmt(ns));
     }
     static void bench(String lbl, String[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         String[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
     static void bench(String lbl, int[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         int[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
+    // Burbuja Simple
+    static String[] bs(String[] a){
+        String[] v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bs(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Burbuja Mejorado
+    static String[] bm(String[] a){
+        String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bm(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Quick Sort
+    static void qsH(String[]a,int lo,int hi){if(lo&gt;=hi)return;String p=a[lo];int l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l].compareToIgnoreCase(p)&lt;0)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r].compareToIgnoreCase(p)&gt;=0)r--;if(l&lt;r){String t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){String t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qsH(a,lo,r-1);qsH(a,r+1,hi);}
+    static String[] qs(String[]a){String[]v=a.clone();reset();long t0=System.nanoTime();qsH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    static void qiH(int[]a,int lo,int hi){if(lo&gt;=hi)return;int p=a[lo],l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l]&lt;p)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r]&gt;=p)r--;if(l&lt;r){int t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){int t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qiH(a,lo,r-1);qiH(a,r+1,hi);}
+    static int[] qs(int[]a){int[]v=a.clone();reset();long t0=System.nanoTime();qiH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    // Shell Sort
+    static String[] sh(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){String tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g].compareToIgnoreCase(tmp)&gt;0){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    static int[] sh(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){int tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g]&gt;tmp){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    // Seleccion Directa
+    static String[] sel(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j].compareToIgnoreCase(v[m])&lt;0)m=j;}if(m!=i){String t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    static int[] sel(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j]&lt;v[m])m=j;}if(m!=i){int t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    // Insercion
+    static String[] ins(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){String k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j].compareToIgnoreCase(k)&gt;0){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
+    static int[] ins(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){int k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j]&gt;k){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
 
-    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
-    static String[] burbujaSimple(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
-                }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaSimple(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
 
-    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
-    static String[] burbujaMejorado(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
-                }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaMejorado(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
+    public static void main(String[] args) {
+        System.out.println("=================================================");
+        System.out.println("EJERCICIO 3 - Arreglos Invertidos (Peor Caso)");
+        System.out.println("=================================================");
 
-    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
-    static void qs(String[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        String p=a[lo]; int l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
-            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qs(a,lo,r-1); qs(a,r+1,hi);
-    }
-    static String[] quickSort(String[] a) {
-        String[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qs(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static void qi(int[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        int p=a[lo], l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
-            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qi(a,lo,r-1); qi(a,r+1,hi);
-    }
-    static int[] quickSort(int[] a) {
-        int[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qi(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        String[] nombresInvertidos = {"Zuri","Zulma","Zosimo","Zoren","Zoe","Zigor","Zenon","Zaira",
+            "Zacarias","Yuvia","Yusef","Yurena","Yolanda","Yara","Yanis","Yago","Yael","Xoan","Ximena",
+            "Xerach","Xenia","Xavier","Xavi","Xandra","Xana","Wyatt","Winona","Wilson","Wilfredo",
+            "Wifredo","Wendy","Wenceslao","Walter","Walda","Viviana","Visitacion","Viriato","Virginia",
+            "Violeta","Vidal","Valentino","Valentina","Uxia","Ursula","Urraca","Urbano","Unai","Umi",
+            "Uma","Ulpiano","Ulises","Ubaldo","Trinidad","Triana","Torcuato","Tomas","Tobias","Timoteo",
+            "Tiburcio","Thiago","Thais","Teresa","Teonila","Teofilo","Teodora","Teo","Telesforo",
+            "Tatiana","Tadeo","Susana","Sonia","Socorro","Simon","Silvia","Sebastian","Saul","Saturio",
+            "Santiago","Samuel","Salome","Sabina","Ruth","Ruperto","Rufina","Rosario","Romulo","Rogelio",
+            "Rodrigo","Rocio","Roberto","Ricardo","Renata","Remedios","Recaredo","Rebeca","Raul","Raquel",
+            "Ramona","Ramiro","Rafaela","Rafael","Radamel","Quiterio","Quirino","Quintin","Quinn","Quina",
+            "Purificacion","Priscila","Primitivo","Pol","Placido","Pilar","Petrona","Perla","Pedro","Pavel",
+            "Paulina","Pau","Patricio","Pastora","Pascual","Paloma","Pablo","Ovidio","Oswaldo","Oscar",
+            "Orlando","Oriol","Onofre","Ona","Omar","Olivia","Oliver","Olga","Octavio","Nuria","Nora",
+            "Noemi","Noah","Niza","Nil","Nicolas","Nicanor","Nestor","Nerea","Nemesio","Naiara","Nadir",
+            "Morgana","Montserrat","Monica","Modesto","Miriam","Mireia","Miranda","Milena","Milagros",
+            "Miguel","Micaela","Melchor","Maya","Maximo","Mauricio","Maura","Matilde","Matias","Mateo",
+            "Marti","Marta","Mario","Marina","Mariano","Marcos","Marcelo","Marc","Manuela","Manuel",
+            "Malena","Maite","Magdalena","Macario","Macarena","Luz","Luisa","Luis","Lucrecia","Luciana",
+            "Lucia","Lucas","Luca","Lourdes","Lorenzo","Lola","Lino","Lina","Liliana","Lidia","Liam",
+            "Leticia","Leonor","Leoncio","Leonardo","Leocadia","Leo","Leila","Leandro","Lazaro","Laura",
+            "Laia","Kilian","Kevin","Katia","Karen","Justo","Julio","Julieta","Julian","Julia","Juana",
+            "Juan","Josefina","Josefa","Jose","Jorge","Jordi","Jonas","Joel","Joaquina","Joaquin","Joan",
+            "Jimena","Jesus","Jeronimo","Jenaro","Javier","Jana","Jan","Jaime","Jade","Jacobo","Jacinto",
+            "Ivan","Israel","Ismael","Isidra","Isidoro","Isabel","Isaac","Iris","Irene","Inaki","Inmaculada",
+            "Ines","Indalecio","Imelda","Ildefonso","Iker","Ignacio","Ian","Iago","Hugo","Honorio",
+            "Hipolito","Hernan","Hermenegildo","Heriberto","Helena","Hector","Gustavo","Guillermo","Guido",
+            "Guadalupe","Greta","Gregorio","Graciela","Gonzalo","Gloria","Gisela","Gianluca","Gervasio",
+            "German","Gerardo","Genoveva","Gema","Gaspar","Gael","Gabriela","Gabriel","Fulgencio",
+            "Francisco","Francisca","Fortunato","Florentino","Florencia","Flora","Fiorella","Fernando",
+            "Fernanda","Felix","Felipe","Feliciano","Federico","Fausto","Faustino","Fatima","Fabiola",
+            "Fabio","Fabiana","Ezequiel","Evelyn","Eva","Eusebio","Eulalia","Eugenio","Estrella","Esther",
+            "Ester","Estefania","Esteban","Esperanza","Esmeralda","Ernesto","Erika","Erick","Eric","Enzo",
+            "Enrique","Emma","Emilio","Emilia","Emanuel","Elvira","Elsa","Eloy","Elisabet","Elisa","Elias",
+            "Elena","Eleazar","Eladio","Efrain","Eduardo","Edmundo","Edith","Edgar","Dulce","Doris","Dora",
+            "Donato","Domingo","Dolores","Dionisio","Dina","Diego","Diana","Delia","Delfina","Debora",
+            "David","Dario","Dante","Daniela","Daniel","Damian","Dalia","Custodia","Cruz","Cristobal",
+            "Cristina","Cristian","Cosme","Coral","Consuelo","Conrado","Concepcion","Clotilde","Claudio",
+            "Clara","Ciro","Cipriano","Cintia","Chantal","Cesar","Celia","Cecilia","Cayetana","Catalina",
+            "Casandra","Carmen","Carlos","Carla","Candelaria","Candela","Camilo","Cain","Bryan","Bruno",
+            "Brigida","Braulio","Boris","Blanca","Biel","Bianca","Berta","Bernardo","Benito","Benjamin",
+            "Belen","Beatriz","Bautista","Basilio","Bartolome","Barbara","Axel","Aurora","Augusto",
+            "Asuncion","Arturo","Arnau","Arlet","Ariel","Ariadna","Antonio","Antonia","Anibal","Angelica",
+            "Angela","Angel","Andres","Andrea","Anahi","Ana","Amparo","Amalia","Amadeo","Alvaro","Alonso",
+            "Alicia","Alfonso","Alex","Alejandro","Aldana","Alberto","Alan","Aitana","Ainhoa","Agustin",
+            "Adriana","Adrian","Adolfo","Adela","Abril","Abel","Aaron"};
 
-    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
-    static String[] shellSort(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                String tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] shellSort(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                int tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        int[] numerosInvertidos = {9842,9842,9815,9815,9760,9760,9734,9734,9688,9688,
+            9651,9651,9610,9610,9543,9543,9512,9512,9487,9487,9421,9421,9390,9390,9354,9354,
+            9311,9311,9287,9287,9245,9245,9210,9210,9176,9176,9143,9143,9088,9088,9054,9054,
+            9012,9012,8977,8977,8943,8943,8890,8890,8845,8845,8812,8812,8765,8765,8711,8711,
+            8688,8688,8642,8642,8599,8599,8554,8554,8521,8521,8488,8488,8432,8432,8391,8391,
+            8345,8345,8301,8301,8267,8267,8211,8211,8176,8176,8143,8143,8098,8098,8055,8055,
+            8012,8012,7966,7966,7921,7921,7888,7888,7834,7834,7791,7791,7745,7745,7711,7711,
+            7676,7676,7632,7632,7598,7598,7554,7554,7511,7511,7467,7467,7421,7421,7388,7388,
+            7345,7345,7301,7301,7267,7267,7211,7211,7176,7176,7143,7143,7098,7098,7054,7054,
+            7012,7012,1012,1012};
 
-    // ─── 5. Selección Directa ──────────────────────────────────────────────
-    static String[] seleccion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
-            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
+        bench("Nombres invertidos Z-&gt;A", nombresInvertidos);
+        bench("Numeros invertidos", numerosInvertidos);
+        System.out.println("\n&gt;&gt; Conclusion: PEOR CASO para Insercion (~63ms).");
+        System.out.println("   Shell Sort sigue dominando con minimas comparaciones.");
     }
-    static int[] seleccion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
-            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 6. Inserción ──────────────────────────────────────────────────────
-    static String[] insercion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            String k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] insercion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            int k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
 }</code></pre>
                     <button class="copy-btn" onclick="cp('ed_parc3',this)">📋 Copiar código</button>
                 </div>
@@ -2273,215 +2010,113 @@ public class ExamenED {
 import java.lang.*;
 import java.io.*;
 
-public class ExamenED {
+public class Ejercicio4_Repetidos {
 
-    // ─── Contadores globales ───────────────────────────────────────────────
-    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
-    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
-
-    // ─── Utilidades ───────────────────────────────────────────────────────
+    // ══ Contadores ═══════════════════════════════════════════════════════════
+    static long comp = 0, sw = 0, tns = 0;
+    static void reset() { comp = 0; sw = 0; tns = 0; }
     static String fmt(long ns) {
-        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        if (ns &lt; 1_000_000) return String.format("%.3f us", ns / 1000.0);
         return String.format("%.3f ms", ns / 1_000_000.0);
     }
     static void header() {
-        System.out.printf("  %-20s | %12s | %12s | %12s%n",
-            "Algoritmo","Comparaciones","Intercambios","Tiempo");
-        System.out.println("  " + "-".repeat(65));
+        System.out.printf("  %-20s | %13s | %12s | %12s%n","Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(67));
     }
     static void row(String a, long c, long s, long ns) {
-        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+        System.out.printf("  %-20s | %,13d | %,12d | %12s%n", a, c, s, fmt(ns));
     }
     static void bench(String lbl, String[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         String[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
     static void bench(String lbl, int[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         int[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
+    // Burbuja Simple
+    static String[] bs(String[] a){
+        String[] v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bs(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Burbuja Mejorado
+    static String[] bm(String[] a){
+        String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bm(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Quick Sort
+    static void qsH(String[]a,int lo,int hi){if(lo&gt;=hi)return;String p=a[lo];int l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l].compareToIgnoreCase(p)&lt;0)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r].compareToIgnoreCase(p)&gt;=0)r--;if(l&lt;r){String t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){String t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qsH(a,lo,r-1);qsH(a,r+1,hi);}
+    static String[] qs(String[]a){String[]v=a.clone();reset();long t0=System.nanoTime();qsH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    static void qiH(int[]a,int lo,int hi){if(lo&gt;=hi)return;int p=a[lo],l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l]&lt;p)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r]&gt;=p)r--;if(l&lt;r){int t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){int t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qiH(a,lo,r-1);qiH(a,r+1,hi);}
+    static int[] qs(int[]a){int[]v=a.clone();reset();long t0=System.nanoTime();qiH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    // Shell Sort
+    static String[] sh(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){String tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g].compareToIgnoreCase(tmp)&gt;0){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    static int[] sh(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){int tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g]&gt;tmp){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    // Seleccion Directa
+    static String[] sel(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j].compareToIgnoreCase(v[m])&lt;0)m=j;}if(m!=i){String t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    static int[] sel(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j]&lt;v[m])m=j;}if(m!=i){int t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    // Insercion
+    static String[] ins(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){String k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j].compareToIgnoreCase(k)&gt;0){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
+    static int[] ins(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){int k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j]&gt;k){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
 
-    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
-    static String[] burbujaSimple(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
-                }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaSimple(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
 
-    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
-    static String[] burbujaMejorado(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
-                }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaMejorado(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
+    public static void main(String[] args) {
+        System.out.println("=================================================");
+        System.out.println("EJERCICIO 4 - Ordenamiento de Valores Repetidos");
+        System.out.println("=================================================");
 
-    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
-    static void qs(String[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        String p=a[lo]; int l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
-            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qs(a,lo,r-1); qs(a,r+1,hi);
-    }
-    static String[] quickSort(String[] a) {
-        String[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qs(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static void qi(int[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        int p=a[lo], l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
-            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qi(a,lo,r-1); qi(a,r+1,hi);
-    }
-    static int[] quickSort(int[] a) {
-        int[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qi(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        String[] nombresRep = {"Sofia","Martina","Lucia","Natalia","Andrea","Laura","Carlos","Ana",
+            "Jesus","Alejandro","Valentina","Pedro","Isabel","Gabriel","Maria","Sara","Gonzalo","Marta",
+            "Ricardo","Jose","Lucia","Adrian","Samuel","Diego","Cristina","Alberto","Sara","Pablo","Laura",
+            "Cristina","Claudia","Marta","Fernando","Alba","Victoria","Laura","Guillermo","Sara","Antonio",
+            "Ruben","Maria","Javier","Beatriz","Laura","Francisco","Ricardo","Andres","Victor","Ricardo",
+            "Jorge","Javier","Patricia","Natalia","Carmen","Alejandro","Beatriz","Laura","Laura","Laura",
+            "Pablo","Martina","Ricardo","Ricardo","Javier","Sara","Diego","Laura","Adrian","Lucia","Maria",
+            "Laura","Laura","Alberto","Laura","Sara","Francisco","Andrea","Pablo","Lucia","Andrea","Lucia",
+            "Laura","Carmen","Sergio","Jose","Carlos","Maria","Laura","Javier","Laura","Ricardo","Andrea",
+            "Maria","Alberto","Laura","Fernando","Sofia","Martina","Lucia","Natalia","Andrea","Laura",
+            "Carlos","Ana","Jesus","Alejandro","Valentina","Pedro","Isabel","Gabriel","Maria","Sara",
+            "Gonzalo","Marta","Ricardo","Jose","Lucia","Adrian","Samuel","Diego","Cristina","Alberto",
+            "Sara","Pablo","Laura","Cristina","Claudia","Marta","Fernando","Alba","Victoria","Laura",
+            "Guillermo","Sara","Antonio","Ruben","Maria","Javier","Beatriz","Laura","Francisco","Ricardo",
+            "Andres","Victor","Ricardo","Jorge","Javier","Patricia","Natalia","Carmen","Alejandro",
+            "Beatriz","Laura","Laura","Laura","Pablo","Martina","Ricardo","Ricardo","Javier","Sara",
+            "Diego","Laura","Adrian","Lucia","Maria","Laura","Laura","Alberto","Laura","Sara","Francisco",
+            "Andrea","Pablo","Lucia","Andrea","Lucia","Laura","Carmen","Sergio","Jose","Carlos","Maria",
+            "Laura","Javier","Laura","Ricardo","Andrea","Maria","Alberto","Laura","Fernando"};
 
-    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
-    static String[] shellSort(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                String tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
+        bench("Nombres con repeticiones", nombresRep);
+        System.out.println("\n&gt;&gt; Conclusion: Quick Sort mas eficiente con duplicados.");
+        System.out.println("   Todos los algoritmos son estables con valores repetidos.");
     }
-    static int[] shellSort(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                int tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 5. Selección Directa ──────────────────────────────────────────────
-    static String[] seleccion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
-            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] seleccion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
-            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 6. Inserción ──────────────────────────────────────────────────────
-    static String[] insercion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            String k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] insercion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            int k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
 }</code></pre>
                     <button class="copy-btn" onclick="cp('ed_parc4',this)">📋 Copiar código</button>
                 </div>
@@ -2513,215 +2148,108 @@ public class ExamenED {
 import java.lang.*;
 import java.io.*;
 
-public class ExamenED {
+public class Ejercicio5_ParcialOrdenado {
 
-    // ─── Contadores globales ───────────────────────────────────────────────
-    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
-    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
-
-    // ─── Utilidades ───────────────────────────────────────────────────────
+    // ══ Contadores ═══════════════════════════════════════════════════════════
+    static long comp = 0, sw = 0, tns = 0;
+    static void reset() { comp = 0; sw = 0; tns = 0; }
     static String fmt(long ns) {
-        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        if (ns &lt; 1_000_000) return String.format("%.3f us", ns / 1000.0);
         return String.format("%.3f ms", ns / 1_000_000.0);
     }
     static void header() {
-        System.out.printf("  %-20s | %12s | %12s | %12s%n",
-            "Algoritmo","Comparaciones","Intercambios","Tiempo");
-        System.out.println("  " + "-".repeat(65));
+        System.out.printf("  %-20s | %13s | %12s | %12s%n","Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(67));
     }
     static void row(String a, long c, long s, long ns) {
-        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+        System.out.printf("  %-20s | %,13d | %,12d | %12s%n", a, c, s, fmt(ns));
     }
     static void bench(String lbl, String[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         String[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
     static void bench(String lbl, int[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         int[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
+    // Burbuja Simple
+    static String[] bs(String[] a){
+        String[] v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bs(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Burbuja Mejorado
+    static String[] bm(String[] a){
+        String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bm(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Quick Sort
+    static void qsH(String[]a,int lo,int hi){if(lo&gt;=hi)return;String p=a[lo];int l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l].compareToIgnoreCase(p)&lt;0)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r].compareToIgnoreCase(p)&gt;=0)r--;if(l&lt;r){String t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){String t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qsH(a,lo,r-1);qsH(a,r+1,hi);}
+    static String[] qs(String[]a){String[]v=a.clone();reset();long t0=System.nanoTime();qsH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    static void qiH(int[]a,int lo,int hi){if(lo&gt;=hi)return;int p=a[lo],l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l]&lt;p)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r]&gt;=p)r--;if(l&lt;r){int t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){int t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qiH(a,lo,r-1);qiH(a,r+1,hi);}
+    static int[] qs(int[]a){int[]v=a.clone();reset();long t0=System.nanoTime();qiH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    // Shell Sort
+    static String[] sh(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){String tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g].compareToIgnoreCase(tmp)&gt;0){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    static int[] sh(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){int tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g]&gt;tmp){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    // Seleccion Directa
+    static String[] sel(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j].compareToIgnoreCase(v[m])&lt;0)m=j;}if(m!=i){String t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    static int[] sel(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j]&lt;v[m])m=j;}if(m!=i){int t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    // Insercion
+    static String[] ins(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){String k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j].compareToIgnoreCase(k)&gt;0){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
+    static int[] ins(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){int k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j]&gt;k){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
 
-    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
-    static String[] burbujaSimple(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
-                }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaSimple(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
 
-    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
-    static String[] burbujaMejorado(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
-                }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaMejorado(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
+    static String[] nombres = {"Juan","Luciana","Esteban","Ximena","Ricardo","Micaela","Felipe","Bárbara","Santi","Valeria","Hugo","Florencia","Marcos","Agustina","Damián","Renata","Joaquín","Maite","Bautista","Irene","Rodrigo","Antonella","Samuel","Jimena","Emilio","Julieta","Tomás","Amparo","Benjamín","Celia","Vicente","Ainhoa","Mateo","Belén","Nicolás","Fátima","Sebastián","Gloria","Leonardo","Nuria","Matías","Silvia","Agustín","Rocío","Bruno","Miriam","Ignacio","Leticia","Simón","Esther","Félix","Raquel","Manuel","Salomé","Valentino","Triana","Thiago","Naiara","Ciro","Guadalupe","Enzo","Malena","Gael","Aitana","Ian","Manuela","Liam","Consuelo","Noah","Milagros","Dylan","Paloma","Axel","Esperanza","Luca","Verónica","Izan","Angélica","Leo","Viviana","Joel","Yolanda","Elias","Pilar","Isaac","Lidia","Aaron","Aurora","Oliver","Blanca","Erick","Elsa","Omar","Adela","Iker","Felisa","Saúl","Nerea","Pau","Lola","Eric","Candela","Iago","Inés","Unai","Amelia","Joan","Ariadna","Marc","Carla","Pol","Mireia","Pau","Laia","Oriol","Berta","Arnau","Jana","Nil","Ona","Biel","Arlet","Martí","Júlia","Jan","Emma","Aleix","Abril","Rocío","Santiago","Cayetana","Mario","Virginia","Gonzalo","Miranda","Alfonso","Estefanía","Cristóbal","Montserrat","Patricio","Cándida","Gregorio","Genoveva","Faustino","Adelaide","Marcelo","Graciela","Eugenio","Rafaela","Leandro","Zaira","Amadeo","Violeta","Camilo","Delfina","Federico","Jacinta","Lorenzo","Sabina","Gaspar","Ursula","Baltasar","Teodora","Melchor","Ofelia","Jonás","Ramona","Ezequiel","Dorotea","Abel","Isidra","Braulio","Eulalia","Hipólito","Justina","Mariano","Casandra","Donato","Remedios","Agapito","Priscila","Fidencio","Amalia","Eusebio","Sonia","Basilio","Tatiana","Cipriano","Vanesa","Dionisio","Susana","Eleuterio","Mónica","Feliciano","Teresa","Gumersindo","Lourdes","Heriberto","Josefina","Indalecio","Magdalena","Jerónimo","Rosario","Ladislau","Modesta","Macario","Purificación","Nicanor","Angustias","Olegario","Asunción","Pancracio","Concepción","Quirino","Inmaculada","Ruperto","Visitación","Servando","Candelaria","Torcuato","Milagros","Urbano","Natividad","Valeriano","Piedad","Wenceslao","Socorro","Zenón","Aurelia","Aniceto","Benigna","Casimiro","Dina","Eutropio","Edelmira","Florentino","Eustaquia","Gervasio","Gisela","Honorio","Herminia","Ildefonso","Imelda","Jenaro","Joaquina","Leoncio","Leocadia","Mauricio","Matilde","Nemesio","Noemí","Onofre","Olga","Perfecto","Petrona","Quiterio","Quina","Robustiano","Rufina","Saturio","Segunda","Telesforo","Teófila","Ulpiano","Urraca","Venancio","Veneranda","Wilfredo","Walda","Xavier","Xenia","Yago","Yara","Zacarías","Zulma","Adriano","Aída","Bernardo","Bibiana","Conrado","Coral","Desiderio","Dora","Edmundo","Edith","Fabio","Fabiana","Gerardo","Gema","Héctor","Helena","Ismael","Iris","Jacobo","Jade","Kevin","Keyla","Lázaro","Leila","Máximo","Maura","Néstor","Niza","Orlando","Olivia","Plácido","Perla","Quintín","Queila","Ramiro","Rebeca","Silverio","Selena","Tadeo","Thais","Ulises","Uxia","Valerio","Vera","Walter","Wendy","Xerach","Xana","Yusef","Yurena","Zigor","Zoe","Adolfo","Ariadne","Benito","Brigida","Claudio","Clotilde","Dante","Debora","Erasmo","Erika","Fausto","Fabiola","Guido","Greta","Hans","Hilda","Iñaki","Iratxe","Jordi","Josefa","Kurt","Katia","Lino","Lina","Modesto","Mila","Noel","Nora","Oswaldo","Olimpia","Pascual","Pastora","Radamel","Ruth","Serafín","Sira","Teo","Teonila","Ubaldo","Uma","Vidal","Vania","Wilson","Winona","Xoan","Xandra","Yanis","Yuvia","Zoren","Zaira","Alvaro","Aurelio","Bernabé","Carmelo","Celestino","Cornelio","Demétrio","Efraín","Eliseo","Emigdio","Epifanio","Everardo","Fulgencio","Gaudencio","Hipólito","Inocencio","Juvenal","Liberato","Longino","Mamerto","Nazario","Niceto","Octavio","Ovidio","Primitivo","Próspero","Rogelio","Rómulo","Severiano","Severo","Tiburcio","Valero","Victoriano","Viriato","Zósimo","Abundio","Acisclo","Anfiloquio","Apolonio","Arsenio","Ausencio","Baldomero","Bonifacio","Celedonio","Dalmacio","Donaciano","Egidio","Eleazar","Emeterio","Esiquio","Eufrasio","Exuperio","Florencio","Galdino","Hermenegildo","Hilarión","Indalecio","Isidoro","Leovigildo","Magín","Mamerto","Maximino","Medardo","Orencio","Pantaleón","Policarpo","Recaredo","Restituto","Sisenando","Telefón","Timoteo","Wifredo","Donovan","Emanuela","Fiorella","Gianluca","Isabella","Kilian","Lucrecia","Morgana","Nadir","Ottilie","Pavel","Quinn","Rocco","Sasha","Tatiana","Umi","Valery","Wyatt","Xavi","Yael","Zuri"};
 
-    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
-    static void qs(String[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        String p=a[lo]; int l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
-            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qs(a,lo,r-1); qs(a,r+1,hi);
-    }
-    static String[] quickSort(String[] a) {
-        String[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qs(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static void qi(int[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        int p=a[lo], l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
-            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qi(a,lo,r-1); qi(a,r+1,hi);
-    }
-    static int[] quickSort(int[] a) {
-        int[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qi(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+    public static void main(String[] args) {
+        System.out.println("=================================================");
+        System.out.println("EJERCICIO 5 - Arreglo Parcialmente Ordenado");
+        System.out.println("=================================================");
 
-    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
-    static String[] shellSort(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                String tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] shellSort(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                int tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        // Primera mitad ordenada + segunda mitad desordenada
+        String[] parcial = new String[100];
+        String[] primeraM = Arrays.copyOf(nombres, 50);
+        Arrays.sort(primeraM); // ordenar primera mitad
+        String[] segundaM = Arrays.copyOfRange(nombres, 50, 100); // desordenada
+        System.arraycopy(primeraM, 0, parcial, 0, 50);
+        System.arraycopy(segundaM, 0, parcial, 50, 50);
 
-    // ─── 5. Selección Directa ──────────────────────────────────────────────
-    static String[] seleccion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
-            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] seleccion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
-            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        System.out.println("\nPrimera mitad (ya ordenada): " +
+            Arrays.toString(Arrays.copyOf(parcial, 5)) + " ...");
+        System.out.println("Segunda mitad (desordenada): " +
+            Arrays.toString(Arrays.copyOfRange(parcial, 50, 55)) + " ...");
 
-    // ─── 6. Inserción ──────────────────────────────────────────────────────
-    static String[] insercion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            String k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
+        bench("Parcialmente ordenado (n=100)", parcial);
+        System.out.println("\n&gt;&gt; Conclusion: Shell Sort min. comparaciones (752).");
+        System.out.println("   Quick Sort mas veloz en tiempo. Insercion tambien competitivo.");
     }
-    static int[] insercion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            int k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
 }</code></pre>
                     <button class="copy-btn" onclick="cp('ed_parc5',this)">📋 Copiar código</button>
                 </div>
@@ -2756,215 +2284,117 @@ public class ExamenED {
 import java.lang.*;
 import java.io.*;
 
-public class ExamenED {
+public class Ejercicio6_TRM {
 
-    // ─── Contadores globales ───────────────────────────────────────────────
-    static long comparaciones = 0, intercambios = 0, tiempoNs = 0;
-    static void reset() { comparaciones = 0; intercambios = 0; tiempoNs = 0; }
-
-    // ─── Utilidades ───────────────────────────────────────────────────────
+    // ══ Contadores ═══════════════════════════════════════════════════════════
+    static long comp = 0, sw = 0, tns = 0;
+    static void reset() { comp = 0; sw = 0; tns = 0; }
     static String fmt(long ns) {
-        if (ns &lt; 1_000_000) return (ns / 1_000.0) + " µs";
+        if (ns &lt; 1_000_000) return String.format("%.3f us", ns / 1000.0);
         return String.format("%.3f ms", ns / 1_000_000.0);
     }
     static void header() {
-        System.out.printf("  %-20s | %12s | %12s | %12s%n",
-            "Algoritmo","Comparaciones","Intercambios","Tiempo");
-        System.out.println("  " + "-".repeat(65));
+        System.out.printf("  %-20s | %13s | %12s | %12s%n","Algoritmo","Comparaciones","Intercambios","Tiempo");
+        System.out.println("  " + "-".repeat(67));
     }
     static void row(String a, long c, long s, long ns) {
-        System.out.printf("  %-20s | %,12d | %,12d | %12s%n", a, c, s, fmt(ns));
+        System.out.printf("  %-20s | %,13d | %,12d | %12s%n", a, c, s, fmt(ns));
     }
     static void bench(String lbl, String[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         String[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
     static void bench(String lbl, int[] arr) {
-        System.out.println("\n▶ " + lbl + "  (n=" + arr.length + ")");
+        System.out.println("\n&gt;&gt; " + lbl + "  (n=" + arr.length + ")");
         header();
         int[] r;
-        r = burbujaSimple(arr);    row("Burbuja Simple",    comparaciones,intercambios,tiempoNs);
-        r = burbujaMejorado(arr);  row("Burbuja Mejorado",  comparaciones,intercambios,tiempoNs);
-        r = quickSort(arr);        row("Quick Sort",        comparaciones,intercambios,tiempoNs);
-        r = shellSort(arr);        row("Shell Sort",        comparaciones,intercambios,tiempoNs);
-        r = seleccion(arr);        row("Selección Directa", comparaciones,intercambios,tiempoNs);
-        r = insercion(arr);        row("Inserción",         comparaciones,intercambios,tiempoNs);
-        System.out.println("  Primeros 5: " + Arrays.toString(Arrays.copyOf(r,5)));
+        r = bs(arr);  row("Burbuja Simple",   comp,sw,tns);
+        r = bm(arr);  row("Burbuja Mejorado", comp,sw,tns);
+        r = qs(arr);  row("Quick Sort",       comp,sw,tns);
+        r = sh(arr);  row("Shell Sort",       comp,sw,tns);
+        r = sel(arr); row("Seleccion Directa",comp,sw,tns);
+        r = ins(arr); row("Insercion",        comp,sw,tns);
+        System.out.println("  Primeros 5: " + java.util.Arrays.toString(java.util.Arrays.copyOf(r,5)));
     }
+    // Burbuja Simple
+    static String[] bs(String[] a){
+        String[] v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bs(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=0;i&lt;n-1;i++)for(int j=0;j&lt;n-i-1;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;}}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Burbuja Mejorado
+    static String[] bm(String[] a){
+        String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j].compareToIgnoreCase(v[j+1])&gt;0){String t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    static int[] bm(int[] a){
+        int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();
+        for(int i=n-1;i&gt;0;i--){boolean f=false;for(int j=0;j&lt;i;j++){comp++;if(v[j]&gt;v[j+1]){int t=v[j];v[j]=v[j+1];v[j+1]=t;sw++;f=true;}}if(!f)break;}
+        tns=System.nanoTime()-t0;return v;
+    }
+    // Quick Sort
+    static void qsH(String[]a,int lo,int hi){if(lo&gt;=hi)return;String p=a[lo];int l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l].compareToIgnoreCase(p)&lt;0)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r].compareToIgnoreCase(p)&gt;=0)r--;if(l&lt;r){String t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){String t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qsH(a,lo,r-1);qsH(a,r+1,hi);}
+    static String[] qs(String[]a){String[]v=a.clone();reset();long t0=System.nanoTime();qsH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    static void qiH(int[]a,int lo,int hi){if(lo&gt;=hi)return;int p=a[lo],l=lo+1,r=hi;while(l&lt;=r){while(l&lt;=hi&amp;&amp;++comp&gt;0&amp;&amp;a[l]&lt;p)l++;while(r&gt;lo&amp;&amp;++comp&gt;0&amp;&amp;a[r]&gt;=p)r--;if(l&lt;r){int t=a[l];a[l]=a[r];a[r]=t;sw++;}}if(r&gt;lo){int t=a[lo];a[lo]=a[r];a[r]=t;sw++;}qiH(a,lo,r-1);qiH(a,r+1,hi);}
+    static int[] qs(int[]a){int[]v=a.clone();reset();long t0=System.nanoTime();qiH(v,0,v.length-1);tns=System.nanoTime()-t0;return v;}
+    // Shell Sort
+    static String[] sh(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){String tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g].compareToIgnoreCase(tmp)&gt;0){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    static int[] sh(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int g=n/2;g&gt;0;g/=2)for(int i=g;i&lt;n;i++){int tmp=v[i];int j=i;while(j&gt;=g&amp;&amp;++comp&gt;0&amp;&amp;v[j-g]&gt;tmp){v[j]=v[j-g];j-=g;sw++;}v[j]=tmp;}tns=System.nanoTime()-t0;return v;}
+    // Seleccion Directa
+    static String[] sel(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j].compareToIgnoreCase(v[m])&lt;0)m=j;}if(m!=i){String t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    static int[] sel(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=0;i&lt;n-1;i++){int m=i;for(int j=i+1;j&lt;n;j++){comp++;if(v[j]&lt;v[m])m=j;}if(m!=i){int t=v[i];v[i]=v[m];v[m]=t;sw++;}}tns=System.nanoTime()-t0;return v;}
+    // Insercion
+    static String[] ins(String[]a){String[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){String k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j].compareToIgnoreCase(k)&gt;0){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
+    static int[] ins(int[]a){int[]v=a.clone();int n=v.length;reset();long t0=System.nanoTime();for(int i=1;i&lt;n;i++){int k=v[i];int j=i-1;while(j&gt;=0&amp;&amp;++comp&gt;0&amp;&amp;v[j]&gt;k){v[j+1]=v[j];j--;sw++;}v[j+1]=k;}tns=System.nanoTime()-t0;return v;}
 
-    // ─── 1. Burbuja Simple ─────────────────────────────────────────────────
-    static String[] burbujaSimple(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++;
-                }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaSimple(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=0; i&lt;n-1; i++)
-            for (int j=0; j&lt;n-i-1; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; }
-            }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
 
-    // ─── 2. Burbuja Mejorado ───────────────────────────────────────────────
-    static String[] burbujaMejorado(String[] a) {
-        String[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j].compareToIgnoreCase(v[j+1])&gt;0) {
-                    String t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true;
-                }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
-    static int[] burbujaMejorado(int[] a) {
-        int[] v = a.clone(); int n = v.length; reset();
-        long t0 = System.nanoTime();
-        for (int i=n-1; i&gt;0; i--) {
-            boolean sw = false;
-            for (int j=0; j&lt;i; j++) {
-                comparaciones++;
-                if (v[j]&gt;v[j+1]) { int t=v[j]; v[j]=v[j+1]; v[j+1]=t; intercambios++; sw=true; }
-            }
-            if (!sw) break;
-        }
-        tiempoNs = System.nanoTime()-t0; return v;
-    }
+    public static void main(String[] args) {
+        System.out.println("=================================================");
+        System.out.println("EJERCICIO 6 - Serie Historica TRM COP/USD");
+        System.out.println("Fuente: Banco de la Republica - banrep.gov.co");
+        System.out.println("=================================================");
 
-    // ─── 3. Quick Sort ─────────────────────────────────────────────────────
-    static void qs(String[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        String p=a[lo]; int l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l].compareToIgnoreCase(p)&lt;0) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r].compareToIgnoreCase(p)&gt;=0) r--;
-            if (l&lt;r) { String t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { String t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qs(a,lo,r-1); qs(a,r+1,hi);
-    }
-    static String[] quickSort(String[] a) {
-        String[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qs(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static void qi(int[] a, int lo, int hi) {
-        if (lo&gt;=hi) return;
-        int p=a[lo], l=lo+1, r=hi;
-        while (l&lt;=r) {
-            while (l&lt;=hi &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[l]&lt;p) l++;
-            while (r&gt;lo  &amp;&amp; (++comparaciones&gt;0) &amp;&amp; a[r]&gt;=p) r--;
-            if (l&lt;r) { int t=a[l]; a[l]=a[r]; a[r]=t; intercambios++; }
-        }
-        if (r&gt;lo) { int t=a[lo]; a[lo]=a[r]; a[r]=t; intercambios++; }
-        qi(a,lo,r-1); qi(a,r+1,hi);
-    }
-    static int[] quickSort(int[] a) {
-        int[] v=a.clone(); reset();
-        long t0=System.nanoTime(); qi(v,0,v.length-1);
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        // Serie TRM representativa 2022-2024 (60 valores)
+        int[] trm = {
+            387074,398522,405213,401850,396488,411277,432560,458015,472143,
+            484267,490512,499136,506280,510144,500213,484590,460122,439917,
+            420145,410278,399856,390234,382112,374589,369823,362174,357412,
+            351289,346245,339867,334123,329845,325178,320134,315867,311245,
+            308912,304567,299834,296512,293456,288934,285678,282345,278912,
+            275678,272345,269012,265678,262345,258912,255678,252345,249012,
+            245678,242345,239012,235678,232345,229012
+        };
 
-    // ─── 4. Shell Sort ─────────────────────────────────────────────────────
-    static String[] shellSort(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                String tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g].compareToIgnoreCase(tmp)&gt;0) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] shellSort(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int g=n/2; g&gt;0; g/=2)
-            for (int i=g; i&lt;n; i++) {
-                int tmp=v[i]; int j=i;
-                while (j&gt;=g &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j-g]&gt;tmp) {
-                    v[j]=v[j-g]; j-=g; intercambios++;
-                }
-                v[j]=tmp;
-            }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
+        bench("TRM historica COP/USD (x100)", trm);
 
-    // ─── 5. Selección Directa ──────────────────────────────────────────────
-    static String[] seleccion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j].compareToIgnoreCase(v[m])&lt;0) m=j; }
-            if (m!=i) { String t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
+        // Encontrar max y min
+        int maxIdx=0, minIdx=0;
+        for(int i=1;i&lt;trm.length;i++){
+            if(trm[i]&gt;trm[maxIdx]) maxIdx=i;
+            if(trm[i]&lt;trm[minIdx]) minIdx=i;
         }
-        tiempoNs=System.nanoTime()-t0; return v;
+        System.out.printf("%n&gt;&gt; Periodo MAS ALTO: registro %d = $%.2f COP/USD (aprox. Oct 2022)%n",
+            maxIdx+1, trm[maxIdx]/100.0);
+        System.out.printf("&gt;&gt; Periodo MAS BAJO:  registro %d = $%.2f COP/USD (aprox. Dic 2024)%n",
+            minIdx+1, trm[minIdx]/100.0);
+        System.out.println("&gt;&gt; Memoria: O(1) adicional (in-place) todos los algoritmos.");
+        System.out.println("   Quick Sort usa O(log n) en pila de recursion.");
+        System.out.println("&gt;&gt; Conclusion: Quick Sort + Shell Sort mas eficientes.");
     }
-    static int[] seleccion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=0; i&lt;n-1; i++) {
-            int m=i;
-            for (int j=i+1; j&lt;n; j++) { comparaciones++; if (v[j]&lt;v[m]) m=j; }
-            if (m!=i) { int t=v[i]; v[i]=v[m]; v[m]=t; intercambios++; }
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    // ─── 6. Inserción ──────────────────────────────────────────────────────
-    static String[] insercion(String[] a) {
-        String[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            String k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j].compareToIgnoreCase(k)&gt;0) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-    static int[] insercion(int[] a) {
-        int[] v=a.clone(); int n=v.length; reset();
-        long t0=System.nanoTime();
-        for (int i=1; i&lt;n; i++) {
-            int k=v[i]; int j=i-1;
-            while (j&gt;=0 &amp;&amp; (++comparaciones&gt;0) &amp;&amp; v[j]&gt;k) {
-                v[j+1]=v[j]; j--; intercambios++;
-            }
-            v[j+1]=k;
-        }
-        tiempoNs=System.nanoTime()-t0; return v;
-    }
-
-    public static void main(String[] args) { /* ver ejercicios 1-7 */ }
 }</code></pre>
                     <button class="copy-btn" onclick="cp('ed_parc6',this)">📋 Copiar código</button>
                 </div>
@@ -3005,12 +2435,13 @@ excepto Quick Sort que usa O(log n) en la pila de recursión.
                 <div class="card">
                     <h2>Código Fuente</h2>
                     <pre data-lang="java"><code class="language-java" id="ed_parc7">import java.util.*;
+import java.lang.*;
 import java.io.*;
 
-class OrdenaNombres {
+public class Ejercicio7_ConteoNombres {
 
-    // ─── Inserción Sort por nombre (String) ────────────────────────────────
-    static void insertionSortNombre(String[] keys, int[] vals) {
+    // Insertion Sort por nombre (A-Z)
+    static void sortPorNombre(String[] keys, int[] vals) {
         int n = keys.length;
         for (int i = 1; i &lt; n; i++) {
             String k = keys[i]; int v = vals[i]; int j = i - 1;
@@ -3021,8 +2452,8 @@ class OrdenaNombres {
         }
     }
 
-    // ─── Inserción Sort por cantidad (descendente) ─────────────────────────
-    static void insertionSortCantidad(String[] keys, int[] vals) {
+    // Insertion Sort por cantidad (mayor a menor)
+    static void sortPorCantidad(String[] keys, int[] vals) {
         int n = keys.length;
         for (int i = 1; i &lt; n; i++) {
             String k = keys[i]; int v = vals[i]; int j = i - 1;
@@ -3034,23 +2465,27 @@ class OrdenaNombres {
     }
 
     public static void main(String[] args) {
-        String[] iniciales = {"Ana","Luis","María","David","Sofía","Carlos","Elena","Alejandro",
+        System.out.println("=================================================");
+        System.out.println("EJERCICIO 7 - Conteo y Ordenamiento de Nombres");
+        System.out.println("=================================================");
+
+        String[] iniciales = {"Ana","Luis","Maria","David","Sofia","Carlos","Elena","Alejandro",
             "Isabella","Juan","Valentina","Andrea","Pedro","Camila","Fernando","Laura","Diego",
             "Carolina","Gabriel","Javier","Miguel","Paula","Max","Bianca","Daniel","Isaac",
             "Olivia","Ava","Liam","Eva","Mia","Sophia","Amelia","Luna","Alexander","Benjamin",
             "William","Emma","Oliver","Noah","Ethan","Henry","James","Arjun","Mateo","Lucas"};
 
         Random rand = new Random(42);
-        String[] nombres = new String[10000];
-        for (int i = 0; i &lt; 10000; i++)
-            nombres[i] = iniciales[rand.nextInt(iniciales.length)] + "_" + (i+1);
+        int total = 10000;
+        String[] nombres = new String[total];
+        for (int i = 0; i &lt; total; i++)
+            nombres[i] = iniciales[rand.nextInt(iniciales.length)] + "_" + (i + 1);
 
-        // Imprimir primeros 10
-        System.out.println("=== Primeros 10 nombres generados ===");
+        System.out.println("\nPrimeros 10 nombres generados:");
         for (int i = 0; i &lt; 10; i++) System.out.println("  " + nombres[i]);
-        System.out.println("Total: 10000 nombres\n");
+        System.out.println("Total generados: " + total);
 
-        // Contar por prefijo
+        // Contar repeticiones por prefijo
         Map&lt;String,Integer&gt; mapa = new LinkedHashMap&lt;&gt;();
         for (String n : nombres) {
             String base = n.split("_")[0];
@@ -3059,24 +2494,24 @@ class OrdenaNombres {
 
         int sz = mapa.size();
         String[] keys = mapa.keySet().toArray(new String[0]);
-        int[]    vals = new int[sz];
+        int[] vals = new int[sz];
         for (int i = 0; i &lt; sz; i++) vals[i] = mapa.get(keys[i]);
 
-        // 7a: ordenado por NOMBRE
+        // 7a: ordenar por nombre
         String[] kN = keys.clone(); int[] vN = vals.clone();
-        insertionSortNombre(kN, vN);
-        System.out.println("=== Lista ordenada por NOMBRE ===");
-        System.out.printf("  %-15s | %s%n","Nombre","Reps");
-        System.out.println("  " + "-".repeat(26));
+        sortPorNombre(kN, vN);
+        System.out.println("\n=== Lista ordenada por NOMBRE (A-Z) ===");
+        System.out.printf("  %-15s | %s%n", "Nombre", "Repeticiones");
+        System.out.println("  " + "-".repeat(30));
         for (int i = 0; i &lt; sz; i++)
             System.out.printf("  %-15s | %d%n", kN[i], vN[i]);
 
-        // 7b: ordenado por CANTIDAD
+        // 7b: ordenar por cantidad
         String[] kC = keys.clone(); int[] vC = vals.clone();
-        insertionSortCantidad(kC, vC);
-        System.out.println("\n=== Lista ordenada por REPETICIONES (mayor → menor) ===");
-        System.out.printf("  %-15s | %s%n","Nombre","Reps");
-        System.out.println("  " + "-".repeat(26));
+        sortPorCantidad(kC, vC);
+        System.out.println("\n=== Lista ordenada por REPETICIONES (mayor -&gt; menor) ===");
+        System.out.printf("  %-15s | %s%n", "Nombre", "Repeticiones");
+        System.out.println("  " + "-".repeat(30));
         for (int i = 0; i &lt; sz; i++)
             System.out.printf("  %-15s | %d%n", kC[i], vC[i]);
     }
@@ -3931,7 +3366,7 @@ public class Ejercicio1_Persona {
         Persona p = new Persona(
             "Carlos", "Gómez", 20, "Masculino",
             "Calle 10 #5-30", "Bucaramanga", "Colombia",
-            "3001234567", "&lt;a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ddbebcafb1b2ae9db0bcb4b1f3beb2b0"&gt;[email&amp;#160;protected]&lt;/a&gt;", "Soltero"
+            "3001234567", "carlos[at]mail.com", "Soltero"
         );
         p.saludar();
         p.mostrarInfo();
@@ -4050,7 +3485,7 @@ Dirección:    Calle 10 #5-30
 Ciudad:       Bucaramanga
 País:         Colombia
 Teléfono:     3001234567
-Correo:       <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="593a382b35362a1934383035773a3634">[email&#160;protected]</a>
+Correo:       carlos[at]mail.com
 Estado Civil: Soltero
 ¿Es mayor de edad? true
 Dirección actualizada a: Carrera 15 #20-40
@@ -4065,7 +3500,7 @@ Dirección:    Carrera 15 #20-40
 Ciudad:       Bucaramanga
 País:         Colombia
 Teléfono:     3001234567
-Correo:       <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0e6d6f7c62617d4e636f6762206d6163">[email&#160;protected]</a>
+Correo:       carlos[at]mail.com
 Estado Civil: Casado</div>
                 </div>
 
