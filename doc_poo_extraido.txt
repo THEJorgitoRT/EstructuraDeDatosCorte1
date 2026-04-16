@@ -1,0 +1,100 @@
+﻿Fecha:--  
+Nombre:--CÃ³digo: --
+Docente: Jeison Mauricio Delgado GonzÃ¡lez
+Lea atentamente las recomendaciones para desarrollar cada enunciado.Lea atentamente las recomendaciones para desarrollar cada enunciado.
+Lea atentamente las recomendaciones para desarrollar cada enunciado.
+Lea atentamente las recomendaciones para desarrollar cada enunciado.
+Construya un programa en Java para cada ejercicio aplicando las tÃ©cnicas vistas en clase, documentado y estructurado, ademÃ¡s presente sus resultados en una aplicaciÃ³n web con los resultados y los anÃ¡lisis obtenidos, recuerden primero diseÃ±en las clases y luego construyan el cÃ³digo, despuÃ©s validen y corrijan errores.
+EJERCICIOS
+Una empresa necesita gestionar diferentes tipos de empleados. Todos tienen nombre, cÃ©dula y salario base, pero:
+Los empleados administrativos reciben un bono del 10% sobre su salario base.
+Los vendedores ganan comisiÃ³n del 5% sobre sus ventas mensuales (ademÃ¡s del salario base).
+Los gerentes tienen un bono fijo de $500 y reciben 2% de comisiÃ³n sobre las ventas totales de su departamento.
+La cascarita: La empresa acaba de crear una nueva categorÃ­a: "empleados temporales" que son administrativos pero solo reciben el 50% del bono normal. AdemÃ¡s, el director general quiere ver el salario anual (no mensual) de cada empleado cuando genera reportes.
+Requisitos:
+Implementar la jerarquÃ­a considerando que el cÃ¡lculo del salario total puede variar.
+Incluir un mÃ©todo que permita calcular el salario anual.
+Considerar cÃ³mo manejar los empleados temporales sin duplicar cÃ³digo.
+EstÃ¡s desarrollando una plataforma de streaming que maneja diferentes tipos de contenido multimedia:
+PelÃ­culas: tienen tÃ­tulo, duraciÃ³n, director y calificaciÃ³n por edades
+Series: tienen tÃ­tulo, nÃºmero de temporadas, nÃºmero de episodios totales y calificaciÃ³n
+Documentales: tienen tÃ­tulo, duraciÃ³n, tema y si es apto para menores
+La cascarita: La plataforma necesita calcular el "tiempo total de visualizaciÃ³n" pero de formas diferentes:
+PelÃ­culas: retornan su duraciÃ³n directa
+Series: cada episodio dura aproximadamente 45 minutos
+Documentales: su duraciÃ³n mÃ¡s 15 minutos de "contenido adicional"
+AdemÃ¡s, algunos contenidos son "contenido premium" que requieren suscripciÃ³n especial. Las pelÃ­culas pueden ser premium, pero todos los documentales cientÃ­ficos son premium automÃ¡ticamente.
+Requisitos:
+DiseÃ±ar una jerarquÃ­a que evite la repeticiÃ³n del atributo "premium"
+Implementar el cÃ¡lculo de tiempo considerando las reglas especÃ­ficas
+Â¿CÃ³mo manejarÃ­as que un documental cientÃ­fico sea automÃ¡ticamente premium?
+Un concesionario vende diferentes vehÃ­culos:
+AutomÃ³viles: marca, modelo, aÃ±o, precio, nÃºmero de puertas, tipo de combustible
+Motocicletas: marca, modelo, aÃ±o, precio, cilindrada, tipo (deportiva/touring/cruiser)
+Camiones: marca, modelo, aÃ±o, precio, capacidad de carga, nÃºmero de ejes
+La cascarita: El concesionario aplica descuentos segÃºn antigÃ¼edad del vehÃ­culo:
+Modelos del aÃ±o actual: sin descuento
+Modelos del aÃ±o anterior: 5% de descuento
+Modelos de 2 aÃ±os atrÃ¡s: 10% de descuento
+Modelos mÃ¡s antiguos: 15% de descuento
+PERO, las motocicletas deportivas nunca tienen descuento sin importar el aÃ±o (son de colecciÃ³n), y los camiones tienen un descuento adicional de 3% si su capacidad supera las 5 toneladas.
+Requisitos:
+Implementar el cÃ¡lculo de precio final considerando las reglas especÃ­ficas
+El aÃ±o actual debe obtenerse de alguna forma dinÃ¡mica
+Â¿DeberÃ­as sobrescribir el mÃ©todo de descuento en cada clase o hay mejor alternativa?
+Un banco maneja distintos tipos de cuentas:
+Cuenta de Ahorros: tiene nÃºmero de cuenta, titular, saldo, y genera 0.5% de interÃ©s mensual
+Cuenta Corriente: nÃºmero de cuenta, titular, saldo, y permite sobregiro hasta $500
+Cuenta NÃ³mina: nÃºmero de cuenta, titular, saldo, sin intereses pero sin comisiones
+La cascarita: Al hacer retiros:
+Cuenta de Ahorros: cobra $2 de comisiÃ³n por retiro si el saldo queda menor a $100
+Cuenta Corriente: permite retirar incluso quedando negativo (hasta -$500), pero cobra $5 de comisiÃ³n por sobregiro
+Cuenta NÃ³mina: no cobra comisiones, pero no permite que el saldo quede negativo
+Los depÃ³sitos son sin comisiÃ³n en todas, EXCEPTO en Cuenta Corriente cuando el saldo estÃ¡ en negativo (primero debe cubrir el sobregiro).
+Requisitos:
+Implementar los mÃ©todos de retiro y depÃ³sito considerando las reglas especÃ­ficas
+Manejar adecuadamente las excepciones o casos donde no se permita la operaciÃ³n
+Â¿CÃ³mo representarÃ­as el comportamiento diferente del depÃ³sito en cuenta con sobregiro?
+Un hotel maneja diferentes tipos de habitaciones:
+HabitaciÃ³n Simple: nÃºmero, precio por noche, capacidad (1-2 personas)
+HabitaciÃ³n Doble: nÃºmero, precio por noche, capacidad (2-4 personas), tiene vista al mar
+Suite: nÃºmero, precio por noche, capacidad (2-6 personas), tiene jacuzzi y sala
+La cascarita: El costo total de una reserva se calcula asÃ­:
+Precio por noche Ã— nÃºmero de noches
+Si la reserva es en temporada alta (junio, julio, diciembre): +25% al precio
+Si excede la capacidad estÃ¡ndar pero estÃ¡ dentro del mÃ¡ximo: +$20 por noche por persona adicional
+Las suites incluyen desayuno gratis, pero las demÃ¡s pagan $10 por persona por noche
+Los clientes VIP tienen 15% de descuento en el total, PERO este descuento NO aplica sobre los cargos por personas adicionales.
+Requisitos:
+Implementar el cÃ¡lculo del costo total considerando todas las variables
+El mes de la reserva debe recibirse como parÃ¡metro
+Â¿CÃ³mo estructurarÃ­as la jerarquÃ­a para que el desayuno se maneje de forma diferente?
+Motor de Reservas de Vuelos 
+Objetivo: ComposiciÃ³n de clases (Una clase que contiene a otra).
+El Reto: DiseÃ±ar tres clases: Pasajero, Vuelo y Reserva.
+LÃ³gica: Un Vuelo tiene un cupo mÃ¡ximo. La clase Reserva debe vincular a un Pasajero con un Vuelo.
+RestricciÃ³n: Al crear una nueva Reserva, el sistema debe verificar automÃ¡ticamente si el Vuelo seleccionado aÃºn tiene asientos disponibles. Si el cupo estÃ¡ lleno, la reserva no debe crearse. Se debe mostrar un reporte de todos los pasajeros en un vuelo especÃ­fico.
+Sistema de GestiÃ³n de Biblioteca Interactiva
+Objetivo: Manejo de arreglos de objetos y estados.
+El Reto: Crear una clase Libro (tÃ­tulo, autor, ISBN, disponible) y una clase Biblioteca.
+LÃ³gica: La biblioteca debe permitir buscar libros por tÃ­tulo y realizar "prÃ©stamos". Si un libro se presta, su estado cambia a "no disponible". Si el usuario intenta prestar un libro que ya estÃ¡ fuera, el sistema debe lanzar un mensaje de error.
+InteracciÃ³n: El usuario debe poder ver una lista de solo los libros disponibles.
+Sistema de Cajero AutomÃ¡tico
+Objetivo: Simular operaciones bancarias bÃ¡sicas.
+Reto: Crear las clases Clases: Cuenta: nÃºmero, saldo, PIN. Cliente: nombre, lista de cuentas. Transaccion: tipo, monto, fecha.
+LÃ³gica: Se debe presentar la siguiente funcionalidad, Iniciar sesiÃ³n con nÃºmero de cuenta y PIN, Consultar saldo, Depositar, Retirar (validar fondos), Ver historial de transacciones.
+Dificultad extra: 
+Bloquear cuenta tras 3 intentos fallidos.
+Manejar mÃºltiples cuentas por cliente.
+Sistema de Registro AcadÃ©mico
+Objetivo: Administrar estudiantes, cursos y calificaciones.
+Clases:Estudiante: nombre, cÃ³digo. Curso: nombre, crÃ©ditos. Nota: estudiante, curso, valor. 
+LÃ³gica: Se debe presentar la siguiente funcionalidad, Registrar estudiantes y cursos. Asignar estudiantes a cursos. Registrar notas. Calcular promedio por estudiante. Mostrar estudiantes en riesgo (<3.0). 
+Dificultad extra:
+Calcular promedio ponderado por crÃ©ditos. 
+Ranking de estudiantes.
+Torneo de videojuegos
+Objetivo: GestiÃ³n de jugadores, equipos, partidas y tabla de posiciones conpuntajes acumulados.
+Clases: Clase Jugador con nombre, alias y puntuaciÃ³n total. Clase Equipo con lista de jugadores y nombre. Clase Partida con equipos, resultado y fecha. Clase Torneo que registre partidas y genere ranking
+LÃ³gica: Implementar Comparable para ordenar jugadores por puntaje
+Â¡Ã‰XITOS!
