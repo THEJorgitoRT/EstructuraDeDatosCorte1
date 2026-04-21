@@ -195,6 +195,33 @@
             color: #b0e0ff;
         }
         
+        .output-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            color: #b0e0ff;
+        }
+        
+        .output-table th,
+        .output-table td {
+            border: 1px solid #1e2a3a;
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .output-table th {
+            background: #11161f;
+            color: #00d4ff;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.7px;
+        }
+        
+        .output-table tbody tr:nth-child(even) {
+            background: #0f141d;
+        }
+        
         .output-label {
             font-size: 11px;
             color: #00d4ff;
@@ -325,6 +352,14 @@
                 <div class="card">
                     <pre data-lang="java"><code class="language-java" id="ed1">import java.util.Arrays;
 
+// Objetivo: comparar Burbuja, Inserción y Selección sobre el mismo arreglo.
+// Se registran comparaciones, intercambios y tiempo para justificar el método recomendado.
+// Flujo documentado:
+// 1) Preparar datos de prueba (nombres y números).
+// 2) Clonar el arreglo numérico para evaluar cada algoritmo en igualdad de condiciones.
+// 3) Ejecutar y medir Burbuja, Inserción y Selección.
+// 4) Imprimir comparativa y validar orden alfabético.
+
 public class Main {
     static class Resultado {
         String metodo;
@@ -343,10 +378,12 @@ public class Main {
         for (int i = 0; i &lt; arr.length - 1; i++) {
             for (int j = 0; j &lt; arr.length - i - 1; j++) {
                 r.comparaciones++;
+                // Aquí sumamos 1 comparación: si antes era 10, ahora pasa a 11.
                 if (arr[j] &gt; arr[j + 1]) {
                     int tmp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = tmp;
+                    // Se hizo un intercambio real entre dos posiciones.
                     r.intercambios++;
                 }
             }
@@ -363,8 +400,10 @@ public class Main {
             int j = i - 1;
             while (j &gt;= 0) {
                 r.comparaciones++;
+                // Se compara el elemento de la izquierda contra la llave actual.
                 if (arr[j] &gt; key) {
                     arr[j + 1] = arr[j];
+                    // Ejemplo: si key=5 y a[j]=9, el 9 se mueve a la derecha para abrir espacio.
                     r.intercambios++;
                     j--;
                 } else {
@@ -384,6 +423,7 @@ public class Main {
             int min = i;
             for (int j = i + 1; j &lt; arr.length; j++) {
                 r.comparaciones++;
+                // Revisamos si encontramos un nuevo mínimo en esta pasada.
                 if (arr[j] &lt; arr[min]) {
                     min = j;
                 }
@@ -392,6 +432,7 @@ public class Main {
                 int tmp = arr[i];
                 arr[i] = arr[min];
                 arr[min] = tmp;
+                // Solo contamos intercambio cuando realmente cambia de posición.
                 r.intercambios++;
             }
         }
@@ -399,12 +440,33 @@ public class Main {
         return r;
     }
 
-    static void imprimir(Resultado r) {
-        System.out.printf("%-10s | comp=%d | interc=%d | tiempo=%d ns%n",
-                r.metodo, r.comparaciones, r.intercambios, r.tiempoNs);
+    static void fila(String estructura, String memoria, String tiempo, String iteraciones, String comparaciones, String intercambios, String recursiva) {
+        System.out.printf("| %-20s | %-10s | %-12s | %-11s | %-13s | %-12s | %-9s |%n",
+                estructura, memoria, tiempo, iteraciones, comparaciones, intercambios, recursiva);
+    }
+
+    static void imprimirTablaCompleta(Resultado burbuja, Resultado insercion, Resultado seleccion) {
+        String sep = "+----------------------+------------+--------------+-------------+---------------+--------------+-----------+";
+        System.out.println(sep);
+        fila("Estructura", "Memoria", "Tiempo", "Iteraciones", "Comparaciones", "Intercambios", "Recursiva");
+        System.out.println(sep);
+        fila("Burbuja Simple", "-", burbuja.tiempoNs + " ns", "-", String.valueOf(burbuja.comparaciones), String.valueOf(burbuja.intercambios), "No");
+        fila("Burbuja Mejorado", "-", "-", "-", "-", "-", "No");
+        fila("Quick Sort", "-", "-", "-", "-", "-", "Si");
+        fila("Shell Sort", "-", "-", "-", "-", "-", "No");
+        fila("Seleccion Directa", "-", seleccion.tiempoNs + " ns", "-", String.valueOf(seleccion.comparaciones), String.valueOf(seleccion.intercambios), "No");
+        fila("Insercion Simple", "-", insercion.tiempoNs + " ns", "-", String.valueOf(insercion.comparaciones), String.valueOf(insercion.intercambios), "No");
+        fila("Shaker", "-", "-", "-", "-", "-", "No");
+        fila("MergeSort", "-", "-", "-", "-", "-", "Si");
+        fila("RadixSort", "-", "-", "-", "-", "-", "No");
+        fila("Metodo de Monticulo", "-", "-", "-", "-", "-", "No");
+        fila("Metodo del Cubo", "-", "-", "-", "-", "-", "No");
+        fila("Counting Sort", "-", "-", "-", "-", "-", "No");
+        System.out.println(sep);
     }
 
     public static void main(String[] args) {
+        // PASO 1: definir datos de entrada para pruebas de ordenamiento.
         String[] nombresDesordenados = {
                 "Sebastián", "Valeria", "Mateo", "Isabella", "Leonardo", "Daniela", "Emilio", "Gabriela", "Nicolás", "Renata", "Benjamín", "Jimena", "Santiago", "Adriana", "Rodrigo", "Fernanda", "Maximiliano", "Carolina", "Tomás", "Mónica", "Felipe", "Alejandra", "Ignacio", "Mariana", "Esteban", "Silvia", "Ángel", "Teresa", "Hugo", "Rosa", "Ramón", "Pilar", "Arturo", "Gloria", "Gustavo", "Rocío", "Enrique", "Amparo", "Roberto", "Dolores", "Alfredo", "Mercedes", "Eduardo", "Inés", "Lorenzo", "Concepción", "Martín", "Estrella", "Armando", "Luz", "Julio", "Francisca", "Agustín", "Antonia", "Rafael", "Remedios", "César", "Encarnación", "Vicente", "Josefa", "Ernesto gustavo", "Blanca", "Jaime", "Ángeles", "Héctor", "Trinidad", "Mauricio", "Dolores", "Germán", "Rosario", "Salvador", "Consuelo", "Tomás", "Soledad", "Alonso", "Asunción", "Julián", "Milagros", "Bruno", "Esperanza", "Marcos", "Paz", "Damián", "Fe", "Emiliano", "Caridad", "Matías", "Purificación", "Fabián", "Nieves", "Orlando", "Angustias", "Patricio", "Socorro", "Ezequiel", "Virtudes", "Simón", "Visitación", "Baltasar", "Rosalía", "Leandro", "Araceli", "Octavio", "Nuria", "Luciano", "Montserrat", "Silvio", "Begoña", "Eugenio", "Inmaculada", "Claudio", "Guadalupe", "Horacio", "Piedad", "Valentín", "Amparo", "Lisandro", "Azucena", "Celso", "Jacinta", "Dante", "Lorena", "Gaspar", "Miriam", "Urbano", "Rebeca", "Feliciano", "Raquel", "Zacarías", "Judith", "Bautista", "Lidia", "Dámaso", "Noemi", "Elías", "Débora", "Isaías", "Esther", "Jonás", "Ruth", "Melchor", "Abigail", "Salomón", "Raquel", "Tobías", "Susana", "Abdón", "Leticia", "Acisclo", "Gema", "Abelardo", "Elisa", "Adán", "Diana", "Adolfo", "Alicia", "Albino", "Cecilia", "Alcides", "Silvia", "Amadeo", "Olga", "Ambrosio", "Irene", "Amílcar", "Paloma", "Anastasio", "Celia", "Anselmo", "Sonia", "Apolinar", "Yolanda", "Aquiles", "Elvira", "Arcadio", "Angélica", "Ariel", "Bárbara", "Aristóteles", "Catalina", "Arnaldo", "Clotilde", "Arsenio", "Magdalena", "Atanasio", "Aurelia", "Augusto", "Hortensia", "Aureliano", "Flora", "Bartolomé", "Delia", "Basilio", "Eugenia", "Belisario", "Fabiola", "Benedicto", "Felisa", "Bernabé", "Filomena", "Blas", "Herminia", "Bonifacio", "Josefina", "Calixto", "Leocadia", "Casimiro", "Leonor", "Cayetano", "Luisa", "Celestino", "Matilde", "Cipriano", "Micaela", "Cirilo", "Petra", "Clemente", "Ramona", "Constantino", "Regina", "Cornelio", "Salomé", "Cosme", "Saturnina", "Crisanto", "Severina", "Crisóstomo", "Teófila", "Cristóbal", "Tomasa"
         };
@@ -413,19 +475,20 @@ public class Main {
                 7234, 1456, 9087, 3421, 5678, 8901, 2345, 6789, 4012, 9876, 1234, 5432, 8765, 3210, 6543, 9012, 2109, 7890, 4567, 8234, 1098, 5876, 3654, 9234, 2987, 6321, 8109, 4789, 7456, 1987, 5234, 9654, 3087, 6876, 2456, 8543, 4321, 7098, 1654, 5987, 9321, 3456, 8012, 2678, 6109, 9543, 4876, 7234, 1432, 5109, 8876, 3789, 6234, 9109, 2543, 7654, 4209, 8456, 1876, 5321, 9876, 3012, 6678, 2234, 7987, 4543, 8321, 1209, 5678, 9234, 3543, 6987, 2876, 8109, 4654, 7321, 1543, 5876, 9012, 3234, 6456, 2109, 8654, 4987, 7109, 1876, 5234, 9456, 3678, 6321, 2654, 8987, 4234, 7543, 1321, 5654, 9678, 3109, 6543, 2987, 8234, 4456, 7876, 1654, 5987, 9321, 3876, 6109, 2456, 8678, 4109, 7234, 1987, 5456, 9876, 3321, 6654, 2109, 8543, 4678, 7456, 1234, 5678, 9109, 3654, 6876, 2321, 8876, 4543, 7678, 1456, 5987, 9234, 3456, 6234, 2678, 8109, 4876, 7321, 1678, 5234, 9654, 3987, 6456, 2876, 8321, 4234, 7109, 1876, 5456, 9012, 3678, 6987, 2543, 8654, 4321, 7876, 1234, 5876, 9456, 3234, 6678, 2109, 8987, 4654, 7543, 1987, 5321, 9678, 3456, 6234, 2876, 8456, 4109, 7654, 1543, 5678, 9876, 3109, 6543, 2321, 8234, 4987, 7234, 1654, 5987, 9321, 3678, 6876, 2456, 8678, 4543, 7456, 1876, 5234, 9109, 3876, 6321, 2654, 8543, 4678, 7987, 1321, 5456, 9234, 3543, 6109, 2987, 8876, 4234, 7678, 1456, 5678, 9654, 3321, 6654, 2234, 8321, 4876, 7109, 1678, 5987, 9012, 3654, 6456, 2543, 8109, 4321, 7876, 1234, 5876, 9456, 3234, 6987, 2678, 8654, 4543, 7321
         };
 
+        // PASO 2: clonar arreglo numérico para evaluar cada método por separado.
         int[] a1 = numerosDesordenados.clone();
         int[] a2 = numerosDesordenados.clone();
         int[] a3 = numerosDesordenados.clone();
 
+        // PASO 3: ejecutar algoritmos y recolectar métricas.
         Resultado r1 = burbuja(a1);
         Resultado r2 = insercion(a2);
         Resultado r3 = seleccion(a3);
 
-        System.out.println("=== COMPARATIVA NUMÉRICA ===");
-        imprimir(r1);
-        imprimir(r2);
-        imprimir(r3);
+        System.out.println("=== TABLA COMPLETA DE METODOS DE ORDENAMIENTO ===");
+        imprimirTablaCompleta(r1, r2, r3);
 
+        // PASO 4: validar orden alfabético usando sort de Java para nombres.
         Arrays.sort(nombresDesordenados);
         System.out.println("\nPrimer nombre ordenado: " + nombresDesordenados[0]);
         System.out.println("Último nombre ordenado: " + nombresDesordenados[nombresDesordenados.length - 1]);
@@ -436,9 +499,131 @@ public class Main {
                 <div class="card">
                     <h3>📊 Output</h3>
                     <div class="output-label">▶ CONSOLA</div>
-                    <div class="output-block">=== COMPARATIVA NUMÉRICA === Burbuja | comp=&lt;valor_calculado&gt; | interc=&lt;valor_calculado&gt; | tiempo=&lt;ns_variable&gt; Inserción | comp=&lt;valor_calculado&gt; | interc=&lt;valor_calculado&gt; | tiempo=&lt;ns_variable&gt;
-                        Selección | comp=&lt;valor_calculado&gt; | interc=&lt;valor_calculado&gt; | tiempo=&lt;ns_variable&gt; Primer nombre ordenado: &lt;resultado_orden_alfabético_real&gt; Último nombre ordenado: &lt;resultado_orden_alfabético_real&gt;
-                        Nota: los tiempos en ns cambian en cada ejecución.</div>
+                    <div class="output-block">
+                        <table class="output-table">
+                            <thead>
+                                <tr>
+                                    <th>Estructura</th>
+                                    <th>Memoria</th>
+                                    <th>Tiempo</th>
+                                    <th>Iteraciones</th>
+                                    <th>Comparaciones</th>
+                                    <th>Intercambios</th>
+                                    <th>Recursiva</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Burbuja Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Burbuja Mejorado</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Quick Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>Shell Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Selección Directa</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Inserción Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Shaker</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>MergeSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>RadixSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método de Montículo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método del Cubo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Counting Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -446,7 +631,14 @@ public class Main {
                     <p>Evalúa métodos de ordenamiento sobre arreglos casi ordenados para determinar cuál se beneficia más de la cercanía al orden final.</p>
                 </div>
                 <div class="card">
-                    <pre data-lang="java"><code class="language-java" id="ed2">public class Main {
+                    <pre data-lang="java"><code class="language-java" id="ed2">// Objetivo: medir rendimiento en arreglos casi ordenados.
+// Punto clave: en este escenario suelen destacar Inserción y Shell.
+// Flujo documentado:
+// 1) Definir arreglo casi ordenado para simular el escenario solicitado.
+// 2) Ejecutar Inserción, Burbuja Mejorada y Shell sobre copias separadas.
+// 3) Mostrar métricas para justificar la conclusión.
+
+public class Main {
     static class Metrica {
         String nombre;
         long comp;
@@ -462,6 +654,7 @@ public class Main {
             int key = a[i], j = i - 1;
             while (j &gt;= 0) {
                 m.comp++;
+                // Cada vuelta del while representa una comparación adicional.
                 if (a[j] &gt; key) {
                     a[j + 1] = a[j];
                     m.swaps++;
@@ -482,6 +675,7 @@ public class Main {
             cambio = false;
             for (int j = 0; j &lt; a.length - i - 1; j++) {
                 m.comp++;
+                // Se compara par vecino para decidir si hay intercambio.
                 if (a[j] &gt; a[j + 1]) {
                     int tmp = a[j];
                     a[j] = a[j + 1];
@@ -491,6 +685,7 @@ public class Main {
                 }
             }
             if (!cambio) break;
+            // Si no hubo cambio, el arreglo ya está ordenado y se corta temprano.
         }
         m.ns = System.nanoTime() - t0;
         return m;
@@ -504,6 +699,7 @@ public class Main {
                 int temp = a[i], j = i;
                 while (j &gt;= gap) {
                     m.comp++;
+                    // Comparamos elemento lejano por gap para acercarlo a su posición final.
                     if (a[j - gap] &gt; temp) {
                         a[j] = a[j - gap];
                         m.swaps++;
@@ -517,11 +713,33 @@ public class Main {
         return m;
     }
 
-    static void print(Metrica m) {
-        System.out.printf("%-17s comp=%d swaps=%d tiempo=%d ns%n", m.nombre, m.comp, m.swaps, m.ns);
+    static void fila(String estructura, String memoria, String tiempo, String iteraciones, String comparaciones, String intercambios, String recursiva) {
+        System.out.printf("| %-20s | %-10s | %-12s | %-11s | %-13s | %-12s | %-9s |%n",
+                estructura, memoria, tiempo, iteraciones, comparaciones, intercambios, recursiva);
+    }
+
+    static void imprimirTablaCompleta(Metrica insercion, Metrica burbujaMejorada, Metrica shell) {
+        String sep = "+----------------------+------------+--------------+-------------+---------------+--------------+-----------+";
+        System.out.println(sep);
+        fila("Estructura", "Memoria", "Tiempo", "Iteraciones", "Comparaciones", "Intercambios", "Recursiva");
+        System.out.println(sep);
+        fila("Burbuja Simple", "-", "-", "-", "-", "-", "No");
+        fila("Burbuja Mejorado", "-", burbujaMejorada.ns + " ns", "-", String.valueOf(burbujaMejorada.comp), String.valueOf(burbujaMejorada.swaps), "No");
+        fila("Quick Sort", "-", "-", "-", "-", "-", "Si");
+        fila("Shell Sort", "-", shell.ns + " ns", "-", String.valueOf(shell.comp), String.valueOf(shell.swaps), "No");
+        fila("Seleccion Directa", "-", "-", "-", "-", "-", "No");
+        fila("Insercion Simple", "-", insercion.ns + " ns", "-", String.valueOf(insercion.comp), String.valueOf(insercion.swaps), "No");
+        fila("Shaker", "-", "-", "-", "-", "-", "No");
+        fila("MergeSort", "-", "-", "-", "-", "-", "Si");
+        fila("RadixSort", "-", "-", "-", "-", "-", "No");
+        fila("Metodo de Monticulo", "-", "-", "-", "-", "-", "No");
+        fila("Metodo del Cubo", "-", "-", "-", "-", "-", "No");
+        fila("Counting Sort", "-", "-", "-", "-", "-", "No");
+        System.out.println(sep);
     }
 
     public static void main(String[] args) {
+        // PASO 1: usar arreglo casi ordenado como caso de estudio.
         String[] nombresCasiOrdenados = {
                 "Juan", "Zacarías", "María", "Yolanda", "Carlos", "Ximena", "Ana", "Wanda", "Pedro", "Violeta", "Sofía", "Verónica", "Luis", "Úrsula", "Laura", "Tamara", "Diego", "Susana", "Marta", "Sandra", "Miguel", "Rocío", "Elena", "Raquel", "Javier", "Pilar", "Lucía", "Olga", "Pablo", "Nuria", "Valentina", "Natalia", "Andrés", "Mónica", "Camila", "Miriam", "José", "Mariana", "Andrea", "Lorena", "Daniel", "Lidia", "Beatriz", "Julia", "Alejandro", "Isabel", "Sara", "Helena", "Manuel", "Gloria", "Isabel", "Francisca", "Sergio", "Esther", "Julia", "Elena", "Jorge", "Dolores", "Victoria", "Cristina", "Raúl", "Carmen", "Natalia", "Blanca", "Iván", "Beatriz", "Carmen", "Aurora", "Francisco", "Antonia", "Alba", "Ángela", "Rubén", "Alicia", "Elena", "Adriana", "Alberto", "Alba", "Sara", "Almudena", "Adrián", "Ana", "María", "Andrea", "Sergio", "Angela", "Andrea", "Begoña", "Pablo", "Carla", "Lucía", "Carolina", "Luis", "Cecilia", "Paula", "Clara", "Guillermo", "Claudia", "Marta", "Cristina", "Javier", "Daniela", "Laura", "Diana", "Raúl", "Elena", "Clara", "Elvira", "Ángel", "Emilia", "Noelia", "Eva", "Gabriel", "Fernanda", "Cristina", "Flora", "Jesús", "Gabriela", "Martina", "Inés", "Fernando", "Irene", "Carmen", "Jimena", "Víctor", "Laura", "Patricia", "Lucía", "Ricardo", "María", "Andrea", "Marina", "Gonzalo", "Marta", "María", "Mónica", "Óscar", "Natalia", "Sara", "Nerea", "Rubén", "Noelia", "Julia", "Olga", "Samuel", "Paula", "Sofía", "Patricia", "Francisco", "Pilar", "Marta", "Raquel", "Diego", "Rosa", "Andrea", "Rosario", "Juan", "Sandra", "Laura", "Sara", "Javier", "Silvia", "Clara", "Sofía", "José", "Susana", "Elena", "Teresa", "Mario", "Valeria", "Natalia", "Verónica", "Marcos", "Victoria", "Paula", "Yolanda", "Adrián", "Zoraida", "Marina", "Zulema", "Carlos", "Cristina", "Alberto", "Isabel"
         };
@@ -530,13 +748,14 @@ public class Main {
                 1098, 1027, 1007, 1002, 1020, 1001, 1021, 1106, 1019, 1084, 1052, 1044, 1008, 1097, 1006, 1026, 1089, 1030, 1088, 1035, 1094, 1036, 1016, 1022, 1054, 1014, 1009, 1067, 1045, 1087, 1064, 1003, 1074, 1091, 1018, 1023, 1071, 1039, 1032, 1062, 1037, 1043, 1031, 1041, 1028, 1010, 1068, 1056, 1073, 1034, 1050, 1060, 1081, 1049, 1040, 1065, 1092, 1053, 1079, 1029, 1090, 1047, 1057, 1095, 1013, 1066, 1075, 1017, 1083, 1069, 1011, 1076, 1015, 1042, 1082, 1070, 1048, 1025, 1086, 1096, 1058, 1059, 1078, 1099, 1077, 1085, 1061, 1080, 1033, 1038, 1004, 1005, 1012, 1024, 1051, 1055, 1046, 1072, 1100, 1103, 1105, 1104, 1063, 1093, 1112, 1108, 1115, 1110, 1109, 1118, 1107, 1120, 1113, 1111, 1125, 1114, 1122, 1117, 1128, 1119, 1130, 1121, 1126, 1124, 1135, 1123, 1133, 1129, 1138, 1127, 1140, 1132, 1143, 1131, 1145, 1134, 1148, 1136, 1150, 1137, 1152, 1139, 1155, 1141, 1157, 1142, 1160, 1144, 1162, 1146, 1165, 1147, 1167, 1149, 1170, 1151, 1172, 1153, 1175, 1154, 1177, 1156, 1180, 1158, 1182, 1159, 1185, 1161, 1187, 1163, 1190, 1164, 1192, 1166, 1195, 1168, 1197, 1169, 1200, 1171, 1202, 1173, 1205, 1174, 1207, 1176, 1210, 1178, 1212, 1179, 1215, 1181, 1217, 1183, 1220, 1184, 1222, 1186, 1225, 1188, 1227, 1189, 1230, 1191, 1232, 1193, 1235, 1194, 1237, 1196, 1240, 1198, 1242, 1199, 1245, 1201, 1247, 1203, 1250, 1204, 1252, 1206, 1255, 1208, 1257, 1209, 1260, 1211, 1262, 1213, 1265, 1214, 1267, 1216, 1270, 1218, 1272, 1219, 1275, 1221, 1277, 1223, 1280, 1224, 1282, 1226, 1285, 1228, 1287, 1229, 1290, 1231, 1292, 1233, 1295, 1234, 1297, 1236, 1300
         };
 
+        // PASO 2: correr cada método sobre una copia independiente.
         Metrica i = insercion(numerosCasiOrdenados.clone());
         Metrica b = burbujaMejorada(numerosCasiOrdenados.clone());
         Metrica s = shell(numerosCasiOrdenados.clone());
 
-        print(i);
-        print(b);
-        print(s);
+        // PASO 3: mostrar tabla completa y conclusión esperada.
+        System.out.println("=== TABLA COMPLETA DE METODOS DE ORDENAMIENTO ===");
+        imprimirTablaCompleta(i, b, s);
         System.out.println("Conclusión: Inserción y Shell suelen dominar cuando el arreglo está casi ordenado.");
     }
 }</code></pre>
@@ -545,8 +764,131 @@ public class Main {
                 <div class="card">
                     <h3>📊 Output</h3>
                     <div class="output-label">▶ CONSOLA</div>
-                    <div class="output-block">Inserción comp=&lt;valor_calculado&gt; swaps=&lt;valor_calculado&gt; tiempo=&lt;ns_variable&gt; Burbuja Mejorada comp=&lt;valor_calculado&gt; swaps=&lt;valor_calculado&gt; tiempo=&lt;ns_variable&gt; Shell Sort comp=&lt;valor_calculado&gt;
-                        swaps=&lt;valor_calculado&gt; tiempo=&lt;ns_variable&gt; Conclusión: Inserción y Shell suelen dominar cuando el arreglo está casi ordenado.</div>
+                    <div class="output-block">
+                        <table class="output-table">
+                            <thead>
+                                <tr>
+                                    <th>Estructura</th>
+                                    <th>Memoria</th>
+                                    <th>Tiempo</th>
+                                    <th>Iteraciones</th>
+                                    <th>Comparaciones</th>
+                                    <th>Intercambios</th>
+                                    <th>Recursiva</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Burbuja Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Burbuja Mejorado</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Quick Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>Shell Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Selección Directa</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Inserción Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Shaker</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>MergeSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>RadixSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método de Montículo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método del Cubo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Counting Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -554,7 +896,17 @@ public class Main {
                     <p>Compara algoritmos sobre entradas invertidas para evidenciar el peor caso de métodos cuadráticos y contrastarlo con métodos de orden <em>n log n</em>.</p>
                 </div>
                 <div class="card">
-                    <pre data-lang="java"><code class="language-java" id="ed3">public class Main {
+                    <pre data-lang="java"><code class="language-java" id="ed3">import java.util.*;
+
+// Objetivo: contrastar estrategias de ordenamiento cuando la entrada está invertida
+// y cuando hay repetición alta de valores.
+// Flujo documentado:
+// 1) Probar arreglos invertidos y con alta repetición.
+// 2) Medir Counting Sort y Quick Sort en tiempos reales.
+// 3) Calcular frecuencia de nombres repetidos para complementar análisis.
+// 4) Reportar tiempos, comparaciones y muestra ordenada.
+                    
+                    public class Main {
     static class R {
         String n;
         long c;
@@ -614,6 +966,7 @@ public class Main {
         int i = l, j = m + 1, k = 0;
         while (i &lt;= m &amp;&amp; j &lt;= r) {
             metrica.c++;
+            // Elegimos el menor entre ambas mitades para mantener orden global.
             if (a[i] &lt;= a[j]) tmp[k++] = a[i++];
             else tmp[k++] = a[j++];
         }
@@ -626,7 +979,76 @@ public class Main {
         System.out.printf("%-10s comp=%d swaps=%d tiempo=%d ns%n", r.n, r.c, r.s, r.t);
     }
 
+    static long comparacionesQuick = 0;
+
+    static void quickSort(int[] a, int l, int r) {
+        if (l &gt;= r) return;
+        int p = partition(a, l, r);
+        quickSort(a, l, p - 1);
+        quickSort(a, p + 1, r);
+    }
+
+    static int partition(int[] a, int l, int r) {
+        int piv = a[r];
+        int i = l - 1;
+        for (int j = l; j &lt; r; j++) {
+            comparacionesQuick++;
+            // Se compara cada valor contra el pivote para decidir su lado.
+            if (a[j] &lt;= piv) {
+                i++;
+                int t = a[i];
+                a[i] = a[j];
+                a[j] = t;
+            }
+        }
+        int t = a[i + 1];
+        a[i + 1] = a[r];
+        a[r] = t;
+        return i + 1;
+    }
+
+    static void countingSort(int[] a) {
+        int max = a[0];
+        for (int i = 1; i &lt; a.length; i++) {
+            if (a[i] &gt; max) max = a[i];
+        }
+        int[] c = new int[max + 1];
+        for (int v : a) c[v]++;
+        // Ejemplo: si v=7, entonces c[7] aumenta en 1 (contador de frecuencia).
+        int k = 0;
+        for (int i = 0; i &lt; c.length; i++) {
+            while (c[i]-- &gt; 0) a[k++] = i;
+            // Reconstrucción: si c[3] era 2, el número 3 se escribe dos veces.
+        }
+    }
+
+    static void fila(String estructura, String memoria, String tiempo, String iteraciones, String comparaciones, String intercambios, String recursiva) {
+        System.out.printf("| %-20s | %-10s | %-12s | %-11s | %-13s | %-12s | %-9s |%n",
+                estructura, memoria, tiempo, iteraciones, comparaciones, intercambios, recursiva);
+    }
+
+    static void imprimirTablaCompleta(long tiempoQuick, long compQuick, long tiempoCounting) {
+        String sep = "+----------------------+------------+--------------+-------------+---------------+--------------+-----------+";
+        System.out.println(sep);
+        fila("Estructura", "Memoria", "Tiempo", "Iteraciones", "Comparaciones", "Intercambios", "Recursiva");
+        System.out.println(sep);
+        fila("Burbuja Simple", "-", "-", "-", "-", "-", "No");
+        fila("Burbuja Mejorado", "-", "-", "-", "-", "-", "No");
+        fila("Quick Sort", "-", tiempoQuick + " ns", "-", String.valueOf(compQuick), "-", "Si");
+        fila("Shell Sort", "-", "-", "-", "-", "-", "No");
+        fila("Seleccion Directa", "-", "-", "-", "-", "-", "No");
+        fila("Insercion Simple", "-", "-", "-", "-", "-", "No");
+        fila("Shaker", "-", "-", "-", "-", "-", "No");
+        fila("MergeSort", "-", "-", "-", "-", "-", "Si");
+        fila("RadixSort", "-", "-", "-", "-", "-", "No");
+        fila("Metodo de Monticulo", "-", "-", "-", "-", "-", "No");
+        fila("Metodo del Cubo", "-", "-", "-", "-", "-", "No");
+        fila("Counting Sort", "-", tiempoCounting + " ns", "-", "-", "-", "No");
+        System.out.println(sep);
+    }
+
     public static void main(String[] args) {
+        // PASO 1: preparar arreglos para comparar escenarios difíciles.
         String[] nombresInvertidos = {
                 "Zoraida", "Zulema", "Zacarías", "Yolanda", "Yolanda", "Ximena", "Wanda", "Violeta", "Violeta", "Virginia", "Viviana", "Víctor", "Víctor", "Victoria", "Victoria", "Vicente", "Verónica", "Verónica", "Valentina", "Valentina", "Úrsula", "Tomás", "Tomás", "Teresa", "Teresa", "Tamara", "Susana", "Susana", "Soledad", "Sofía", "Sofía", "Sofía", "Silvia", "Silvia", "Simón", "Silvio", "Severina", "Sergio", "Sergio", "Sergio", "Sebastián", "Sebastián", "Sara", "Sara", "Sara", "Sara", "Sandra", "Sandra", "Santiago", "Samuel", "Samuel", "Salomón", "Salvador", "Saturnina", "Rubén", "Rubén", "Rubén", "Rosario", "Rosario", "Rosa", "Rosalía", "Rodrigo", "Rodrigo", "Rocío", "Rocío", "Roberto", "Ricardo", "Ricardo", "Renata", "Regina", "Rebeca", "Raúl", "Raúl", "Raúl", "Raquel", "Raquel", "Ramona", "Ramón", "Rafael", "Rafael", "Purificación", "Pilar", "Pilar", "Pilar", "Petra", "Pedro", "Pedro", "Pedro", "Paz", "Paula", "Paula", "Paula", "Paula", "Patricio", "Patricia", "Patricia", "Pablo", "Pablo", "Pablo", "Óscar", "Orlando", "Olga", "Olga", "Octavio", "Noelia", "Noelia", "Noelia", "Nieves", "Nicolás", "Nicolás", "Nuria", "Nuria", "Natalia", "Natalia", "Natalia", "Natalia", "Mónica", "Mónica", "Montserrat", "Milagros", "Miguel", "Miguel", "Miguel", "Micaela", "Mercedes", "Maximiliano", "Maximiliano", "Mauricio", "Matilde", "Matías", "Matías", "Mateo", "Mateo", "Marta", "Marta", "Marta", "Marta", "Martina", "Martina", "Martina", "Martina", "Martín", "Mariana", "Mariana", "Marina", "Marina", "Mario", "Mario", "María", "María", "María", "María", "María", "Marcos", "Marcos", "Manuel", "Manuel", "Magdalena", "Luciano", "Lucía", "Lucía", "Lucía", "Lucía", "Lucas", "Luis", "Luis", "Luis", "Luis", "Luisa", "Luz", "Lorena", "Lorena", "Lorenzo", "Lisandro", "Lidia", "Lidia", "Leticia", "Leopoldo", "Leonor", "Leonardo", "Leonardo", "Leandro", "Laura", "Laura", "Laura", "Laura", "Laura", "Julián", "Julián", "Julia", "Julia", "Julia", "Julio", "Judith", "Juan", "Juan", "Juan", "Josefina", "Josefa", "José", "José", "José", "José", "Jorge", "Jorge", "Jonás", "Jesús", "Jesús", "Javier", "Javier", "Javier", "Javier", "Jaime", "Jacinta", "Jimena", "Jimena", "Iván", "Iván", "Isabel", "Isabel", "Isabel", "Isabela", "Irene", "Irene", "Inés", "Inés", "Inmaculada", "Ignacio", "Ignacio", "Hugo", "Hortensia", "Horacio", "Herminia", "Héctor", "Guillermo", "Guillermo", "Gustavo", "Guadalupe", "Gonzalo", "Gonzalo", "Germán", "Gema", "Gabriel", "Gabriel", "Gabriel", "Gabriela", "Gabriela"
         };
@@ -636,9 +1058,265 @@ public class Main {
         };
 
         int[] numerosRepetidos = {
-                3456, 7821, 1234, 9087, 4567, 2109, 8765, 5432, 0123, 6789, 3456, 9012, 1098, 7654, 4321, 8901, 2345, 5678, 9234, 1456, 6543, 3210, 7890, 4098, 8234, 0987, 5321, 9876, 2567, 6109, 3789, 7432, 1876, 5098, 8543, 4209, 9654, 2876, 6321, 0456, 7234, 3987, 8109, 1543, 5876, 9321, 4654, 2109, 6987, 3456, 7821, 0234, 8654, 5432, 9109, 1987, 4567, 7098, 3210, 6543, 2876, 8765, 5234, 9456, 1234, 4789, 7321, 0876, 6109, 3654, 8234, 5987, 9876, 2345, 1543, 4098, 7654, 6321, 9234, 3876, 8109, 5432, 2109, 6789, 1098, 4321, 7890, 3456, 9012, 5678, 8543, 2876, 6234, 0987, 4567, 7234, 1876, 5321, 9654, 3109, 8765, 6543, 2345, 5098, 9321, 4654, 7876, 1234, 6109, 3789, 8234, 5876, 9456, 2567, 7098, 4321, 0456, 6987, 3654, 8109, 1987, 5234, 9109, 4789, 7543, 2109, 6321, 3456, 8876, 5432, 9876, 1654, 4098, 7234, 0876, 6543, 3210, 8654, 5987, 9321, 2345, 6789, 4567, 7890, 1234, 5109, 8765, 3876, 9654, 6234, 2876, 4321, 7654, 0987, 5678, 9012, 3456, 8234, 1543, 6109, 4789, 7321, 9876, 5432, 2109, 8543, 6987, 3654, 1098, 5234, 9456, 4567, 7098, 2876, 6543, 0456, 8109, 3789, 5876, 9321, 1876, 4654, 7234, 6321, 9109, 3210, 8765, 5098, 2345, 7876, 4321, 9654, 1234, 6109, 3456, 8234, 5987, 2567, 7543, 9876, 4789, 1987, 6234, 8876, 3654, 5432, 9321, 2109, 7654, 4098, 0876, 6987, 3876, 8109, 5234, 9456, 1654, 4567, 7321, 2876, 6543, 9012, 3210, 8654, 5678, 1234, 4321, 7890, 6109, 9234, 3456, 8765, 5876, 2345, 7098, 4654, 9876, 1543, 6789, 3987, 8234, 5321, 9654, 2109, 7234, 4876, 0987, 6321, 3654, 8543, 5432, 9109
+                3456, 7821, 1234, 9087, 4567, 2109, 8765, 5432, 123, 6789, 3456, 9012, 1098, 7654, 4321, 8901, 2345, 5678, 9234, 1456, 6543, 3210, 7890, 4098, 8234, 987, 5321, 9876, 2567, 6109, 3789, 7432, 1876, 5098, 8543, 4209, 9654, 2876, 6321, 456, 7234, 3987, 8109, 1543, 5876, 9321, 4654, 2109, 6987, 3456, 7821, 234, 8654, 5432, 9109, 1987, 4567, 7098, 3210, 6543, 2876, 8765, 5234, 9456, 1234, 4789, 7321, 876, 6109, 3654, 8234, 5987, 9876, 2345, 1543, 4098, 7654, 6321, 9234, 3876, 8109, 5432, 2109, 6789, 1098, 4321, 7890, 3456, 9012, 5678, 8543, 2876, 6234, 987, 4567, 7234, 1876, 5321, 9654, 3109, 8765, 6543, 2345, 5098, 9321, 4654, 7876, 1234, 6109, 3789, 8234, 5876, 9456, 2567, 7098, 4321, 456, 6987, 3654, 8109, 1987, 5234, 9109, 4789, 7543, 2109, 6321, 3456, 8876, 5432, 9876, 1654, 4098, 7234, 876, 6543, 3210, 8654, 5987, 9321, 2345, 6789, 4567, 7890, 1234, 5109, 8765, 3876, 9654, 6234, 2876, 4321, 7654, 987, 5678, 9012, 3456, 8234, 1543, 6109, 4789, 7321, 9876, 5432, 2109, 8543, 6987, 3654, 1098, 5234, 9456, 4567, 7098, 2876, 6543, 456, 8109, 3789, 5876, 9321, 1876, 4654, 7234, 6321, 9109, 3210, 8765, 5098, 2345, 7876, 4321, 9654, 1234, 6109, 3456, 8234, 5987, 2567, 7543, 9876, 4789, 1987, 6234, 8876, 3654, 5432, 9321, 2109, 7654, 4098, 876, 6987, 3876, 8109, 5234, 9456, 1654, 4567, 7321, 2876, 6543, 9012, 3210, 8654, 5678, 1234, 4321, 7890, 6109, 9234, 3456, 8765, 5876, 2345, 7098, 4654, 9876, 1543, 6789, 3987, 8234, 5321, 9654, 2109, 7234, 4876, 987, 6321, 3654, 8543, 5432, 9109
         };
 
+        int[] c = numerosRepetidos.clone();
+        int[] q = numerosRepetidos.clone();
+
+        // PASO 2: ejecutar y medir Counting Sort.
+        long t0 = System.nanoTime();
+        countingSort(c);
+        long tCounting = System.nanoTime() - t0;
+
+        // PASO 3: ejecutar y medir Quick Sort.
+        t0 = System.nanoTime();
+        quickSort(q, 0, q.length - 1);
+        long tQuick = System.nanoTime() - t0;
+
+        String[] nombresRepetidos = {
+                "Cristina", "Juan", "Ana", "Cristina", "Luis", "María", "Cristina", "Pedro", "Laura", "Cristina"
+        };
+
+        // PASO 4: calcular frecuencias de texto para completar el análisis.
+        Map&lt;String, Integer&gt; frecuencia = new HashMap&lt;&gt;();
+        for (String n : nombresRepetidos) {
+            frecuencia.put(n, frecuencia.getOrDefault(n, 0) + 1);
+        }
+
+        System.out.println("=== TABLA COMPLETA DE METODOS DE ORDENAMIENTO ===");
+        imprimirTablaCompleta(tQuick, comparacionesQuick, tCounting);
+        System.out.println("Primeros 8 ordenados: " + Arrays.toString(Arrays.copyOf(c, 8)));
+        System.out.println("Frecuencia de 'Cristina': " + frecuencia.getOrDefault("Cristina", 0));
+    }
+}</code></pre>
+                    <button class="copy-btn" onclick="copyCode('ed3',this)">📋 Copiar código</button>
+                </div>
+                <div class="card">
+                    <h3>📊 Output</h3>
+                    <div class="output-label">▶ CONSOLA</div>
+                    <div class="output-block">
+                        <table class="output-table">
+                            <thead>
+                                <tr>
+                                    <th>Estructura</th>
+                                    <th>Memoria</th>
+                                    <th>Tiempo</th>
+                                    <th>Iteraciones</th>
+                                    <th>Comparaciones</th>
+                                    <th>Intercambios</th>
+                                    <th>Recursiva</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Burbuja Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Burbuja Mejorado</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Quick Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>Shell Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Selección Directa</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Inserción Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Shaker</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>MergeSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>RadixSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método de Montículo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método del Cubo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Counting Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📌 Ejercicio 4 – Arreglos con Valores Repetidos</h2>
+                    <p>Compara <em>Counting Sort</em> y <em>Quick Sort</em> sobre arreglos con muchos valores repetidos y evalúa tiempo de ejecución junto con frecuencia de elementos.</p>
+                </div>
+                <div class="card">
+                    <pre data-lang="java"><code class="language-java" id="ed4">import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+// Objetivo: comparar QuickSort vs CountingSort con datos repetidos.
+// Además, calcular frecuencia de nombres para complementar el análisis.
+// Flujo documentado:
+// 1) Clonar datos para aplicar ambos métodos sin contaminar resultados.
+// 2) Medir tiempos y comparaciones del proceso de ordenamiento.
+// 3) Calcular frecuencia de nombres repetidos y mostrar resumen.
+
+public class Main {
+    static long comparacionesQuick = 0;
+
+    static void quickSort(int[] a, int l, int r) {
+        if (l &gt;= r) return;
+        int p = partition(a, l, r);
+        quickSort(a, l, p - 1);
+        quickSort(a, p + 1, r);
+    }
+
+    static int partition(int[] a, int l, int r) {
+        int piv = a[r];
+        int i = l - 1;
+        for (int j = l; j &lt; r; j++) {
+            comparacionesQuick++;
+            if (a[j] &lt;= piv) {
+                i++;
+                int t = a[i];
+                a[i] = a[j];
+                a[j] = t;
+            }
+        }
+        int t = a[i + 1];
+        a[i + 1] = a[r];
+        a[r] = t;
+        return i + 1;
+    }
+
+    static void countingSort(int[] a) {
+        int max = a[0];
+        for (int i = 1; i &lt; a.length; i++) if (a[i] &gt; max) max = a[i];
+
+        int[] c = new int[max + 1];
+        for (int v : a) c[v]++;
+
+        int k = 0;
+        for (int i = 0; i &lt; c.length; i++) {
+            while (c[i]-- &gt; 0) a[k++] = i;
+        }
+    }
+
+    static void fila(String estructura, String memoria, String tiempo, String iteraciones, String comparaciones, String intercambios, String recursiva) {
+        System.out.printf("| %-20s | %-10s | %-12s | %-11s | %-13s | %-12s | %-9s |%n",
+                estructura, memoria, tiempo, iteraciones, comparaciones, intercambios, recursiva);
+    }
+
+    static void imprimirTablaCompleta(long tiempoQuick, long compQuick, long tiempoCounting) {
+        String sep = "+----------------------+------------+--------------+-------------+---------------+--------------+-----------+";
+        System.out.println(sep);
+        fila("Estructura", "Memoria", "Tiempo", "Iteraciones", "Comparaciones", "Intercambios", "Recursiva");
+        System.out.println(sep);
+        fila("Burbuja Simple", "-", "-", "-", "-", "-", "No");
+        fila("Burbuja Mejorado", "-", "-", "-", "-", "-", "No");
+        fila("Quick Sort", "-", tiempoQuick + " ns", "-", String.valueOf(compQuick), "-", "Si");
+        fila("Shell Sort", "-", "-", "-", "-", "-", "No");
+        fila("Seleccion Directa", "-", "-", "-", "-", "-", "No");
+        fila("Insercion Simple", "-", "-", "-", "-", "-", "No");
+        fila("Shaker", "-", "-", "-", "-", "-", "No");
+        fila("MergeSort", "-", "-", "-", "-", "-", "Si");
+        fila("RadixSort", "-", "-", "-", "-", "-", "No");
+        fila("Metodo de Monticulo", "-", "-", "-", "-", "-", "No");
+        fila("Metodo del Cubo", "-", "-", "-", "-", "-", "No");
+        fila("Counting Sort", "-", tiempoCounting + " ns", "-", "-", "-", "No");
+        System.out.println(sep);
+    }
+
+    public static void main(String[] args) {
+        // PASO 1: cargar datos de prueba con repetición.
+        int[] numerosRepetidos = {
+                3456, 7821, 1234, 9087, 4567, 2109, 8765, 5432, 123, 6789,
+                3456, 9012, 1098, 7654, 4321, 8901, 2345, 5678, 9234, 1456
+        };
+
+        String[] nombresRepetidos = {
+                "Cristina", "Juan", "Ana", "Cristina", "Luis",
+                "María", "Cristina", "Pedro", "Laura", "Cristina"
+        };
+
+        // PASO 2: ejecutar ambos algoritmos con datos equivalentes.
         int[] c = numerosRepetidos.clone();
         int[] q = numerosRepetidos.clone();
 
@@ -650,24 +1328,147 @@ public class Main {
         quickSort(q, 0, q.length - 1);
         long tQuick = System.nanoTime() - t0;
 
+        // PASO 3: contar apariciones del nombre objetivo.
         Map&lt;String, Integer&gt; frecuencia = new HashMap&lt;&gt;();
         for (String n : nombresRepetidos) {
             frecuencia.put(n, frecuencia.getOrDefault(n, 0) + 1);
         }
 
-        System.out.println("CountingSort tiempo: " + tCounting + " ns");
-        System.out.println("QuickSort tiempo:    " + tQuick + " ns, comp=" + comparacionesQuick);
+        System.out.println("=== TABLA COMPLETA DE METODOS DE ORDENAMIENTO ===");
+        imprimirTablaCompleta(tQuick, comparacionesQuick, tCounting);
         System.out.println("Primeros 8 ordenados: " + Arrays.toString(Arrays.copyOf(c, 8)));
         System.out.println("Frecuencia de 'Cristina': " + frecuencia.getOrDefault("Cristina", 0));
     }
 }</code></pre>
-                    <button class="copy-btn" onclick="copyCode('ed3',this)">📋 Copiar código</button>
+                    <button class="copy-btn" onclick="copyCode('ed4',this)">📋 Copiar código</button>
                 </div>
                 <div class="card">
                     <h3>📊 Output</h3>
                     <div class="output-label">▶ CONSOLA</div>
-                    <div class="output-block">CountingSort tiempo: &lt;ns_variable&gt; QuickSort tiempo: &lt;ns_variable&gt;, comp=&lt;comparacionesQuick&gt; Primeros 8 ordenados: [&lt;8_primeros_valores_ordenados&gt;] Frecuencia de 'Cristina': &lt;valor_calculado&gt; Nota: tiempos
-                        y comparaciones pueden variar según la ejecución.
+                    <div class="output-block">
+                        <table class="output-table">
+                            <thead>
+                                <tr>
+                                    <th>Estructura</th>
+                                    <th>Memoria</th>
+                                    <th>Tiempo</th>
+                                    <th>Iteraciones</th>
+                                    <th>Comparaciones</th>
+                                    <th>Intercambios</th>
+                                    <th>Recursiva</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Burbuja Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Burbuja Mejorado</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Quick Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>Shell Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Selección Directa</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Inserción Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Shaker</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>MergeSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>RadixSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método de Montículo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método del Cubo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Counting Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -677,6 +1478,14 @@ public class Main {
                 </div>
                 <div class="card">
                     <pre data-lang="java"><code class="language-java" id="ed5">import java.util.Arrays;
+
+// Objetivo: evaluar Shell, Quick y Merge en un arreglo mitad ordenado.
+// Se compara costo (comparaciones) y tiempo para discutir estabilidad de rendimiento.
+// Flujo documentado:
+// 1) Cargar arreglo parcialmente desordenado.
+// 2) Crear copias independientes para Shell, Quick y Merge.
+// 3) Ejecutar cada método midiendo comparaciones y tiempo.
+// 4) Imprimir comparativa y prefijo ordenado para validar.
 
 public class Main {
     static long compQuick = 0;
@@ -689,6 +1498,7 @@ public class Main {
                 int temp = a[i], j = i;
                 while (j &gt;= gap) {
                     comp++;
+                    // Cuenta cuántas comparaciones realiza Shell en total.
                     if (a[j - gap] &gt; temp) {
                         a[j] = a[j - gap];
                         j -= gap;
@@ -711,6 +1521,7 @@ public class Main {
         int piv = a[r], i = l - 1;
         for (int j = l; j &lt; r; j++) {
             compQuick++;
+            // Comparamos contra pivote: si cumple, se mueve al lado izquierdo.
             if (a[j] &lt;= piv) {
                 i++;
                 int t = a[i]; a[i] = a[j]; a[j] = t;
@@ -733,6 +1544,7 @@ public class Main {
         int i = l, j = m + 1, k = 0;
         while (i &lt;= m &amp;&amp; j &lt;= r) {
             compMerge++;
+            // Merge selecciona el menor entre dos subarreglos ya ordenados.
             if (a[i] &lt;= a[j]) tmp[k++] = a[i++];
             else tmp[k++] = a[j++];
         }
@@ -741,7 +1553,33 @@ public class Main {
         for (int x = 0; x &lt; tmp.length; x++) a[l + x] = tmp[x];
     }
 
+    static void fila(String estructura, String memoria, String tiempo, String iteraciones, String comparaciones, String intercambios, String recursiva) {
+        System.out.printf("| %-20s | %-10s | %-12s | %-11s | %-13s | %-12s | %-9s |%n",
+                estructura, memoria, tiempo, iteraciones, comparaciones, intercambios, recursiva);
+    }
+
+    static void imprimirTablaCompleta(long tiempoShell, long compShell, long tiempoQuick, long compQuickLocal, long tiempoMerge, long compMergeLocal) {
+        String sep = "+----------------------+------------+--------------+-------------+---------------+--------------+-----------+";
+        System.out.println(sep);
+        fila("Estructura", "Memoria", "Tiempo", "Iteraciones", "Comparaciones", "Intercambios", "Recursiva");
+        System.out.println(sep);
+        fila("Burbuja Simple", "-", "-", "-", "-", "-", "No");
+        fila("Burbuja Mejorado", "-", "-", "-", "-", "-", "No");
+        fila("Quick Sort", "-", tiempoQuick + " ns", "-", String.valueOf(compQuickLocal), "-", "Si");
+        fila("Shell Sort", "-", tiempoShell + " ns", "-", String.valueOf(compShell), "-", "No");
+        fila("Seleccion Directa", "-", "-", "-", "-", "-", "No");
+        fila("Insercion Simple", "-", "-", "-", "-", "-", "No");
+        fila("Shaker", "-", "-", "-", "-", "-", "No");
+        fila("MergeSort", "-", tiempoMerge + " ns", "-", String.valueOf(compMergeLocal), "-", "Si");
+        fila("RadixSort", "-", "-", "-", "-", "-", "No");
+        fila("Metodo de Monticulo", "-", "-", "-", "-", "-", "No");
+        fila("Metodo del Cubo", "-", "-", "-", "-", "-", "No");
+        fila("Counting Sort", "-", "-", "-", "-", "-", "No");
+        System.out.println(sep);
+    }
+
     public static void main(String[] args) {
+        // PASO 1: usar arreglo mixto (mitad desordenado/mitad ordenado).
         String[] nombresMitadOrdenados = {
                 "Sergio", "Beatriz", "Marcos", "Patricia", "Hugo", "Daniela", "Raúl", "Elvira", "Ignacio", "Camila", "Javier", "Natalia", "Bruno", "Rosa", "Felipe", "Gloria", "Tomás", "Lucía", "Vicente", "Marta", "Rodrigo", "Carmen", "Arturo", "Isabel", "Mauricio", "Paula", "Germán", "Laura", "Salvador", "Andrea", "Julián", "Cristina", "Damián", "Sofía", "Emiliano", "Elena", "Fabián", "Sara", "Orlando", "María", "Patricio", "Julia", "Ezequiel", "Victoria", "Simón", "Ana", "Baltasar", "Claudia", "Leandro", "Pilar", "Octavio", "Teresa", "Luciano", "Rocío", "Silvio", "Amparo", "Eugenio", "Dolores", "Claudio", "Fernanda", "Horacio", "Irene", "Valentín", "Mónica", "Lisandro", "Alicia", "Celso", "Noelia", "Dante", "Gabriela", "Gaspar", "Miriam", "Urbano", "Rebeca", "Feliciano", "Raquel", "Zacarías", "Judith", "Bautista", "Lidia", "Dámaso", "Noemí", "Elías", "Débora", "Isaías", "Esther", "Jonás", "Ruth", "Melchor", "Abigail", "Salomón", "Susana", "Tobías", "Leticia", "Abdón", "Gema", "Acisclo", "Elisa", "Abelardo", "Diana", "Adán", "Cecilia", "Adolfo", "Silvia", "Albino", "Olga", "Alcides", "Angélica", "Amadeo", "Bárbara", "Ambrosio", "Catalina", "Amílcar", "Clotilde", "Anastasio", "Magdalena", "Anselmo", "Aurelia", "Apolinar", "Hortensia", "Aquiles", "Flora", "Arcadio", "Delia", "Ariel", "Eugenia", "Aristóteles", "Fabiola", "Arnaldo", "Felisa", "Abel", "Ada", "Adela", "Adelaida", "Adriana", "Adrián", "Agustín", "Alba", "Alberto", "Alejandra", "Alejandro", "Alfonso", "Alfredo", "Alicia", "Alma", "Álvaro", "Amalia", "Ana", "Anastasia", "Andrea", "Andrés", "Ángel", "Ángela", "Ángeles", "Anita", "Antonio", "Araceli", "Armando", "Aurora", "Azucena", "Beatriz", "Belén", "Benjamín", "Bernardo", "Blanca", "Bruno", "Camila", "Carla", "Carlos", "Carmen", "Carolina", "Catalina", "Cecilia", "Celeste", "César", "Clara", "Claudia", "Cristian", "Cristina", "Daniel", "Daniela", "David", "Diana", "Diego", "Dolores", "Edmundo", "Eduardo", "Elena", "Elisa", "Elvira", "Emilia", "Emilio", "Emma", "Enrique", "Ernesto", "Esmeralda", "Esperanza", "Estela", "Esteban", "Esther", "Eva", "Fabián", "Fabiola", "Federico", "Felicia", "Felipe", "Fernanda", "Fernando", "Flor", "Flora", "Francisco", "Gabriel", "Gabriela", "Gema", "Germán", "Gloria", "Gonzalo", "Graciela", "Gregorio", "Guadalupe", "Guillermo", "Gustavo", "Héctor", "Helena", "Horacio", "Hugo", "Ignacio", "Inés", "Irene", "Isabel", "Jaime", "Javier", "Jorge", "José", "Josefina", "Juan", "Juana", "Julia", "Julián", "Julio", 
 "Laura", "Leonardo", "Leticia", "Liliana", "Lorenzo", "Lucas", "Lucía", "Luis", "Luisa", "Luz"
@@ -751,10 +1589,12 @@ public class Main {
                 7843, 2109, 9876, 1234, 5678, 8901, 3456, 6543, 4321, 9012, 2876, 7654, 1098, 5432, 8765, 3210, 6789, 4567, 9234, 1876, 7321, 2543, 8109, 5987, 3654, 9876, 1432, 6234, 4789, 8543, 2109, 7098, 5234, 9654, 1987, 6876, 3987, 8234, 4654, 7456, 1654, 5876, 9321, 3456, 8678, 2345, 6109, 4876, 7890, 1234, 5678, 9456, 3876, 7234, 2678, 8987, 5321, 9109, 1543, 6543, 4234, 8456, 2987, 7654, 5987, 9876, 1876, 6321, 3543, 8109, 4567, 7987, 2456, 5654, 9234, 3109, 8876, 6678, 1321, 4987, 7543, 2234, 9654, 5456, 8321, 3678, 6987, 1678, 4543, 7876, 2109, 5987, 9012, 3234, 8654, 6456, 1987, 4321, 7234, 5234, 9876, 2876, 8543, 6234, 3456, 7654, 1456, 5678, 9321, 4109, 8234, 2543, 6876, 3987, 7456, 1234, 5876, 9654, 4678, 8109, 2321, 6543, 3678, 7987, 5456, 9234, 1876, 4876, 8678, 6109, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058, 1059, 1060, 1061, 1062, 1063, 1064, 1065, 1066, 1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1096, 1097, 1098, 1099, 1100, 1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110, 1111, 1112, 1113, 1114, 1115, 1116, 1117, 1118, 1119, 1120, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129
         };
 
+        // PASO 2: clonar para evaluar algoritmos sin interferencia.
         int[] s = numerosMitad.clone();
         int[] q = numerosMitad.clone();
         int[] m = numerosMitad.clone();
 
+        // PASO 3: ejecutar los tres métodos y reportar resultados.
         long t0 = System.nanoTime();
         long compShell = shellSort(s);
         long tShell = System.nanoTime() - t0;
@@ -767,9 +1607,8 @@ public class Main {
         mergeSort(m, 0, m.length - 1);
         long tMerge = System.nanoTime() - t0;
 
-        System.out.println("Shell    -> comp=" + compShell + " tiempo=" + tShell + " ns");
-        System.out.println("Quick    -> comp=" + compQuick + " tiempo=" + tQuick + " ns");
-        System.out.println("Merge    -> comp=" + compMerge + " tiempo=" + tMerge + " ns");
+        System.out.println("=== TABLA COMPLETA DE METODOS DE ORDENAMIENTO ===");
+        imprimirTablaCompleta(tShell, compShell, tQuick, compQuick, tMerge, compMerge);
         System.out.println("Primeros 10 ordenados: " + Arrays.toString(Arrays.copyOf(m, 10)));
     }
 }</code></pre>
@@ -778,8 +1617,131 @@ public class Main {
                 <div class="card">
                     <h3>📊 Output</h3>
                     <div class="output-label">▶ CONSOLA</div>
-                    <div class="output-block">Shell -&gt; comp=&lt;valor_calculado&gt; tiempo=&lt;ns_variable&gt; Quick -&gt; comp=&lt;valor_calculado&gt; tiempo=&lt;ns_variable&gt; Merge -&gt; comp=&lt;valor_calculado&gt; tiempo=&lt;ns_variable&gt; Primeros 10 ordenados: [1000,
-                        1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009] Nota: el bloque de números ya trae del 1000 al 1129 ordenado, por eso esos 10 primeros deben coincidir.</div>
+                    <div class="output-block">
+                        <table class="output-table">
+                            <thead>
+                                <tr>
+                                    <th>Estructura</th>
+                                    <th>Memoria</th>
+                                    <th>Tiempo</th>
+                                    <th>Iteraciones</th>
+                                    <th>Comparaciones</th>
+                                    <th>Intercambios</th>
+                                    <th>Recursiva</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Burbuja Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Burbuja Mejorado</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Quick Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>Shell Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Selección Directa</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Inserción Simple</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Shaker</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>MergeSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>Sí</td>
+                                </tr>
+                                <tr>
+                                    <td>RadixSort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método de Montículo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Método del Cubo</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>Counting Sort</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>&lt;valor&gt;</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
     </div>
@@ -829,39 +1791,92 @@ public class Main {
                 <h2>📌 Ejercicio 1 – Sistema de Empleados</h2>
                 <p>Jerarquía de empleados con cálculo de salario mensual y anual. Incluye administrativos, vendedores, gerentes y temporales (50% del bono administrativo).</p>
             </div>
-            <div class="card"><pre data-lang="java"><code class="language-java" id="p1">abstract class Empleado {
+            <div class="card"><pre data-lang="java"><code class="language-java" id="p1">// Jerarquía base de empleados con polimorfismo para calcular salario.
+// Cada subclase aplica su propia regla de negocio.
+// Flujo documentado:
+// 1) Definir clase abstracta con contrato de salario.
+// 2) Implementar reglas por tipo de empleado.
+// 3) Instanciar y calcular salario total en main.
+
+abstract class Empleado {
     String nombre; String cedula; double salarioBase;
     Empleado(String n, String c, double s) { nombre=n; cedula=c; salarioBase=s; }
     abstract double calcularSalarioTotal();
 }
 class Administrativo extends Empleado {
     Administrativo(String n, String c, double s) { super(n,c,s); }
+    // Ejemplo: 2.000.000 * 1.10 = 2.200.000 (agrega 10% de bono).
     double calcularSalarioTotal() { return salarioBase * 1.10; }
 }
 class Vendedor extends Empleado {
     double ventas;
     Vendedor(String n, String c, double s, double v) { super(n,c,s); ventas=v; }
+    // Ejemplo: 2.000.000 + (10.000.000 * 0.05) = 2.500.000.
     double calcularSalarioTotal() { return salarioBase + ventas * 0.05; }
 }
 class Gerente extends Empleado {
     double ventasDepto;
     Gerente(String n, String c, double s, double v) { super(n,c,s); ventasDepto=v; }
+    // Suma un bono fijo de 500 y comisión por ventas del departamento.
     double calcularSalarioTotal() { return salarioBase + 500 + ventasDepto * 0.02; }
 }
 class Temporal extends Administrativo {
     Temporal(String n, String c, double s) { super(n,c,s); }
+    // Temporal recibe solo 5% extra, no el 10% completo del administrativo.
     double calcularSalarioTotal() { return salarioBase * 1.05; }
 }
 public class Main {
     public static void main(String[] args) {
         Administrativo a = new Administrativo(&quot;Juan&quot;,&quot;123&quot;,2000000);
-        System.out.println(&quot;Admin: $&quot; + a.calcularSalarioTotal());
+        Vendedor v = new Vendedor(&quot;Ana&quot;,&quot;456&quot;,2000000,10000000);
+        Gerente g = new Gerente(&quot;Luis&quot;,&quot;789&quot;,3000000,20000000);
+        Temporal t = new Temporal(&quot;Marta&quot;,&quot;321&quot;,1800000);
+
+        System.out.println(&quot;Admin mensual: $&quot; + a.calcularSalarioTotal());
+        System.out.println(&quot;Vendedor mensual: $&quot; + v.calcularSalarioTotal());
+        System.out.println(&quot;Gerente mensual: $&quot; + g.calcularSalarioTotal());
+        System.out.println(&quot;Temporal mensual: $&quot; + t.calcularSalarioTotal());
+
+        double nominaMensual = a.calcularSalarioTotal() + v.calcularSalarioTotal()
+                + g.calcularSalarioTotal() + t.calcularSalarioTotal();
+        System.out.println(&quot;Nómina anual total: $&quot; + (nominaMensual * 12));
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p1',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Admin: $2200000.0</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Admin mensual: $2200000.0</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Vendedor mensual: $2500000.0</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Gerente mensual: $3400500.0</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Temporal mensual: $1890000.0</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Nómina anual total: $1.19886E8</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 2 -->
@@ -869,7 +1884,15 @@ public class Main {
                 <h2>📌 Ejercicio 2 – Plataforma Streaming</h2>
                 <p>Modelo de contenidos (película, serie, documental) con cálculo de tiempo de visualización y manejo de contenido premium, incluyendo documental científico premium automático.</p>
             </div>
-            <div class="card"><pre data-lang="java"><code class="language-java" id="p2">abstract class Contenido {
+            <div class="card"><pre data-lang="java"><code class="language-java" id="p2">// Modelo de streaming: cada tipo de contenido redefine su tiempo de visualización.
+// Documental científico fuerza premium desde la herencia.
+// Flujo documentado:
+// 1) Definir contenido abstracto con método de duración.
+// 2) Especializar por tipo (película, serie, documental).
+// 3) Forzar premium en documental científico.
+// 4) Probar en main e imprimir minutos.
+
+abstract class Contenido {
     String titulo; boolean premium;
     Contenido(String t, boolean p) { titulo=t; premium=p; }
     abstract int tiempoVisualizacion();
@@ -882,11 +1905,13 @@ class Pelicula extends Contenido {
 class Serie extends Contenido {
     int episodios;
     Serie(String t, int e, boolean p) { super(t,p); episodios=e; }
+    // Ejemplo: 10 episodios * 45 min = 450 minutos totales.
     int tiempoVisualizacion() { return episodios * 45; }
 }
 class Documental extends Contenido {
     int duracion; String tema;
     Documental(String t, int d, String tema, boolean p) { super(t,p); duracion=d; this.tema=tema; }
+    // Se agregan 15 minutos por material adicional del documental.
     int tiempoVisualizacion() { return duracion + 15; }
 }
 class DocumentalCientifico extends Documental {
@@ -895,13 +1920,47 @@ class DocumentalCientifico extends Documental {
 public class Main {
     public static void main(String[] args) {
         Pelicula p = new Pelicula(&quot;Inception&quot;,148,true);
-        System.out.println(p.titulo + &quot;: &quot; + p.tiempoVisualizacion() + &quot; min&quot;);
+        Serie s = new Serie(&quot;Dark&quot;,10,false);
+        Documental d = new Documental(&quot;Planeta Azul&quot;,90,&quot;Naturaleza&quot;,false);
+        DocumentalCientifico dc = new DocumentalCientifico(&quot;Cosmos&quot;,80,&quot;Astronomía&quot;);
+
+        System.out.println(p.titulo + &quot;: &quot; + p.tiempoVisualizacion() + &quot; min | premium=&quot; + p.premium);
+        System.out.println(s.titulo + &quot;: &quot; + s.tiempoVisualizacion() + &quot; min | premium=&quot; + s.premium);
+        System.out.println(d.titulo + &quot;: &quot; + d.tiempoVisualizacion() + &quot; min | premium=&quot; + d.premium);
+        System.out.println(dc.titulo + &quot;: &quot; + dc.tiempoVisualizacion() + &quot; min | premium=&quot; + dc.premium);
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p2',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Inception: 148 min</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Inception: 148 min | premium=true</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Dark: 450 min | premium=false</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Planeta Azul: 105 min | premium=false</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Cosmos: 95 min | premium=true</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 3 -->
@@ -910,10 +1969,18 @@ public class Main {
                 <p>Cálculo de precio final según antigüedad dinámica por año actual, con reglas especiales para motos deportivas y descuento adicional en camiones de alta capacidad.</p>
             </div>
             <div class="card"><pre data-lang="java"><code class="language-java" id="p3">import java.time.Year;
+
+// Cálculo de precio final según antigüedad y reglas especiales por tipo de vehículo.
+// Nota: el resultado varía con el año actual (Year.now()).
+// Flujo documentado:
+// 1) Calcular antigüedad y descuento base en clase padre.
+// 2) Ajustar regla final según subtipo de vehículo.
+// 3) Ejecutar caso de prueba y mostrar precio final.
 abstract class Vehiculo {
     String marca; int año; double precio;
     Vehiculo(String m, int a, double p) { marca=m; año=a; precio=p; }
     int antiguedad() { return Year.now().getValue() - año; }
+    // Ejemplo: si estamos en 2026 y el auto es 2024, antiguedad=2.
     double descuentoBase() {
         int a = antiguedad();
         if(a==0) return 0; if(a==1) return 0.05; if(a==2) return 0.10; return 0.15;
@@ -938,19 +2005,58 @@ class Camion extends Vehiculo {
     double precioFinal() {
         double desc = descuentoBase();
         if(capacidadCarga &gt; 5) desc += 0.03;
+        // Si excede 5 toneladas, se suma 3% adicional de descuento.
         return precio * (1 - desc);
     }
 }
 public class Main {
     public static void main(String[] args) {
         Automovil auto = new Automovil(&quot;Toyota&quot;,2024,80000000);
+        Motocicleta motoDep = new Motocicleta(&quot;Yamaha&quot;,2023,30000000,&quot;deportiva&quot;);
+        Motocicleta motoUrb = new Motocicleta(&quot;Honda&quot;,2022,20000000,&quot;urbana&quot;);
+        Camion camion = new Camion(&quot;Volvo&quot;,2021,150000000,8);
+
         System.out.println(&quot;Auto: $&quot; + auto.precioFinal());
+        System.out.println(&quot;Moto deportiva: $&quot; + motoDep.precioFinal());
+        System.out.println(&quot;Moto urbana: $&quot; + motoUrb.precioFinal());
+        System.out.println(&quot;Camión carga alta: $&quot; + camion.precioFinal());
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p3',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Auto: $&lt;precio_final_dependiente_del_año_actual&gt; Nota: este valor cambia según el año en que se ejecute, porque el cálculo usa Year.now().</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Auto: $&lt;precio_final_dependiente_del_año_actual&gt;</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Moto deportiva: $30000000.0</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Moto urbana: $&lt;precio_final_dependiente_del_año_actual&gt;</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Camión carga alta: $&lt;precio_final_dependiente_del_año_actual&gt;</td>
+                            </tr>
+                            <tr>
+                                <td>Nota</td>
+                                <td>Este valor cambia según el año de ejecución porque el cálculo usa Year.now().</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 4 -->
@@ -958,7 +2064,14 @@ public class Main {
                 <h2>📌 Ejercicio 4 – Sistema Bancario</h2>
                 <p>Implementación de cuentas de ahorro, corriente y nómina con reglas distintas en retiro y depósito, manejo de sobregiro y comisiones específicas.</p>
             </div>
-            <div class="card"><pre data-lang="java"><code class="language-java" id="p4">abstract class Cuenta {
+            <div class="card"><pre data-lang="java"><code class="language-java" id="p4">// Sistema bancario con tres comportamientos de cuenta.
+// Se modelan validaciones, sobregiro y reglas de depósito/retiro.
+// Flujo documentado:
+// 1) Definir interfaz común de operaciones bancarias.
+// 2) Implementar reglas en Ahorros, Corriente y Nomina.
+// 3) Ejecutar operación ejemplo y mostrar saldo.
+
+abstract class Cuenta {
     String numero; double saldo;
     Cuenta(String n, double s) { numero=n; saldo=s; }
     abstract boolean retirar(double m);
@@ -969,6 +2082,7 @@ class Ahorros extends Cuenta {
     private static final double LOW_BALANCE_FEE = 2;
     Ahorros(String n, double s) { super(n,s); }
     boolean retirar(double m) {
+        // Si retiro 100 de saldo 500, queda 400.
         if(m&lt;=saldo) { saldo-=m; if(saldo&lt;100) saldo-=LOW_BALANCE_FEE; return true; }
         return false;
     }
@@ -981,6 +2095,7 @@ class Corriente extends Cuenta {
     Corriente(String n, double s) { super(n,s); }
     boolean retirar(double m) {
         double nuevo = saldo - m;
+        // Permite bajar hasta -500; si pasa de eso, rechaza la operación.
         if(nuevo &gt;= LIMITE_SOBREGIRO) { saldo = nuevo; if(nuevo&lt;0) saldo-=COMISION_SOBREGIRO; return true; }
         return false;
     }
@@ -993,20 +2108,57 @@ class Corriente extends Cuenta {
 }
 class Nomina extends Cuenta {
     Nomina(String n, double s) { super(n,s); }
+    // Nómina no permite sobregiro: solo retira si hay saldo suficiente.
     boolean retirar(double m) { if(m&lt;=saldo) { saldo-=m; return true; } return false; }
     void depositar(double m) { saldo+=m; }
 }
 public class Main {
     public static void main(String[] args) {
         Ahorros a = new Ahorros(&quot;AH001&quot;,500000);
+        Corriente c = new Corriente(&quot;CC001&quot;,100);
+        Nomina n = new Nomina(&quot;NO001&quot;,300000);
+
         a.retirar(100000);
-        System.out.println(&quot;Saldo: $&quot; + a.saldo);
+        c.retirar(250);
+        boolean retiroNomina = n.retirar(350000);
+
+        System.out.println(&quot;Ahorros saldo: $&quot; + a.saldo);
+        System.out.println(&quot;Corriente saldo: $&quot; + c.saldo);
+        System.out.println(&quot;Nómina retiro exitoso: &quot; + retiroNomina);
+        System.out.println(&quot;Nómina saldo: $&quot; + n.saldo);
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p4',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Saldo: $400000.0</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Ahorros saldo: $400000.0</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Corriente saldo: $-155.0</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Nómina retiro exitoso: false</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Nómina saldo: $300000.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 5 -->
@@ -1014,7 +2166,14 @@ public class Main {
                 <h2>📌 Ejercicio 5 – Hotel</h2>
                 <p>Reserva de habitaciones con temporada alta, cargos por capacidad adicional, reglas de desayuno y descuento VIP sobre el componente base de la tarifa.</p>
             </div>
-            <div class="card"><pre data-lang="java"><code class="language-java" id="p5">abstract class Habitacion {
+            <div class="card"><pre data-lang="java"><code class="language-java" id="p5">// Motor de tarifas de hotel con temporada alta, extras por personas y descuento VIP.
+// Cada tipo de habitación redefine su cálculo de costo final.
+// Flujo documentado:
+// 1) Definir datos base y regla de temporada alta.
+// 2) Aplicar extras según tipo de habitación y número de personas.
+// 3) Calcular reserva de ejemplo en main.
+
+abstract class Habitacion {
     int numero; double precioNoche; int capacidadMax; boolean desayunoIncluido;
     Habitacion(int n, double p, int cap, boolean d) { numero=n; precioNoche=p; capacidadMax=cap; desayunoIncluido=d; }
     boolean temporadaAlta(int mes) { return mes == 6 || mes == 7 || mes == 12; }
@@ -1024,6 +2183,7 @@ class Simple extends Habitacion {
     Simple(int n, double p) { super(n,p,2,false); }
     double calcularCosto(int noches, int personas, int mes, boolean vip) {
         double total = precioNoche * noches;
+        // Base: si son 3 noches de 80.000, total inicial=240.000.
         if(temporadaAlta(mes)) total *= 1.25;
         if(personas&gt;1) total += (personas-1)*20*noches;
         if(!desayunoIncluido) total += personas*10*noches;
@@ -1035,6 +2195,7 @@ class Doble extends Habitacion {
     Doble(int n, double p) { super(n,p,4,false); }
     double calcularCosto(int noches, int personas, int mes, boolean vip) {
         double total = precioNoche * noches;
+        // En doble, el extra por persona arranca después de la segunda persona.
         if(temporadaAlta(mes)) total *= 1.25;
         if(personas&gt;2) total += (personas-2)*20*noches;
         if(!desayunoIncluido) total += personas*10*noches;
@@ -1055,13 +2216,41 @@ class Suite extends Habitacion {
 public class Main {
     public static void main(String[] args) {
         Simple s = new Simple(101,80000);
-        System.out.println(&quot;Costo: $&quot; + s.calcularCosto(3,2,1,false));
+        Doble d = new Doble(202,120000);
+        Suite su = new Suite(303,200000);
+
+        System.out.println(&quot;Simple: $&quot; + s.calcularCosto(3,2,1,false));
+        System.out.println(&quot;Doble: $&quot; + d.calcularCosto(2,4,7,true));
+        System.out.println(&quot;Suite: $&quot; + su.calcularCosto(2,5,12,false));
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p5',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Costo: $300000.0</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Simple: $240120.0</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Doble: $255136.0</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Suite: $500120.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 6 -->
@@ -1069,7 +2258,14 @@ public class Main {
                 <h2>📌 Ejercicio 6 – Reservas de Vuelos</h2>
                 <p>Composición entre Pasajero, Vuelo y Reserva con validación automática de cupo y reporte de pasajeros por vuelo.</p>
             </div>
-            <div class="card"><pre data-lang="java"><code class="language-java" id="p6">class Pasajero {
+            <div class="card"><pre data-lang="java"><code class="language-java" id="p6">// Composición Pasajero-Vuelo-Reserva con control de cupos.
+// Si no hay cupo, se lanza excepción para mantener consistencia.
+// Flujo documentado:
+// 1) Crear entidades pasajero y vuelo.
+// 2) Confirmar reservas mientras exista cupo.
+// 3) Lanzar/capturar excepción cuando se supera capacidad.
+
+class Pasajero {
     String nombre; String pasaporte;
     Pasajero(String n, String p) { nombre=n; pasaporte=p; }
 }
@@ -1077,12 +2273,14 @@ class Vuelo {
     String codigo; int cupoMax; int reservas=0;
     Vuelo(String c, int cupo) { codigo=c; cupoMax=cupo; }
     boolean disponible() { return reservas &lt; cupoMax; }
+    // Ejemplo: si reservas=2 y cupoMax=2, disponible() devuelve false.
     boolean agregarReserva() { if(disponible()) { reservas++; return true; } return false; }
 }
 class Reserva {
     static int contador=1; int id; Pasajero pasajero; Vuelo vuelo;
     Reserva(Pasajero p, Vuelo v) {
         if(!v.disponible()) throw new RuntimeException(&quot;Sin cupo disponible en vuelo &quot; + v.codigo);
+        // Aquí se enlaza pasajero con vuelo y se incrementa contador global de reservas.
         id=contador++; pasajero=p; vuelo=v; vuelo.agregarReserva();
     }
 }
@@ -1092,7 +2290,10 @@ public class Main {
         Pasajero p1 = new Pasajero(&quot;Juan&quot;,&quot;AB123&quot;);
         Pasajero p2 = new Pasajero(&quot;Ana&quot;,&quot;CD456&quot;);
         Pasajero p3 = new Pasajero(&quot;Luis&quot;,&quot;EF789&quot;);
+
         new Reserva(p1,v); new Reserva(p2,v);
+        System.out.println(&quot;Reservas confirmadas: &quot; + v.reservas);
+
         try { new Reserva(p3,v); }
         catch(Exception e) { System.out.println(&quot;Error: &quot; + e.getMessage()); }
     }
@@ -1100,7 +2301,26 @@ public class Main {
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Error: Sin cupo disponible en vuelo AV123</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Reservas confirmadas: 2</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Error: Sin cupo disponible en vuelo AV123</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 7 -->
@@ -1109,9 +2329,17 @@ public class Main {
                 <p>Gestión de libros con estado de disponibilidad, búsqueda por título, préstamo/devolución y listado de libros disponibles.</p>
             </div>
             <div class="card"><pre data-lang="java"><code class="language-java" id="p7">import java.util.*;
+
+// Biblioteca básica: agregar, buscar, prestar/devolver y listar disponibles.
+// Se usa estado booleano para controlar disponibilidad del libro.
+// Flujo documentado:
+// 1) Registrar libros en la biblioteca.
+// 2) Buscar por título y prestar si está disponible.
+// 3) Mostrar inventario disponible al final.
 class Libro {
     String titulo; String autor; String isbn; boolean disponible=true;
     Libro(String t, String a, String i) { titulo=t; autor=a; isbn=i; }
+    // Si el libro estaba libre, pasa a prestado y retorna true.
     boolean prestar() { if(disponible) { disponible=false; return true; } return false; }
     void devolver() { disponible=true; }
     String getTitulo() { return titulo; }
@@ -1120,6 +2348,7 @@ class Biblioteca {
     List&lt;Libro&gt; libros = new ArrayList&lt;&gt;();
     void agregar(Libro l) { libros.add(l); }
     Libro buscar(String titulo) {
+        // Recorre toda la lista hasta encontrar coincidencia por nombre.
         for(Libro l:libros) if(l.getTitulo().equalsIgnoreCase(titulo)) return l;
         return null;
     }
@@ -1134,15 +2363,42 @@ public class Main {
         Biblioteca b = new Biblioteca();
         b.agregar(new Libro(&quot;Cien años&quot;,&quot;Garcia Marquez&quot;,&quot;123&quot;));
         b.agregar(new Libro(&quot;El Quijote&quot;,&quot;Cervantes&quot;,&quot;456&quot;));
+
         Libro l = b.buscar(&quot;El Quijote&quot;);
-        if(l!=null) l.prestar();
-        System.out.println(&quot;Disponibles: &quot; + b.disponibles().size());
+        boolean prestado = l != null &amp;&amp; l.prestar();
+        System.out.println(&quot;Préstamo El Quijote: &quot; + prestado);
+        System.out.println(&quot;Disponibles tras préstamo: &quot; + b.disponibles().size());
+        if(l != null) l.devolver();
+        System.out.println(&quot;Disponibles tras devolución: &quot; + b.disponibles().size());
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p7',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Disponibles: 1</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Préstamo El Quijote: true</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Disponibles tras préstamo: 1</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Disponibles tras devolución: 2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 8 -->
@@ -1152,6 +2408,13 @@ public class Main {
             </div>
             <div class="card"><pre data-lang="java"><code class="language-java" id="p8">import java.util.*;
 import java.time.Instant;
+
+// Cajero: autenticación por PIN y registro de transacciones con marca temporal.
+// Incluye lógica de bloqueo tras intentos fallidos.
+// Flujo documentado:
+// 1) Validar PIN y controlar intentos.
+// 2) Registrar depósitos/retiros en historial.
+// 3) Ejecutar operación segura en main.
 class Transaccion {
     Instant fecha; String tipo; double monto;
     Transaccion(String t, double m) { fecha=Instant.now(); tipo=t; monto=m; }
@@ -1162,8 +2425,10 @@ class CuentaBancaria {
     CuentaBancaria(String n, double s, String p) { numero=n; saldo=s; pin=p; }
     boolean validarPin(String p) {
         if(bloqueada) return false;
+        // Si coincide el PIN, reinicia intentos y permite operar.
         if(pin.equals(p)) { intentosFallidos=0; return true; }
         intentosFallidos++; if(intentosFallidos&gt;=3) bloqueada=true;
+        // Con 3 fallos seguidos, la cuenta queda bloqueada.
         return false;
     }
     void depositar(double m) { saldo+=m; historial.add(new Transaccion(&quot;Depósito&quot;,m)); }
@@ -1177,13 +2442,44 @@ class CuentaBancaria {
 public class Main {
     public static void main(String[] args) {
         CuentaBancaria c = new CuentaBancaria(&quot;1001&quot;,500000,&quot;1234&quot;);
-        if(c.validarPin(&quot;1234&quot;)) { c.retirar(100000); System.out.println(&quot;Saldo: $&quot; + c.getSaldo()); }
+
+        System.out.println(&quot;PIN correcto: &quot; + c.validarPin(&quot;1234&quot;));
+        c.retirar(100000);
+        System.out.println(&quot;Saldo: $&quot; + c.getSaldo());
+
+        c.validarPin(&quot;0000&quot;);
+        c.validarPin(&quot;1111&quot;);
+        c.validarPin(&quot;2222&quot;);
+        System.out.println(&quot;Cuenta bloqueada: &quot; + c.bloqueada);
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p8',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">Saldo: $400000.0</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>PIN correcto: true</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Saldo: $400000.0</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Cuenta bloqueada: true</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 9 -->
@@ -1192,10 +2488,19 @@ public class Main {
                 <p>Registro de estudiantes, cursos y notas, con cálculo de promedio y ranking; además identifica estudiantes en riesgo académico.</p>
             </div>
             <div class="card"><pre data-lang="java"><code class="language-java" id="p9">import java.util.*;
+
+// Registro académico: estudiantes, notas y cálculo de promedio.
+// Permite ranking y detección de riesgo académico (&lt; 3.0).
+// Flujo documentado:
+// 1) Registrar estudiantes en el sistema.
+// 2) Cargar notas y calcular promedios.
+// 3) Ordenar y mostrar ranking por desempeño.
 class Estudiante {
     String nombre; String codigo; List&lt;Double&gt; notas=new ArrayList&lt;&gt;();
     Estudiante(String n, String c) { nombre=n; codigo=c; }
+    // Guarda una nueva nota en la lista del estudiante.
     void addNota(double n) { notas.add(n); }
+    // Ejemplo: (4.5 + 3.8) / 2 = 4.15.
     double promedio() { if(notas.isEmpty()) return 0; double s=0; for(double d:notas) s+=d; return s/notas.size(); }
     boolean riesgo() { return promedio()&lt;3.0; }
 }
@@ -1206,6 +2511,7 @@ class SistemaAcademico {
     void registrarEstudiante(Estudiante e) { estudiantes.add(e); }
     void registrarNota(Nota n) { n.e.addNota(n.valor); }
     void mostrarRanking() {
+        // Orden descendente: mayor promedio aparece de primero.
         estudiantes.sort((a,b)-&gt;Double.compare(b.promedio(),a.promedio()));
         for(int i=0;i&lt;estudiantes.size();i++) System.out.println((i+1)+&quot;. &quot;+estudiantes.get(i).nombre+&quot; - &quot;+estudiantes.get(i).promedio());
     }
@@ -1216,21 +2522,51 @@ class SistemaAcademico {
 }
 public class Main {
     public static void main(String[] args) {
+        // PASO 1: inicializar sistema y estudiantes.
         SistemaAcademico s = new SistemaAcademico();
         Estudiante e1 = new Estudiante(&quot;Juan&quot;,&quot;001&quot;);
         Estudiante e2 = new Estudiante(&quot;Ana&quot;,&quot;002&quot;);
         s.registrarEstudiante(e1); s.registrarEstudiante(e2);
+        // PASO 2: registrar notas y generar ranking.
         s.registrarNota(new Nota(e1,null,4.5));
         s.registrarNota(new Nota(e1,null,3.8));
         s.registrarNota(new Nota(e2,null,2.5));
         s.registrarNota(new Nota(e2,null,3.0));
         s.mostrarRanking();
+        s.mostrarRiesgo();
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p9',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">1. Juan - 4.15 2. Ana - 2.75</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>1. Juan - 4.15</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>2. Ana - 2.75</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Estudiantes en riesgo:</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>- Ana (2.75)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Ejercicio 10 - COMPLETO Y CORREGIDO -->
@@ -1240,10 +2576,19 @@ public class Main {
             </div>
             <div class="card"><pre data-lang="java"><code class="language-java" id="p10">import java.util.*;
 
+// Torneo de videojuegos con equipos y partidas.
+// Comparable ordena ranking final de jugadores por puntos acumulados.
+// Flujo documentado:
+// 1) Configurar torneo, equipos y jugadores.
+// 2) Registrar resultados de partidas.
+// 3) Generar ranking final usando Comparable.
+
 class Jugador implements Comparable&lt;Jugador&gt; {
     String nombre; String alias; int puntos = 0;
     Jugador(String n, String a) { nombre = n; alias = a; }
+    // Suma puntos acumulados del jugador en cada partida.
     void sumar(int p) { puntos += p; }
+    // Ordena de mayor a menor puntaje (ranking descendente).
     public int compareTo(Jugador o) { return Integer.compare(o.puntos, this.puntos); }
     public String toString() { return alias + &quot; - &quot; + puntos + &quot; pts&quot;; }
 }
@@ -1261,12 +2606,15 @@ class Partida {
     }
     void registrarResultado() {
         if(puntos1 &gt; puntos2) {
+            // Si equipo1 gana, cada jugador de ese equipo recibe 10 puntos.
             for(Jugador j : equipo1.jugadores) j.sumar(10);
             System.out.println(equipo1.nombre + &quot; gana la partida!&quot;);
         } else if(puntos2 &gt; puntos1) {
+            // Si equipo2 gana, se aplica la misma regla de +10 por jugador.
             for(Jugador j : equipo2.jugadores) j.sumar(10);
             System.out.println(equipo2.nombre + &quot; gana la partida!&quot;);
         } else {
+            // En empate ambos equipos reciben 5 por jugador.
             for(Jugador j : equipo1.jugadores) j.sumar(5);
             for(Jugador j : equipo2.jugadores) j.sumar(5);
             System.out.println(&quot;Empate! Ambos equipos suman 5 puntos.&quot;);
@@ -1289,6 +2637,7 @@ class Torneo {
 
 public class Main {
     public static void main(String[] args) {
+        // PASO 1: crear torneo, jugadores y equipos.
         System.out.println(&quot;=== TORNEO DE VIDEOJUEGOS ===\n&quot;);
         
         Torneo torneo = new Torneo(&quot;Liga de Leyendas 2025&quot;);
@@ -1311,6 +2660,7 @@ public class Main {
         torneo.agregarJugador(j3);
         torneo.agregarJugador(j4);
         
+        // PASO 2: jugar partidas y acumular puntajes.
         Partida partida1 = new Partida(equipoA, equipoB, 15, 10);
         partida1.registrarResultado();
         
@@ -1320,14 +2670,61 @@ public class Main {
         Partida partida3 = new Partida(equipoA, equipoB, 12, 12);
         partida3.registrarResultado();
         
+        // PASO 3: ordenar e imprimir ranking final.
         torneo.generarRanking();
     }
 }</code></pre><button class="copy-btn" onclick="copyCode('p10',this)">📋 Copiar código</button></div>
             <div class="card">
                 <h3>📊 Output</h3>
                 <div class="output-label">▶ CONSOLA</div>
-                <div class="output-block">=== TORNEO DE VIDEOJUEGOS === Dragones gana la partida! Titanes gana la partida! Empate! Ambos equipos suman 5 puntos. === RANKING DEL TORNEO: Liga de Leyendas 2025 === 1. Faker - 15 pts 2. ShowMaker - 15 pts 3. Caps - 15 pts 4. Chovy
-                    - 15 pts</div>
+                <div class="output-block">
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Línea</th>
+                                <th>Salida exacta en CodeChef</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>=== TORNEO DE VIDEOJUEGOS ===</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Dragones gana la partida!</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Titanes gana la partida!</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Empate! Ambos equipos suman 5 puntos.</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>=== RANKING DEL TORNEO: Liga de Leyendas 2025 ===</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>1. Faker - 15 pts</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>2. ShowMaker - 15 pts</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>3. Caps - 15 pts</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>4. Chovy - 15 pts</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
@@ -1348,8 +2745,15 @@ public class Main {
             var materiaActiva = document.getElementById('materia-' + materiaId);
             var subsections = materiaActiva.querySelectorAll('.subsection');
             if (subsections.length > 0) {
+                var activeIndex = 0;
                 for (var i = 0; i < subsections.length; i++) {
-                    subsections[i].classList.toggle('active', i === 0);
+                    if (subsections[i].classList.contains('active')) {
+                        activeIndex = i;
+                        break;
+                    }
+                }
+                for (var j = 0; j < subsections.length; j++) {
+                    subsections[j].classList.toggle('active', j === activeIndex);
                 }
             }
         }
@@ -1370,6 +2774,11 @@ public class Main {
             var pre = document.getElementById(elementId);
             if (pre) {
                 var code = pre.innerText;
+
+                if (elementId === 'ed3') {
+                    code = code.replace(/\b0+(\d{2,})\b/g, '$1');
+                }
+
                 navigator.clipboard.writeText(code).then(function() {
                     btn.textContent = '✅ Copiado!';
                     btn.classList.add('ok');
@@ -1388,4 +2797,3 @@ public class Main {
 </body>
 
 </html>
-
